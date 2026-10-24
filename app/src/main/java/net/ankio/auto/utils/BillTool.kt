@@ -1,0 +1,295 @@
+/*
+ * Copyright (C) 2024 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package net.ankio.auto.utils
+
+import android.net.Uri
+import androidx.core.content.ContextCompat
+import com.google.android.material.textview.MaterialTextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
+import net.ankio.auto.App
+import net.ankio.auto.BuildConfig
+import net.ankio.auto.R
+import net.ankio.auto.adapter.AppAdapterManager
+import net.ankio.auto.adapter.QianJiAdapter
+import net.ankio.auto.autoApp
+import net.ankio.auto.constant.WorkMode
+import net.ankio.auto.http.api.BillAPI
+import net.ankio.auto.storage.Logger
+import net.ankio.auto.ui.utils.ToastUtils
+import org.ezbook.server.constant.BillState
+import org.ezbook.server.constant.BillType
+import org.ezbook.server.db.model.BillInfoModel
+import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
+
+object BillTool {
+
+    /**
+     * 获取页面显示颜色
+     */
+    fun getColor(type: BillType): Int {
+        val isExpenseRed = PrefManager.isExpenseRed
+
+        return when (type) {
+            BillType.Expend -> if (isExpenseRed) R.color.danger else R.color.success
+            BillType.Income -> if (isExpenseRed) R.color.success else R.color.danger
+            BillType.Transfer -> R.color.info
+            else -> R.color.danger
+        }
+    }
+
+    /**
+     * 获取箭头图标
+     */
+    fun getIcon(type: BillType): Int {
+        val isIncomeUp = PrefManager.isIncomeUp
+
+        return when (type) {
+            BillType.Income -> if (isIncomeUp) R.drawable.ic_trending_up else R.drawable.ic_trending_down
+            BillType.Expend -> if (isIncomeUp) R.drawable.ic_trending_down else R.drawable.ic_trending_up
+            BillType.Transfer -> R.drawable.ic_swap_horiz
+            else -> R.drawable.ic_trending_down
+        }
+    }
+
+    /**
+     * 获取背景drawable
+     */
+    fun getBackground(type: BillType): Int {
+        val isExpenseRed = PrefManager.isExpenseRed
+
+        return when (type) {
+            BillType.Expend -> if (isExpenseRed) R.drawable.bg_danger_icon else R.drawable.bg_success_icon
+            BillType.Income -> if (isExpenseRed) R.drawable.bg_success_icon else R.drawable.bg_danger_icon
+
+            else -> R.drawable.bg_danger_icon
+        }
+    }
+
+    /**
+     * 获取账单类型的完整样式信息
+     * @return Triple(colorRes, iconRes, backgroundRes)
+     */
+    fun getStyle(type: BillType): Triple<Int, Int, Int> {
+        return Triple(getColor(type), getIcon(type), getBackground(type))
+    }
+
+    /**
+     * 格式化金额显示
+     * 只显示数字，不带货币符号
+     */
+    fun formatAmount(amount: Double): String {
+        return String.format(Locale.getDefault(), "%.2f", amount)
+    }
+
+    fun getType(type: BillType): BillType {
+        return when (type) {
+            BillType.ExpendReimbursement -> BillType.Expend
+            BillType.ExpendLending -> BillType.Expend
+            BillType.ExpendRepayment -> BillType.Expend
+            BillType.IncomeLending -> BillType.Income
+            BillType.IncomeRepayment -> BillType.Income
+            BillType.IncomeReimbursement -> BillType.Income
+            BillType.IncomeRefund -> BillType.Income
+            else -> type
+        }
+    }
+
+
+    fun setTextViewPrice(
+        price: Double,
+        type: BillType,
+        view: MaterialTextView,
+        currencyUnit: String? = null
+    ) {
+        val t = getType(type)
+        val color = ContextCompat.getColor(view.context, getColor(t))
+        view.setTextColor(color)
+        // 有货币单位则追加到金额后面，如 "- 100.0 USD"
+        val suffix = if (currencyUnit.isNullOrEmpty()) "" else " $currencyUnit"
+        val sign = when (t) {
+            BillType.Expend, BillType.ExpendReimbursement, BillType.ExpendLending, BillType.ExpendRepayment -> {
+                "- "
+            }
+
+            BillType.Income, BillType.IncomeLending, BillType.IncomeRepayment, BillType.IncomeReimbursement -> {
+                "+ "
+            }
+
+            else -> ""
+        }
+        view.text =
+            view.context.getString(R.string.bill_amount_format, sign, formatAmount(price), suffix)
+    }
+
+    /**
+     * 获取多币种转换提示文本
+     *
+     * 当启用多币种且账单币种与本位币不同时，返回 "≈ 72.30 CNY" 格式的文本；
+     * 否则返回 null。
+     *
+     * @param bill 账单信息
+     * @return 转换文本或 null
+     */
+    fun getConversionText(bill: BillInfoModel): String? {
+        if (!PrefManager.featureMultiCurrency) return null
+        val model = bill.currencyModel()
+        val baseCurrency = PrefManager.baseCurrency
+        if (model.code == baseCurrency || model.code.isEmpty()) return null
+        if (model.rate <= 0) return null
+        val converted = bill.money * model.rate
+        return "≈ ${formatAmount(converted)} $baseCurrency"
+    }
+
+    fun getCateName(category1: String, category2: String? = null): String {
+
+        if (category2 === null) {
+            return category1
+        }
+        return "$category1 - $category2"
+    }
+
+    fun syncBills() {
+        App.launch {
+            // 开始同步提示
+            ToastUtils.info(R.string.sync_starting)
+
+            // 获取所有未同步的账单
+            val billsToSync = BillAPI.sync()
+
+            if (billsToSync.isEmpty()) {
+                ToastUtils.info(R.string.sync_no_bills)
+                return@launch
+            }
+
+            var syncedCount = 0
+
+            // 逐个同步账单
+            billsToSync.forEach { bill ->
+                try {
+                    val adapter = AppAdapterManager.adapter()
+                    // 不走 syncBill，避免与 adapter.sleep() 叠加延迟
+                    adapter.syncBill(prepareBillForSync(bill))
+                    if (adapter is QianJiAdapter && WorkMode.isXposedOrLSPatch()) {
+                        waitSynced(bill.id)
+                    } else {
+                        delay(3000L.milliseconds)
+                    }
+                    syncedCount++
+                } catch (e: Exception) {
+                    Logger.e("同步账单失败: ${bill.id}", e)
+                    // 继续同步其他账单，不因单个失败而中断
+                }
+            }
+
+            ToastUtils.info(
+                autoApp.resources.getQuantityString(R.plurals.sync_completed, syncedCount, syncedCount)
+            )
+
+
+        }
+    }
+
+    /**
+     * 按功能开关裁剪发往记账软件的账单副本。
+     *
+     * 本地库中的原始字段保持不变；只影响同步出去的内容：
+     * - 关闭手续费/优惠：不传 fee
+     * - 关闭资产管理：不传账户，且 Transfer 降级为 Expend
+     */
+    fun prepareBillForSync(bill: BillInfoModel): BillInfoModel {
+        val syncBill = bill.copy()
+        if (!PrefManager.featureFee) {
+            syncBill.fee = 0.0
+        }
+        if (!PrefManager.featureAssetManage) {
+            if (syncBill.type == BillType.Transfer) {
+                syncBill.type = BillType.Expend
+            }
+            syncBill.accountNameFrom = ""
+            syncBill.accountNameTo = ""
+        }
+        return syncBill
+    }
+
+    /**
+     * 等待账单被标记为已同步，超时即放弃。
+     *
+     * 钱迹写库成功后才回写状态；不等回执就拉起下一笔，
+     * 多笔账单会在钱迹内并发处理，Hook 上下文互相覆盖导致串单、漏单。
+     */
+    private suspend fun waitSynced(id: Long) {
+        withTimeoutOrNull(5000L.milliseconds) {
+            while (BillAPI.get(id)?.state != BillState.Synced) {
+                delay(200L.milliseconds)
+            }
+        }
+    }
+
+    suspend fun syncBill(billInfoModel: BillInfoModel) {
+        AppAdapterManager.adapter().syncBill(prepareBillForSync(billInfoModel))
+        delay(AppAdapterManager.adapter().sleep())
+    }
+
+    fun saveBill(bill: BillInfoModel, automatic: Boolean = false, onSaved: (() -> Unit)? = null, onFailure: (() -> Unit)? = null, onComplete: (() -> Unit)? = null) {
+        Logger.d("保存账单: ${bill.id}")
+
+        // 更新状态
+        bill.state = BillState.Edited
+
+        // 异步保存
+        App.launchIO {
+            try {
+                bill.id = BillAPI.put(bill, automatic)
+                if (automatic) App.launch { net.ankio.auto.service.receipt.BillReceiptManager.refresh() }
+                // All entries stay in the local JustLedger ledger.
+                Logger.d("账单保存成功: ${bill.id}")
+
+                // 在UI线程执行回调
+                App.launch {
+                    // 显示成功提示
+                    if (!automatic && PrefManager.showSuccessPopup) {
+                        val message = autoApp.getString(
+                            R.string.auto_success,
+                            bill.money.toString()
+                        )
+                        ToastUtils.info(message)
+                    }
+
+                    onSaved?.invoke()
+                    // 执行完成回调
+                    onComplete?.invoke()
+                }
+            } catch (e: Exception) {
+                Logger.e("账单保存失败: ${e.message}")
+                bill.state = BillState.Wait2Edit
+                App.launch {
+                    ToastUtils.error("未计入：${e.message ?: "保存失败，请重试"}")
+                    onFailure?.invoke()
+                    onComplete?.invoke() // 即使失败也要执行回调
+                }
+            }
+        }
+    }
+
+}
+
+/** Uri.Builder 扩展：仅在 value 非空时追加参数 */
+fun Uri.Builder.appendIfNotBlank(key: String, value: String) {
+    if (value.isNotEmpty()) appendQueryParameter(key, value)
+}

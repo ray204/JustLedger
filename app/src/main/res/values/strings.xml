@@ -1,0 +1,1116 @@
+<!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<resources tools:locale="en" xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="about_view_source_code"><![CDATA[View source code on %s]]></string>
+    <string name="title_home">Home</string>
+    <string name="title_data">Data</string>
+    <string name="title_rule">Rule</string>
+    <string name="title_rule_edit">Edit Rule</string>
+    <string name="tab_data_rules">Data Rules</string>
+    <string name="tab_category_rules">Category Rules</string>
+    <string name="search_rules">Search rules</string>
+    <string name="search_currency_hint">Search currency code or name</string>
+    <string name="title_order">Orders</string>
+    <string name="title_setting">Settings</string>
+    <string name="description">Local rule-based automatic accounting module.</string>
+    <string name="title_log">Log</string>
+    <string name="setting_theme">Theme</string>
+    <string name="lang_follow_system">Follow system</string>
+    <string name="setting_privacy">Privacy</string>
+    <string name="ok">OK</string>
+    <string name="close">Close</string>
+    <string name="delete_data">Delete data</string>
+    <string name="delete_msg">Are you sure you want to delete this data?</string>
+    <string name="cancel_msg">Close</string>
+    <string name="sure_msg">Confirm</string>
+    <string name="batch_delete">Batch delete</string>
+    <string name="batch_delete_title">Batch delete</string>
+    <plurals name="batch_delete_confirm">
+        <item quantity="one">Are you sure you want to delete %d rule? This action cannot be undone.</item>
+        <item quantity="other">Are you sure you want to delete %d rules? This action cannot be undone.</item>
+    </plurals>
+    <string name="select_all">Select all</string>
+    <string name="cancel_select_all">Deselect all</string>
+    <string name="add">Add</string>
+    <string name="content_title">Data view</string>
+    <string name="image_preview_title">Image preview</string>
+    <string name="if_condition_true">If satisfied </string>
+    <string name="condition_result_book">. Then book is</string>
+    <string name="condition_result_category">. Category is</string>
+    <string name="condition_result_remark">. Remark is</string>
+    <string name="remark_input">Enter remark</string>
+    <string name="remark_hint">Remark content</string>
+    <string name="remark_empty">No remark</string>
+    <string name="and">And</string>
+    <string name="or">Or</string>
+    <string name="type_money">Amount</string>
+    <string name="type_time">Time</string>
+    <string name="type_shop">Merchant</string>
+    <string name="type_item">Item</string>
+    <string name="type_type">Transaction type</string>
+    <string name="lower_money">Minimum amount</string>
+    <string name="higher_money">Maximum amount</string>
+    <string name="money_range">Fill in amount range</string>
+    <string name="money_error">Amount must be greater than or equal to 0</string>
+    <string name="money_max_info">"Amount greater than %s "</string>
+    <string name="money_min_info">Amount less than %s</string>
+    <string name="money_range_info" formatted="false">Amount range from %s to %s</string>
+    <string name="money_equal_info">Amount equals %s</string>
+    <string name="time_range" formatted="false">Time between %s - %s</string>
+    <string name="date_range_simple" formatted="false">%s - %s</string>
+    <string name="select_time_lower">Please select start time</string>
+    <string name="select_time_higher">Please select end time</string>
+    <string name="regex">Please enter matching content</string>
+    <string name="shop_input">Please enter merchant name condition</string>
+    <string name="input_contains">Contains</string>
+    <string name="input_regex">Regex match</string>
+    <string name="shop_name_contains" formatted="false">%s contains 【%s】</string>
+    <string name="shop_name_regex" formatted="false">%s matches 【%s】</string>
+    <string name="shop_item_input">Please enter item name condition</string>
+    <string name="shop_name">Merchant name</string>
+    <string name="shop_item_name">Item name</string>
+    <string name="type_for_pay">Expend</string>
+    <string name="type_for_income">Income</string>
+    <string name="type_pay">Transaction type is 【%s】</string>
+    <string name="useless_condition">Condition cannot be empty</string>
+    <string name="useless_book">Book cannot be empty</string>
+    <string name="useless_category">Category cannot be empty</string>
+    <string name="upload_waiting">Uploading…</string>
+    <string name="sure_update">Update</string>
+    <string name="share_file">Share log</string>
+    <string name="auto_success">Auto accounting success, amount is %s</string>
+    <string name="btn_save">Save</string>
+    <string name="float_remark">Remark</string>
+    <string name="float_income">Income</string>
+    <string name="float_expend">Expense</string>
+    <string name="float_transfer">Transfer (Credit repayment)</string>
+    <string name="float_expend_debt">Borrower</string>
+    <string name="float_income_debt">Creditor</string>
+    <string name="restart">Restart JustLedger</string>
+    <string name="copy_command_success">Copied to clipboard</string>
+    <string name="cancel">Close</string>
+
+    <string name="title_books">Books</string>
+    <string name="add_book">Add Book</string>
+
+    <!-- Book Edit Strings -->
+    <string name="title_book_edit">Edit Book</string>
+    <string name="edit_book">Edit Book</string>
+    <string name="book_name_hint">Enter book name</string>
+    <string name="book_name_helper">Book name should be 1–20 characters</string>
+    <string name="book_icon_label">Book Icon</string>
+    <string name="tap_to_select_icon">Select an icon</string>
+    <string name="icon_selected">Icon selected</string>
+    <string name="btn_create">Create</string>
+    <string name="saving">Saving…</string>
+
+    <!-- Book Edit Messages -->
+    <string name="book_name_required">Book name is required</string>
+    <string name="book_name_too_long">Book name is too long</string>
+    <string name="book_created_success">Book created successfully</string>
+    <string name="book_updated_success">Book updated successfully</string>
+    <string name="book_create_failed">Failed to create book</string>
+    <string name="book_update_failed">Failed to update book</string>
+    <string name="set_default_book">Default</string>
+    <string name="set_default_book_success">Set as default</string>
+    <string name="icon_select_failed">Failed to select icon</string>
+    <string name="image_load_failed">Failed to load image</string>
+    <string name="image_process_failed">Failed to process image</string>
+    <string name="delete_book_message">Are you sure you want to delete book %s ?</string>
+    <string name="delete_book_success">Book deleted successfully</string>
+
+    <string name="title_category">Categories</string>
+    <string name="title_category_mapping">Category Mapping</string>
+    <string name="title_assets">Assets</string>
+    <string name="title_assets_map">Asset Mapping</string>
+    <string name="add_asset">Add Asset</string>
+    <string name="delete_asset">Delete Asset</string>
+    <string name="delete_asset_message">Are you sure you want to delete asset %s?</string>
+
+    <!-- Asset Edit Strings -->
+    <string name="title_asset_edit">Edit Asset</string>
+    <string name="edit_asset">Edit Asset</string>
+    <string name="asset_type_label">Asset Type</string>
+    <string name="currency_label">Currency</string>
+    <string name="asset_name_hint">Enter asset name</string>
+    <string name="asset_name_empty">Asset name cannot be empty</string>
+    <string name="asset_icon_empty">Please select an asset icon</string>
+    <string name="asset_not_found">Asset not found</string>
+    <string name="asset_load_failed">Failed to load asset</string>
+    <string name="save_asset_success">Asset saved successfully</string>
+    <string name="delete_asset_success">Asset deleted successfully</string>
+    <string name="title_tag">Tags</string>
+    <string name="title_app_whitelist">App Whitelist</string>
+    <string name="title_data_filter">Data Filter</string>
+    <string name="app_icon_desc">App Icon</string>
+
+    <!-- Rule Edit labels -->
+    <string name="rule_name">Name</string>
+    <string name="rule_type">Type</string>
+    <string name="rule_edit_rule">Edit Rule</string>
+    <string name="rule_tap_to_edit">Tap to edit rule</string>
+    <string name="save_rule_success">Rule saved successfully</string>
+    <string name="rule_enabled_successfully">Rule enabled successfully</string>
+    <string name="rule_disabled_successfully">Rule disabled successfully</string>
+    <string name="auto_record_enabled_successfully">Auto record enabled successfully</string>
+    <string name="auto_record_disabled_successfully">Auto record disabled successfully</string>
+    <string name="delete_rule_title">Delete Rule</string>
+    <string name="delete_rule_message">Are you sure you want to delete rule \"%s\"? This action cannot be undone.</string>
+    <string name="rule_deleted_successfully">Rule deleted successfully</string>
+
+
+    <string name="title_map">Asset mapping</string>
+    <string name="map_input_raw">Please enter original asset</string>
+    <string name="map_regex">Regex matching</string>
+    <string name="map_target">Please select target asset</string>
+    <string name="map_empty">Asset name or mapped asset cannot be empty</string>
+    <string name="reapply_asset_mapping">Reapply Asset Mapping</string>
+    <string name="reapply_confirm_title">Confirm Reapply</string>
+    <string name="reapply_confirm_message">Are you sure you want to reapply asset mapping to the last 3 months of historical data? This operation cannot be undone.</string>
+    <string name="reapply_started">Asset mapping reapplication started</string>
+    <string name="reapply_success">Asset mapping reapplication completed successfully</string>
+    <string name="delete_title">Delete confirmation</string>
+    <string name="delete_message">Are you sure you want to delete %s?</string>
+
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="item_clear">Clear</string>
+    <string name="backup_success">Backup successful</string>
+    <string name="restore_loading">Restoring…</string>
+    <string name="unsupport_backup">Cannot restore 【%s】 version data, please downgrade the app to that version and try again.</string>
+    <string name="backup_error">Database backup failed.</string>
+    <string name="restore_success">Restore successful</string>
+    <string name="net_error_msg_rule">Network error, please change source in settings and try again.</string>
+    <string name="backup_not_found">No backup file found on server</string>
+    <string name="restore_webdav">Downloading backup file</string>
+    <string name="backup_webdav">Preparing to upload…</string>
+    <string name="backup_pack">Packing data…</string>
+
+    <!-- Backup and Restore Error Messages -->
+    <string name="backup_error_select_path">Please select backup save path first</string>
+    <string name="backup_error_permission">Insufficient permissions, unable to save backup file</string>
+    <string name="backup_error_create_file">Unable to create backup file, please check storage space and permissions</string>
+    <string name="backup_error_write_file">Unable to write backup file, please check storage space</string>
+    <string name="backup_error_pack_data">Data packing failed: %s</string>
+    <string name="backup_error_unknown">Backup failed: %s</string>
+
+    <string name="restore_error_open_file">Unable to open backup file, please check file permissions</string>
+    <string name="restore_error_file_corrupted">Backup file is corrupted or format is incorrect: %s</string>
+    <string name="restore_error_read_file">Failed to read backup file, please check if file is complete</string>
+    <string name="restore_error_unknown">Restore failed: %s</string>
+
+    <string name="webdav_error_auth">WebDAV authentication failed (HTTP %d), please check username and password</string>
+    <string name="webdav_error_path_not_found">WebDAV path does not exist (HTTP %d), please check configured path</string>
+    <string name="webdav_error_server_error">WebDAV server error (HTTP %d), please try again later</string>
+    <string name="webdav_error_request_failed">WebDAV request failed (HTTP %1$d): %2$s</string>
+    <string name="webdav_error_connect">Unable to connect to WebDAV server, please check network connection and server address</string>
+    <string name="webdav_error_connect_restore">Unable to connect to WebDAV server, please check network connection</string>
+    <string name="webdav_error_auth_simple">WebDAV authentication failed, please check username and password</string>
+    <string name="webdav_error_backup_failed">WebDAV backup failed: %s</string>
+    <string name="webdav_error_restore_failed">WebDAV restore failed: %s</string>
+    <string name="webdav_error_list_failed">Failed to get backup list (HTTP %1$d): %2$s</string>
+    <string name="webdav_error_list_failed_simple">Failed to get backup list: %s</string>
+    <string name="webdav_error_file_not_found">Backup file does not exist (HTTP %1$d): %2$s</string>
+    <string name="webdav_error_download_failed">Failed to download backup file: %s</string>
+
+    <string name="backup_preparing">Preparing backup…</string>
+    <string name="backup_database">Backing up database…</string>
+    <string name="backup_preferences">Backing up preferences…</string>
+    <string name="backup_creating_index">Creating index file…</string>
+    <string name="backup_compressing">Compressing files…</string>
+    <string name="restore_preparing">Preparing restore…</string>
+    <string name="restore_extracting">Extracting backup…</string>
+    <string name="restore_validating">Validating backup…</string>
+    <string name="restore_database">Restoring database…</string>
+    <string name="restore_preferences">Restoring preferences…</string>
+    <string name="restore_clearing_cache">Clearing cache…</string>
+    <string name="restore_restarting">Restarting app…</string>
+    <string name="setting_bill_remark">Remark format</string>
+    <string name="setting_bill_remark_desc">Supports using the following Chinese variables:\nBasic: 【Merchant name】, 【Item name】, 【Amount】, 【Category】, 【Book】, 【Source】, 【Original asset】, 【Target asset】, 【Channel】\nExtended: 【Rule name】, 【AI】, 【Currency type】, 【Fee】, 【Tags】, 【Transaction type】, 【Time】</string>
+    <string name="setting_auto_create_category">Remember category</string>
+    <string name="item_sync">Sync</string>
+    <string name="auto_category">Detected that the category used when saving the bill is inconsistent with the category identified by the automatic accounting rule. Would you like to generate a new category rule?</string>
+    <string name="rule">Rule</string>
+    <string name="app">App</string>
+    <string name="update_success">Rule update successful</string>
+    <string name="app_error_msg">JustLedger runtime error</string>
+    <string name="update_rule">Update Rule: %s</string>
+    <string name="no_empty">The replacement content on both sides must not be empty.</string>
+    <string name="no_replace">No content was replaced</string>
+    <string name="loading_logs">Packing logs…</string>
+    <string name="no_need_to_update">No update needed. Long press to force update.</string>
+    <string name="check_update">Checking for updates…</string>
+    <string name="delete_bill_message">Are you sure you want to delete this bill?</string>
+    <string name="delete_data_message">Are you sure you want to delete this data?</string>
+    <string name="copy">Copy</string>
+
+    <!-- Filter dropdown options -->
+    <string name="filter_app">Application</string>
+    <string name="filter_rule_type">Rule Type</string>
+    <string name="filter_creator">Creator</string>
+    <string name="filter_match">Match</string>
+
+    <!-- Rule type filter options -->
+    <string name="filter_type_all">All</string>
+    <string name="filter_time_all">All time</string>
+    <string name="filter_time_month">Monthly</string>
+    <string name="filter_type_data">Data</string>
+    <string name="filter_type_notify">Notification</string>
+
+    <!-- Creator filter options -->
+    <string name="filter_creator_all">All</string>
+    <string name="filter_creator_user">User</string>
+    <string name="filter_creator_official">Official</string>
+
+    <!-- Match filter options -->
+    <string name="filter_match_only">Matched only</string>
+    <string name="filter_unmatched_only">Unmatched only</string>
+
+    <string name="downloading">Downloading rules…</string>
+    <string name="update_error">Update failed</string>
+    <string name="delete_rule">Removing invalid rules…</string>
+    <string name="add_rule">Added rule: %s</string>
+    <string name="unzip_finish">Extraction complete</string>
+    <string name="unzip">Extracting: %s</string>
+    <string name="auto_record">Auto</string>
+    <string name="auto_record_label">Auto Record</string>
+    <string name="rule_type_cloud">Cloud</string>
+    <string name="rule_type_local">Local</string>
+    <string name="data_type_app">Data</string>
+    <string name="data_type_notice">Notification</string>
+    <string name="data_type_ocr">OCR</string>
+    <string name="rule_desc_wechat_notice">%1$s - Follow the official account to receive notifications</string>
+    <string name="rule_desc_alipay_app">%1$s - Keep Alipay running in background for data capture</string>
+    <string name="rule_desc_sms_hint">%1$s - Enable SMS notifications from your bank</string>
+    <string name="rule_desc_other_notice">%1$s - Grant notification access or set scope to Android System</string>
+
+    <string name="item_search">Search…</string>
+    <string name="item_purchase">Purchase</string>
+    <string name="auto_apps">Please select accounting app</string>
+    <string name="type_credit">Credit account</string>
+    <string name="type_normal">Normal asset</string>
+    <string name="type_borrower">Borrower</string>
+    <string name="type_creditor">Creditor</string>
+    <string name="empty_text">No items yet</string>
+    <string name="error_text">Some errors occurred</string>
+    <string name="title_category_map">Category mapping</string>
+    <string name="add_category_map">Add category mapping: %s</string>
+    <string name="delete_category_map">Delete category mapping: %s</string>
+    <string name="no_rule_hint">No rule matched</string>
+    <string name="expend_reimbursement">Expense reimbursement</string>
+    <string name="income_reimbursement">Income reimbursement</string>
+    <string name="lend">Lend</string>
+    <string name="borrow">Borrow</string>
+    <string name="float_choose_bill">Please select bill</string>
+    <plurals name="float_choose_bills">
+        <item quantity="one">Selected %d bill</item>
+        <item quantity="other">Selected %d bills</item>
+    </plurals>
+    <string name="version_stable">Stable</string>
+    <string name="version_beta">Beta</string>
+    <string name="version_canary">Canary</string>
+    <string name="expend_repayment">Debt repayment</string>
+    <string name="income_repayment">Debt collection</string>
+    <string name="expend_lending">Debt - Lend out</string>
+    <string name="expend_repayment_info">Debt - Repayment</string>
+    <string name="income_lending">Debt - Borrow in</string>
+    <string name="income_repayment_info">Debt - Collection</string>
+    <string name="repeat_bill">Duplicate bill detected, automatically merged.</string>
+    <string name="repeat_toast_action_dont_merge">Don\'t deduplicate</string>
+    <string name="setting_bill_show_rule">Show recognition rule on bill page</string>
+    <string name="setting_bill_show_rule_summary">Display the name of the matching rule when editing bills</string>
+    <string name="auto_create">Auto generate</string>
+    <string name="setting_ai">AI features</string>
+    <string name="rule_testing">Testing rule…</string>
+    <string name="loading">Loading…</string>
+    <string name="setting_bill_one_api_uri">API address</string>
+    <string name="setting_bill_auto_record">Show notification for auto-recorded bills</string>
+    <string name="setting_clear_database">Clear database</string>
+    <string name="clear_db_desc">Irreversible operation, only use when uninstalling auto accounting.</string>
+    <string name="clear_db_msg">Are you sure you want to clear the database? Please ensure backup before clearing database.</string>
+    <string name="clear_database_failed">Failed to clear database: %s</string>
+    <string name="clear_success">Clear successful</string>
+
+    <string name="server_error_restart_title">Restart Required</string>
+    <string name="server_error_version_message">Version mismatch detected:\nServer version: %1$s\nApp version: %2$s\n\nPlease restart device to ensure proper functionality.</string>
+    <string name="server_error_connection_message">Unable to connect to local server (127.0.0.1:52045). Please restart device.</string>
+    <string name="server_error_btn_ok">I Know</string>
+    <string name="setting_load_success">Show notification after successfully loading auto accounting</string><!-- 旧的分类（保留用于兼容） -->
+    <string name="setting_title_ai_config">AI Configuration</string>
+    <string name="setting_ai_config">AI Configuration</string>
+    <string name="setting_ai_config_summary">Configure AI model and API settings</string>
+    <string name="setting_ai_feature_available">Enable AI Features</string>
+    <string name="setting_ai_feature_available_summary">Master switch for AI recognition and analysis</string>
+    <string name="ai_test_connection">Test Connection</string>
+    <string name="ai_test_result">Test Result</string>
+    <string name="ai_test_success_message">AI connection successful! The model is working properly.</string>
+    <string name="ai_test_failed_message">AI connection failed: %s</string>
+    <string name="ai_test_no_config">Please configure provider, model and API key first</string>
+    <string name="setting_backup_to_local">Backup to local</string>
+    <string name="setting_backup_to_local_summary">Export data to local file</string>
+    <string name="setting_restore_from_local">Restore from local</string>
+    <string name="setting_restore_from_local_summary">Import data from local file</string>
+    <string name="setting_category_auto_backup">Auto Backup</string>
+    <string name="setting_category_webdav_backup">WebDAV Backup</string>
+    <string name="setting_use_webdav_replace_local">Use WebDAV instead of local backup</string>
+    <string name="setting_use_webdav_replace_local_summary">When enabled, auto backup will use WebDAV instead of local storage</string>
+    <string name="setting_webdav_config_incomplete">Please configure WebDAV host, username and password first</string>
+    <string name="setting_backup_to_webdav">Backup to WebDAV</string>
+    <string name="setting_backup_to_webdav_summary">Create backup and upload to WebDAV server</string>
+    <string name="setting_restore_from_webdav">Restore from WebDAV</string>
+    <string name="setting_restore_from_webdav_summary">Download and restore the latest backup from WebDAV server</string>
+    <string name="unknown">Unknown</string>
+    <string name="title_category_rule">Auto category rules</string>
+    <string name="title_sms_edit">Edit data filter conditions</string>
+    <string name="data_filter_whitelist_hint">Whitelist (one keyword per line, pass if any matches)</string>
+    <string name="data_filter_blacklist_hint">Blacklist (one keyword per line, exclude if any matches)</string>
+    <string name="picker_year">Year</string>
+    <string name="picker_month">Month</string>
+    <string name="picker_day">Day</string>
+    <string name="picker_hour">:</string>
+    <string name="date">Date</string>
+    <string name="select_month">Select month</string>
+    <string name="date_time">Time</string>
+    <string name="title_bill">账单</string>
+    <string name="setting_landscape_dnd">Landscape do not disturb</string>
+    <string name="un_group_title">Split into independent order</string>
+    <string name="un_group_message">Are you sure you want to split this order from the current order into an independent order?</string>
+    <string name="assets_map_title">Unrecognized asset found</string>
+    <string name="assets_map_description">Accounting app cannot handle unrecognized assets, please map the following assets to ensure correct asset names.</string>
+    <string name="setting_duplicated">Duplicate bill alert</string>
+    <string name="setting_duplicated_summary">Show a popup when a duplicate bill is detected</string>
+    <string name="income_reimbursement_info">Reimbursement - %s</string>
+    <string name="income_refund_info">Refund - %s</string>
+    <string name="refund">Refund</string>
+    <string name="item_wait_sync">Pending sync</string>
+    <string name="item_wait_edit">Pending edit</string>
+    <string name="item_synced">Synced</string>
+    <string name="service_channel_description">Auto-accounting background listener services</string>
+    <string name="service_notification_title">JustLedger background service is running</string>
+
+
+
+    <!-- Colors -->
+    <string name="color_default">Default</string>
+    <string name="color_sakura">Sakura</string>
+    <string name="color_red">Red</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_deep_purple">Deep purple</string>
+    <string name="color_indigo">Indigo</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_light_blue">Light blue</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_green">Green</string>
+    <string name="color_light_green">Light green</string>
+    <string name="color_lime">Lime</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_amber">Amber</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_deep_orange">Deep orange</string>
+    <string name="color_brown">Brown</string>
+    <string name="color_blue_grey">Blue grey</string>
+
+    <!-- Intro -->
+    <string name="app_name">JustLedger</string>
+
+    <!-- Intro page -->
+    <string name="intro_title">JustLedger</string>
+    <string name="intro_subtitle">自动记录，清楚生活</string>
+    <string name="get_started">Get Started Now</string>
+
+
+    <!-- Title and labels -->
+    <string name="select_work_mode">Choose Work Mode</string>
+    <string name="select_work_mode_subtitle">
+    Choose the extraction method that best fits your device setup.
+</string>
+    <!-- Xposed Mode -->
+    <string name="xposed_mode_title">Xposed Mode</string>
+    <!-- LSPatch Mode -->
+    <string name="lspatch_mode_title">LSPatch Mode</string>
+    <string name="lspatch_mode_description">
+        No root needed. Injects hooks by repackaging the target app (patching its APK), enabling deep integration similar to Xposed with better deployability on non-root devices. Requires reinstalling patched apps.
+    </string>
+    <string name="xposed_mode_description">
+        Root + LSPosed required. Hooks directly into app APIs and notifications for real-time, high-accuracy data capture—ideal for power users or enterprise environments with full device control.
+    </string>
+
+    <!-- OCR Mode -->
+    <string name="ocr_mode_title">OCR Mode</string>
+    <string name="ocr_mode_description">
+        No root needed. Captures screenshots or notifications and runs OCR/AI to extract bill details—easy to deploy on any device, perfect for everyday users and broad-compatibility scenarios.
+    </string>
+
+    <!-- OCR Auth Mode Selection -->
+    <string name="ocr_auth_accessibility_description">可选：读取付款页面并识别账单，作为通知和短信之外的补充。</string>
+
+    <!-- OCR Tile -->
+    <string name="ocr_tile_title">OCR Recognition</string>
+
+    <!-- OCR Shortcut -->
+    <string name="ocr_shortcut_short_label">OCR</string>
+    <string name="ocr_shortcut_long_label">Launch OCR Recognition</string>
+    <string name="ocr_shortcut_disabled_message">OCR recognition is temporarily unavailable</string>
+
+    <!-- Action -->
+    <string name="action_next">Next</string>
+
+
+    <string name="auth_title">开启自动记账</string>
+    <string name="auth_subtitle">付款通知与银行短信可自动识别交易。屏幕识别是补充，按需开启。</string>
+
+    <string name="perm_notification_title">付款通知识别</string>
+    <string name="perm_notification_desc_optional">接收微信、支付宝和银行的付款通知，按规则自动记账。需要开启通知访问权限。</string>
+
+    <string name="perm_sms_title">银行短信识别</string>
+    <string name="perm_sms_desc_optional">从银行交易短信识别收支。仅在需要短信记账时开启。</string>
+
+    <string name="perm_overlay_title">Overlay Permission</string>
+    <string name="perm_overlay_desc">Allows displaying floating windows for quick extraction tools.</string>
+
+    <string name="perm_ocr_perm_accessibility">屏幕识别</string>
+
+
+    <string name="perm_network_title">Network Access</string>
+    <string name="perm_network_desc">
+    Allows the app to access the Internet for AI analysis and data synchronization.
+</string>
+
+
+    <string name="perm_xposed_title">Xposed Module Activation</string>
+    <string name="perm_xposed_desc">
+    Please open LSPosed Manager, go to Modules > JustLedger, enable the toggle, and then reboot your device to complete activation.
+</string>
+
+    <string name="perm_xposed_tip">Open LSPosed Manager, enable the module, and then return here.</string>
+    <string name="keepalive_title">Keep JustLedger Running</string>
+    <string name="keepalive_subtitle">
+        To ensure continuous background operation, please configure these settings:
+    </string>
+
+    <string name="keepalive_battery_title">Ignore Battery Optimization</string>
+    <string name="keepalive_battery_desc">
+        Allow the app to run unrestricted when the device is idle or the screen is off.
+    </string>
+
+    <string name="keepalive_autostart_title">Enable Auto-Start</string>
+    <string name="keepalive_autostart_desc">
+        Permit the app to launch automatically after device reboot.
+    </string>
+
+    <string name="keepalive_tasklock_title">Lock in Task Manager</string>
+    <string name="keepalive_tasklock_desc">
+        Exclude the app from task cleaners to prevent it from being killed.
+    </string>
+
+    <string name="action_continue">Continue</string>
+    <string name="perm_required_not_complete">Some required permissions are still missing. Please grant them before continuing.</string>
+    <string name="perm_optional">optional</string>
+    <plurals name="perm_optional_missing_hint">
+        <item quantity="one">%d optional permission not granted, may affect some features</item>
+        <item quantity="other">%d optional permissions not granted, may affect some features</item>
+    </plurals>
+
+    <!-- Shell capability (Root or Shizuku) -->
+
+    <!-- Battery optimization -->
+    <string name="keepalive_battery_fail">
+    Unable to open the battery‑optimization settings. Please add the app to the whitelist manually.
+</string>
+
+    <!-- Auto‑start -->
+    <string name="keepalive_autostart_tip">
+    Locate the "Auto‑start" (or "Startup management") screen and allow this app to start automatically.
+</string>
+    <string name="keepalive_autostart_fail">
+    Unable to open the auto‑start settings. Please configure it manually.
+</string>
+
+    <!-- Task‑manager lock -->
+    <string name="keepalive_tasklock_tip">
+    Open the recent‑apps screen, then pull down or long‑press this app\'s card and choose "Lock" to keep it running.
+</string>
+
+    <!-- Battery optimisation -->
+    <string name="keepalive_battery_tip_list">
+    Find this app in the list and switch it to "Don't optimise".
+</string>
+    <string name="keepalive_battery_tip_details">
+    Tap "Battery optimisation" → "Don't optimise" on the next screen.
+</string>
+    <string name="keepalive_battery_already">
+    Battery optimisation is already disabled for this app.
+</string>
+    <string name="select_ledger_title">Select Accounting App</string>
+    <string name="select_ledger_subtitle">JustLedger does not include data visualization features by default; you need to select one to serve as your data visualization analysis tool.</string>
+    <string name="sync_title">Sync Assets</string>
+    <string name="sync_subtitle">JustLedger needs access to the target app\'s categories, assets, and ledgers in order to record transactions correctly.</string>
+    <string name="action_sync">Start Sync</string>
+    <string name="sync_state_not">Data not yet synced</string>
+
+
+    <!-- Page title & subtitle -->
+    <string name="title_feature_select">Select the features you need</string>
+    <string name="subtitle_feature_select">    Tick the features you want to use in your ledger.
+    Be sure to enable the same feature inside the corresponding app as well—otherwise it won\'t take effect.
+    Features an app doesn\'t support are hidden automatically.</string>
+
+    <!-- Feature names & descriptions -->
+    <string name="feature_asset_manage">Asset Management</string>
+    <string name="feature_asset_manage_desc">Track changes to bank cards, cash, funds, and other assets</string>
+
+    <string name="feature_multi_book">Multiple Ledgers</string>
+    <string name="feature_multi_book_desc">Manage personal, family, or project books side by side</string>
+
+    <string name="feature_reimbursement">Reimbursement</string>
+    <string name="feature_reimbursement_desc">Centralise and follow your reimbursement workflow</string>
+
+    <string name="feature_leading">Debt</string>
+    <string name="feature_leading_desc">Borrowing / lending, instalments, and repayment reminders</string>
+
+    <string name="feature_fee">Fee / Discount</string>
+    <string name="feature_fee_desc">Capture fees, vouchers, and discounts automatically</string>
+
+    <string name="feature_multi_currency">Multi-currency</string>
+    <string name="feature_multi_currency_desc">Accounts and auto-conversion in multiple currencies</string>
+
+    <string name="feature_tag">Tags</string>
+    <string name="feature_tag_desc">Custom tags for flexible statistics</string>
+
+
+    <!-- Page titles & subtitles -->
+    <string name="ai_settings_title">AI Settings</string>
+    <string name="ai_settings_subtitle">Configure your preferred AI service, model, and API token</string>
+
+    <!-- Form hints / labels -->
+    <string name="ai_provider_hint">AI Provider</string>
+    <string name="ai_model_hint">AI Model</string>
+    <string name="ai_token_hint">API Token</string>
+    <string name="ai_get_token">Get Token</string>
+
+    <!-- Usage chip section -->
+
+    <!-- Common actions -->
+    <string name="action_run">Run</string>
+    <string name="ai_assist">AI Assist</string>
+
+    <!-- Runtime messages -->
+    <string name="sync_state_success">Synchronized data</string>
+    <string name="error_token_required">Please enter API token</string>
+
+    <string name="success_desc">Setup success icon</string>
+    <string name="success_title">Your ledger is ready</string>
+
+    <string name="success_subtitle">Automatic capture requires the relevant permissions and channel rules.</string>
+    <string name="success_button">Get Started</string>
+
+    <!-- Common toast: target app missing / cannot handle intent -->
+    <string name="toast_target_app_not_installed">Target app "%1$s" not installed, unable to proceed</string>
+    <!-- Finance card labels -->
+    <string name="month_income">Monthly income</string>
+    <string name="month_expense">Monthly expense</string>
+
+    <!-- Pending-sync footer; use String.format(Locale) or the XML %1$d placeholder -->
+
+    <!-- Optional: content-description for the background image (accessibility) -->
+    <string name="action_back">Previous</string>
+
+    <!-- res/values/strings.xml -->
+    <string name="keepalive_notification_title">Notification Permission</string>
+    <string name="keepalive_notification_desc">Allow the app to send notifications to keep the foreground service running.</string>
+
+
+    <string name="settings_system_theme_color">System Theme Color</string>
+    <string name="settings_theme_color">Theme Color</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="settings_pure_black_dark_theme">Pure Black Dark Theme</string>
+    <string name="settings_pure_black_dark_theme_summary">Use the pure black theme if dark theme is enabled</string>
+    <string name="settings_expense_red_color">Expense in red</string>
+    <string name="settings_expense_red_color_summary">Display expenses in red and income in green</string>
+    <string name="settings_income_up_arrow">Income up arrow</string>
+    <string name="settings_income_up_arrow_summary">Display income with up arrow and expense with down arrow</string>
+    <string name="dark_theme_off">Always Off</string>
+    <string name="dark_theme_on">Always On</string>
+    <string name="follow_system">Follow System</string>
+    <string name="dark_theme_follow_system">@string/follow_system</string>
+
+
+    <string name="settings_language">Language</string><!-- 金额显示组件相关字符串 -->
+    <string name="edit_amount">Edit Amount</string>
+    <string name="edit_fee">Edit Fee/Discount</string>
+    <string name="hint_fee">Negative for fee, positive for discount</string>
+    <string name="no_discount">No discount</string>
+    <string name="discounted">Discounted %.2f</string>
+    <string name="handling_fee">Handling fee %.2f</string>
+    <!-- Amount display: bill flags -->
+    <string name="bill_flag_not_count">Exclude from totals</string>
+    <string name="bill_flag_not_budget">Exclude from budget</string>
+
+    <!-- 账单列表标签 -->
+    <string name="bill_fee_label">Fee %s</string>
+    <string name="bill_discount_label">Discount %s</string>
+
+    <!-- 规则信息组件相关字符串 -->
+    <string name="disable_rule_title">Disable Rule</string>
+    <string name="disable_rule_message">Are you sure you want to disable the rule \"%s\"?</string>
+    <string name="rule_not_found">Rule not found</string>
+    <string name="rule_disable_failed">Failed to disable rule</string>
+
+
+    <string name="data_editor">Data Desensitization</string>
+
+    <string name="hint_raw">Find text</string>
+    <string name="hint_target">Replace with</string>
+
+    <string name="btn_replace">Replace</string>
+    <string name="label_content">Content</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="rule_issue">Rules contain errors</string>
+
+    <!-- Category Fragment -->
+    <string name="select_book_first">Please select a book first</string>
+    <string name="expend_category">Expense</string>
+    <string name="income_category">Income</string>
+    <string name="action_switch_book">Switch Book</string>
+    <string name="title_category_edit">Edit Category</string>
+    <string name="add_category">Add Category</string>
+    <string name="edit_category">Edit Category</string>
+    <string name="delete_category">Delete Category</string>
+    <string name="delete_category_message">Are you sure to delete category "%s"?</string>
+    <string name="delete_category_success">Category deleted successfully</string>
+    <string name="category_name_hint">Enter category name</string>
+    <string name="parent_category_label">Parent Category</string>
+    <string name="no_parent_category">No Parent (Top Level)</string>
+    <string name="book_info_label">Book</string>
+    <string name="search_icon_hint">Search icon by name</string>
+    <string name="save_category_success">Category saved successfully</string>
+    <string name="category_name_empty">Category name cannot be empty</string>
+    <string name="category_icon_empty">Please select a category icon</string>
+    <string name="category_not_found">Category not found</string>
+    <string name="category_load_failed">Failed to load category</string>
+    <string name="save_failed">Save failed</string>
+    <string name="delete_failed">Delete failed</string>
+
+    <!-- Tag related strings -->
+    <string name="add_tag">Add Tag</string>
+    <string name="edit_tag">Edit Tag</string>
+    <string name="delete_tag">Delete Tag</string>
+    <string name="tag_name">Tag Name</string>
+    <string name="tag_name_helper">Maximum 50 characters</string>
+    <string name="tag_name_required">Tag name is required</string>
+    <string name="tag_name_too_long">Tag name is too long</string>
+    <string name="tag_name_exists">Tag name already exists</string>
+    <string name="tag_group">Tag Group</string>
+    <string name="tag_group_hint">Select or enter group name</string>
+    <plurals name="bill_tag_limit">
+        <item quantity="one">You can select up to %d tag</item>
+        <item quantity="other">You can select up to %d tags</item>
+    </plurals>
+    <string name="bill_tag_unselected">Select tags</string>
+    <string name="select_color">Select Color</string>
+    <string name="delete_tag_message">Are you sure to delete tag "%s"?</string>
+    <string name="tag_created_successfully">Tag created successfully</string>
+    <string name="tag_updated_successfully">Tag updated successfully</string>
+    <string name="tag_deleted_successfully">Tag deleted successfully</string>
+    <string name="load_tag_failed">Failed to load tag</string>
+    <string name="title_tag_edit">Edit Tag</string>
+    <string name="restore_default_tags">Restore Default Tags</string>
+    <string name="restore_default_tags_title">Restore Default Tags</string>
+    <string name="restore_default_tags_message">This operation will clear all existing tags and restore the default tags. This action cannot be undone. Do you want to continue?</string>
+    <string name="restore_default_tags_success">Default tags restored successfully</string>
+    <string name="restore_default_tags_failed">Failed to restore default tags</string>
+
+    <!-- Category reset -->
+    <string name="restore_default_categories">Restore Default Categories</string>
+    <string name="restore_default_categories_title">Restore Default Categories</string>
+    <string name="restore_default_categories_message">This will clear all categories for the current book and restore the default categories. This action cannot be undone. Continue?</string>
+    <string name="restore_default_categories_success">Default categories restored successfully</string>
+
+    <!-- JS Editor Strings -->
+    <string name="unknown_error">Unknown error</string><!-- JS Template Comments --><!-- 设置分类标题 -->
+    <string name="setting_category_float_badge">Float Badge Settings</string>
+    <string name="setting_category_ocr">OCR</string>
+    <string name="setting_category_asset_management">Asset Management</string>
+    <string name="setting_category_local_backup">Local Backup</string>
+    <string name="setting_category_update">Update Settings</string>
+
+    <!-- 更新设置 -->
+    <string name="setting_auto_check_app_update">Auto Check App Updates</string>
+    <string name="setting_auto_check_app_update_summary">Automatically check for application updates</string>
+    <string name="setting_auto_check_rule_update">Auto Check Rule Updates</string>
+    <string name="setting_auto_check_rule_update_summary">Automatically check for accounting rule updates</string>
+    <string name="setting_app_channel">Update Channel</string><!-- 更新类型选项 --><!-- Canary版本警告 -->
+    <string name="canary_warning_title">Canary Version Risk Warning</string>
+    <string name="canary_warning_message">You are currently using a Canary version with the following characteristics:\n\n• Built automatically every 3 hours\n• Contains latest features and fixes\n• No guarantee of stability and availability\n• May contain unknown bugs\n\nRecommendations:\n• Use with caution in production environments\n• Please enable debug mode before reporting bugs\n• Back up important data promptly</string>
+    <string name="canary_warning_confirm">I understand</string>
+    <string name="canary_warning_enable_debug">Enable Debug Mode</string>
+
+    <!-- Help documentation reminder (same URL as About → Official Website) -->
+    <string name="help_doc_reminder_title">Read the documentation</string>
+    <string name="help_doc_reminder_message">We recommend reading the official guide first to learn about work modes and bookkeeping setup.</string>
+    <string name="help_doc_reminder_positive">Open docs</string>
+    <string name="help_doc_reminder_negative">Later</string>
+
+    <!-- 设置项标题和摘要 -->
+    <string name="setting_auto_group">Automatic deduplication</string>
+    <string name="setting_auto_group_summary">有可靠交易凭据才合并；疑似重复先核对</string>
+    <string name="setting_auto_group_time_threshold">相似账单检查范围</string>
+    <plurals name="setting_auto_group_time_threshold_summary">
+        <item quantity="other">检查前后 %d 秒内的同额账单，缺少凭据时提示核对</item>
+    </plurals>
+    <string name="setting_auto_transfer_recognition">Auto Transfer Recognition</string>
+    <string name="setting_auto_transfer_recognition_summary">仅在交易关联明确、两端均为自有账户时识别为转账</string>
+    <string name="setting_auto_transfer_time_threshold">Transfer Merge Time Threshold</string>
+    <plurals name="setting_auto_transfer_time_threshold_summary">
+        <item quantity="one">Income and expense bills with the same amount within %d second will be identified as transfer</item>
+        <item quantity="other">Income and expense bills with the same amount within %d seconds will be identified as transfer</item>
+    </plurals>
+    <string name="setting_bill_auto_record_summary">Show notification when auto recording bills</string>
+    <string name="setting_load_success_summary">Show notification when loading successfully</string>
+    <string name="setting_default_book">Default Book</string>
+    <string name="setting_default_book_summary">Default book for new bills</string>
+
+    <!-- 新增的账单设置字符串 -->
+    <string name="setting_auto_create_category_summary">Automatically create categories when unknown categories are encountered</string>
+    <string name="setting_auto_asset_mapping">Remember Asset Mapping</string>
+    <string name="setting_auto_asset_mapping_summary">Automatically create asset mapping rules and remember the asset selected for this bill</string>
+    <string name="setting_category_book_config">Book Configuration</string>
+    <string name="setting_book_app">Accounting App</string>
+    <string name="setting_book_app_summary">Target accounting application package name</string>
+    <string name="setting_auto_record_bill">Auto Record Bills</string>
+    <string name="setting_auto_record_bill_summary">Record every bill automatically</string>
+    <string name="setting_auto_asset_mapping_disabled">Asset management feature must be enabled first</string>
+    <string name="setting_round_style">Use Rounded Popup Style</string>
+    <string name="setting_round_style_summary">Enable rounded corners for popup windows</string>
+    <string name="setting_float_badge_timeout">Float Badge Timeout</string>
+    <string name="setting_float_badge_disabled">Float badge disabled</string>
+    <string name="setting_float_timeout_action">Timeout Action</string>
+    <string name="setting_float_click">Click Action</string>
+    <string name="setting_float_long_click">Long Click Action</string>
+    <string name="setting_float_badge_position">Panel Display Position</string>
+    <string name="float_position_left">Left</string>
+    <string name="float_position_right">Right</string>
+    <string name="float_position_top">Top</string>
+    <string name="toast_position_top">Top</string>
+    <string name="toast_position_center">Center</string>
+    <string name="toast_position_bottom">Bottom</string>
+    <string name="setting_toast_position">Toast Position</string>
+    <!-- Float action display names -->
+    <string name="float_action_dismiss">Dismiss</string>
+    <string name="float_action_auto_record">Auto Record</string>
+    <string name="setting_ocr_show_animation">Show OCR status banner</string>
+    <string name="setting_ocr_show_animation_summary">Show a top banner during OCR and AI recognition</string>
+    <string name="ocr_status_processing_screenshot">Processing screenshot…</string>
+    <string name="ocr_status_recognizing">OCR recognizing…</string>
+    <string name="ocr_status_ai_analyzing">AI analyzing…</string>
+    <string name="ocr_error_no_foreground_app">Cannot detect foreground app</string>
+    <string name="ocr_error_capture_failed">Screenshot decode failed</string>
+    <string name="ocr_error_ocr_failed">OCR recognition failed</string>
+    <string name="ocr_error_empty_result">No text recognized</string>
+    <string name="ocr_error_keyword_filtered">No matching keywords found</string>
+    <string name="setting_ocr_accessibility_keep_alive">Keep OCR running in background</string>
+    <string name="setting_ocr_accessibility_keep_alive_summary">When off, accessibility service stops after each OCR recognition</string>
+    <string name="accessibility_service_label">JustLedger OCR</string>
+    <string name="accessibility_service_description">Used for OCR screen recognition: detecting foreground app and taking screenshots</string>
+    <string name="ocr_error_accessibility_not_ready">Accessibility service not running, please enable it in system settings</string>
+    <string name="ocr_remember_page_title">Remember this page?</string>
+    <string name="ocr_remember_page_message">Remember this page (%s) for automatic recognition next time?</string>
+    <string name="ocr_remember_page_activity_unknown">unknown activity</string>
+    <string name="ocr_remember_page_confirm">Remember</string>
+    <string name="ocr_remember_page_success">Page remembered</string>
+    <string name="ocr_delete_page_confirm">Remove the page preference for %s? You may be asked again.</string>
+    <string name="setting_page_signatures">Page recognition preferences</string>
+    <string name="setting_page_signatures_summary">Manage pages for automatic OCR trigger (Activity + content fingerprint)</string>
+    <string name="page_signatures_empty">No remembered pages. Manually trigger OCR on a bill page, then tap \"Remember\" when prompted.</string>
+    <string name="setting_ocr_back_tap_trigger">Double-tap phone back for current screen recognition</string>
+    <string name="setting_ocr_back_tap_trigger_summary">Double-tap device back triggers OCR when not using Xposed; may not work without accelerometer plus gyroscope</string>
+    <string name="setting_ocr_accessibility_auto_trigger">Auto-trigger OCR on page switch</string>
+    <string name="setting_ocr_accessibility_auto_trigger_summary">When OCR mode uses accessibility authorization, auto-trigger OCR when switching to remembered pages</string>
+
+    <!-- Common strings -->
+    <string name="clearing">Clearing…</string>
+    <plurals name="setting_timeout_seconds">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <string name="float_action_edit">Edit Bill</string>
+    <string name="setting_asset_manager">Asset Management</string>
+    <string name="setting_asset_manager_summary">Enable asset management features</string>
+    <string name="setting_currency_manager">Multi-Currency</string>
+    <string name="setting_currency_manager_summary">Enable multi-currency support</string>
+    <string name="setting_base_currency">Base Currency</string>
+    <string name="setting_base_currency_summary">Current: %s</string>
+    <string name="setting_selected_currencies">Favorite Currencies</string>
+    <plurals name="setting_selected_currencies_summary">
+        <item quantity="one">Selected %d currency for quick access</item>
+        <item quantity="other">Selected %d currencies for quick access</item>
+    </plurals>
+    <string name="setting_selected_currencies_summary_default">Configure currencies for quick access</string>
+    <string name="setting_reimbursement">Reimbursement</string>
+    <string name="setting_reimbursement_summary">Enable reimbursement tracking</string>
+    <string name="setting_debt">Debt Management</string>
+    <string name="setting_debt_summary">Enable debt and loan tracking</string>
+    <string name="setting_book_manager">Multi-Book</string>
+    <string name="setting_book_manager_summary">Enable multiple book management</string>
+    <string name="setting_fee">Transaction Fee</string>
+    <string name="setting_fee_summary">Enable transaction fee tracking</string>
+    <string name="setting_tag">Tags</string>
+    <string name="setting_tag_summary">Enable bill tagging</string>
+    <string name="setting_auto_backup">Auto Backup</string>
+    <string name="setting_auto_backup_summary">Automatically backup data locally</string>
+    <string name="setting_backup_keep_count">Backup Keep Count</string>
+    <plurals name="setting_backup_keep_count_summary">
+        <item quantity="one">Keep %d backup file (applies to both local and WebDAV backups)</item>
+        <item quantity="other">Keep %d backup files (applies to both local and WebDAV backups)</item>
+    </plurals>
+    <string name="setting_backup_keep_count_summary_default">Configure how many local and WebDAV backups to keep</string>
+    <string name="setting_backup_keep_count_updated">Backup keep count updated to %d</string>
+    <string name="setting_backup_keep_count_invalid">Please enter a valid number between 1 and 100</string>
+    <string name="setting_webdav_url">WebDAV Server URL</string>
+    <string name="setting_webdav_url_summary">Full WebDAV URL, e.g., https://dav.jianguoyun.com/dav/</string>
+    <string name="setting_webdav_user">WebDAV User</string>
+    <string name="setting_webdav_user_summary">WebDAV username</string>
+    <string name="setting_webdav_password">WebDAV Password</string>
+    <string name="setting_webdav_password_summary">WebDAV password</string>
+    <string name="setting_local_backup_path">Local Backup Path</string>
+    <string name="setting_local_backup_path_summary">Local backup storage path</string>
+    <string name="setting_debug_mode">Debug Mode</string>
+    <string name="setting_debug_mode_summary">Enable debug logging and features</string>
+    <string name="debug_tag">DEBUG</string>
+    <string name="setting_send_error_report">Error Reporting</string>
+    <string name="setting_send_error_report_summary">Automatically send crash reports</string>
+    <string name="setting_landscape_dnd_summary">Disable auto recording in landscape mode</string><!-- AI Features -->
+    <string name="setting_ai_bill_recognition">Automatically use AI for bill recognition</string>
+    <string name="setting_ai_bill_recognition_summary">Automatically extract bill information from raw data</string>
+    <string name="setting_ai_vision_recognition">Send image directly to AI for recognition</string>
+    <string name="setting_ai_vision_recognition_summary">Skip OCR and send screenshot to the model. Select a vision-capable model (e.g. gpt-4o, gemini-pro-vision, qwen-vl)</string>
+    <string name="setting_rule_match_include_disabled">Allow matching with disabled rules</string>
+    <string name="setting_rule_match_include_disabled_summary">If a disabled rule matches, skip AI and discard the bill</string>
+    <string name="setting_ai_category_recognition">AI Category Recognition</string>
+    <string name="setting_ai_category_recognition_summary">Automatically assign appropriate categories to bills</string>
+    <string name="setting_ai_asset_mapping">AI Asset Mapping</string>
+    <string name="setting_ai_asset_mapping_summary">Automatically map bills to corresponding asset accounts</string>
+    <string name="setting_ai_monthly_summary">AI Analysis</string>
+    <string name="setting_ai_monthly_summary_summary">Generate financial analysis and summary reports</string>
+
+    <!-- AI Advanced Settings -->
+    <string name="setting_ai_summary_prompt">Custom AI Summary Prompt</string>
+    <string name="setting_ai_summary_prompt_summary">Customize the prompt template used by AI for generating summaries</string>
+    <string name="setting_ai_bill_recognition_prompt">Bill Recognition Prompt</string>
+    <string name="setting_ai_bill_recognition_prompt_summary">Customize the prompt used by AI for bill recognition</string>
+    <string name="setting_ai_asset_mapping_prompt">Asset Mapping Prompt</string>
+    <string name="setting_ai_asset_mapping_prompt_summary">Customize the prompt used by AI for asset mapping</string>
+    <string name="setting_ai_category_recognition_prompt">Category Recognition Prompt</string>
+    <string name="setting_ai_category_recognition_prompt_summary">Customize the prompt used by AI for category recognition</string>
+
+    <!-- 新增：分类设置相关 -->
+    <string name="setting_category_appearance">Appearance</string>
+
+    <!-- New category titles -->
+    <string name="setting_category_book_app">Book App</string>
+    <string name="setting_category_recording_mode">Recording Mode</string>
+    <string name="setting_category_bill_recognition">Bill Recognition</string>
+    <string name="setting_category_bill_management">Bill Management</string>
+    <string name="setting_category_bill_mark">Bill Flags</string>
+    <string name="setting_category_category_management">Category Management</string>
+    <string name="setting_category_notification_settings">Notification Settings</string>
+    <string name="setting_category_popup_style_settings">Popup Style</string>
+    <string name="setting_category_recording_panel">Recording Panel</string>
+    <string name="setting_category_prompt_management">Prompt Management</string>
+    <string name="setting_category_advanced_features_settings">Advanced Features</string>
+    <string name="setting_category_app_info">App Info</string>
+    <string name="setting_category_community">Community</string>
+    <string name="setting_category_author">Author Info</string>
+
+    <!-- 保留的旧字符串（兼容性） -->
+
+    <!-- WebDAV 相关字符串 -->
+<!-- AI Summary 相关字符串 -->
+    <string name="ai_summary_title">AI Analysis</string><!-- Statistics page -->
+    <string name="stat_title">Statistics</string>
+<!-- JS Editor UI Strings -->
+    <string name="js_executing">Executing…</string>
+    <string name="js_execution_result">Execution Result</string>
+    <string name="js_saved">Saved</string>
+
+    <!-- Button texts -->
+    <string name="btn_ai_analysis">AI</string>
+    <string name="btn_bill_sync">Sync</string>
+    <string name="btn_bill_statistics">Stats</string>
+    <string name="btn_create_rule">Rule</string>
+    <string name="btn_upload_adapter">Adapter</string>
+    <string name="btn_upload_feedback">Feedback</string>
+    <string name="btn_test_rule">Test</string>
+    <string name="setting_manual_sync">Manual sync mode</string>
+    <string name="setting_manual_sync_summary">When enabled, saving a bill will not trigger sync automatically</string>
+    <string name="setting_delayed_sync_threshold">Delayed Sync Threshold</string>
+    <string name="setting_delayed_sync_threshold_summary">Auto sync when unsynced bills reach %d</string>
+    <string name="setting_delayed_sync_threshold_realtime">Real-time sync (sync immediately)</string>
+    <string name="setting_confirm_delete_bill">Confirm before deleting bills</string>
+    <string name="setting_confirm_delete_bill_summary">Ask for confirmation before removing a bill</string>
+
+    <!-- Sync status messages -->
+    <string name="sync_starting">Starting sync…</string>
+    <plurals name="sync_completed">
+        <item quantity="one">Sync completed! %1$d bill synced</item>
+        <item quantity="other">Sync completed! %1$d bills synced</item>
+    </plurals>
+    <string name="sync_no_bills">No bills to sync</string><!-- Period selection -->
+    <string name="period_last_week">Last Week</string>
+    <string name="period_last_30_days">Last 30 Days</string>
+    <string name="period_this_month">This Month</string>
+    <string name="period_last_year">Last Year</string>
+    <string name="period_this_year">This Year</string>
+    <string name="period_custom_range">Custom Range</string>
+    <string name="select_start_date">Select start date</string>
+    <string name="select_end_date">Select end date</string>
+    <string name="time_range_invalid">End date must be after start date</string>
+
+    <!-- Toasts -->
+    <string name="remember_category_success">Category remembered: %s</string>
+
+    <!-- Short label -->
+    <string name="regexLabel">Regex</string>
+    <string name="status_working">Working</string>
+    <string name="status_inactive">Inactive</string>
+    <string name="whitelist_info">This whitelist applies to notifications and OCR data. It filters out apps you do not want to capture from. Manual OCR (started by you) is not affected by this whitelist.</string>
+
+    <!-- 日志相关 -->
+    <string name="log_level">Log Level</string>
+    <string name="log_level_debug">Debug</string>
+    <string name="log_level_info">Info</string>
+    <string name="log_level_warn">Warning</string>
+    <string name="log_level_error">Error</string>
+
+    <!-- Analysis Task Status -->
+    <string name="analysis_status_pending">Pending</string>
+    <string name="analysis_status_processing">Processing</string>
+    <string name="analysis_status_completed">Completed</string>
+    <string name="analysis_status_failed">Failed</string>
+
+    <!-- Analysis Detail -->
+    <string name="analysis_detail_title">Analysis Report</string>
+    <string name="analysis_result_not_found">Analysis result not found</string>
+    <string name="analysis_result_empty">AI analysis result is empty, please regenerate</string>
+    <string name="analysis_result_parse_error">Analysis result format error, please regenerate</string>
+    <string name="analysis_generating_image">Generating image…</string>
+    <string name="analysis_share_title">Share Analysis</string>
+
+    <!-- Delete Analysis Task -->
+    <string name="delete_analysis_task">Delete Analysis Task</string>
+    <string name="delete_analysis_task_message">Are you sure you want to delete the analysis task "%s"? This action cannot be undone.</string>
+
+    <!-- ============================================ -->
+    <!-- Settings Page Related Strings (for review) -->
+    <!-- ============================================ -->
+
+    <!-- New 7 Main Categories -->
+    <string name="setting_title_recording">记账偏好</string>
+    <string name="setting_desc_recording">自动入账 · 分类 · 账户与账本</string>
+
+    <string name="setting_title_interaction">屏幕识别与提醒</string>
+    <string name="setting_desc_interaction">入账提醒 · 屏幕识别 · 操作偏好</string>
+
+    <string name="setting_title_ai_assistant">AI 辅助识别</string>
+    <string name="setting_desc_ai_assistant">AI Configuration · Prompt Management · AI Features</string>
+
+
+    <string name="setting_title_data_management">备份与恢复</string>
+    <string name="setting_desc_data_management">Auto Backup · Local Backup · WebDAV Backup</string>
+
+    <string name="setting_title_system">外观</string>
+    <string name="setting_desc_system">Appearance · Update Settings · Advanced Features</string>
+
+    <string name="setting_title_about">About App</string>
+    <string name="setting_desc_about">版本与开源致谢</string>
+
+    <!-- Pro Activation Related -->
+    <string name="pro_rule_update_plan">Rule Update Plan</string>
+    <string name="pro_activate_click_to_enter">Click here to enter activation code</string>
+    <string name="pro_activate_dialog_title">Enter Activation Code</string>
+    <string name="pro_activate_success">Activation successful!</string>
+    <string name="pro_activate_failed">Activation failed: %s</string>
+    <string name="pro_activate_code_format_error">Invalid activation code format</string>
+    <string name="pro_activate_info_failed">Failed to get activation info: %s</string>
+    <string name="pro_activate_info_format">Activation count: %1$s\nActivation time: %2$s</string>
+
+    <!-- About App Related -->
+    <string name="setting_open_source_code">Open Source</string>
+    <string name="setting_open_source_code_url" translatable="false">https://github.com/AutoAccountingOrg/AutoAccounting</string>
+    <string name="setting_official_website">Official Website</string>
+    <string name="setting_official_website_url" translatable="false">https://ez-book.org</string>
+    <string name="setting_activation_code">Activation Code</string>
+    <string name="setting_activation_code_url" translatable="false">https://license.ez-book.org/search</string>
+    <string name="setting_update_log">Update Log</string>
+    <string name="setting_update_log_url" translatable="false">https://github.com/AutoAccountingOrg/AutoAccounting/releases</string>
+    <string name="setting_forum">Forum</string>
+    <string name="setting_forum_url" translatable="false">https://forum.ez-book.org</string>
+    <string name="setting_qq_group">QQ Group</string>
+    <string name="setting_qq_group_url" translatable="false">https://qm.qq.com/q/dnM8WvrpTO</string>
+    <string name="setting_telegram">Telegram</string>
+    <string name="setting_telegram_url" translatable="false">https://t.me/qianji_auto</string>
+    <string name="setting_author_blog">Blog</string>
+    <string name="setting_author_blog_url" translatable="false">https://ankio.net</string>
+    <string name="setting_author_github">Github</string>
+    <string name="setting_author_github_url" translatable="false">https://github.com/AnkioTomas</string>
+    <string name="setting_author_contact">Contact</string>
+    <string name="setting_author_contact_url" translatable="false">mailto:ankio@ankio.net</string>
+    <string name="setting_author_coolapk">Coolapk</string>
+    <string name="setting_author_coolapk_url" translatable="false">http://www.coolapk.com/u/1503334</string>
+    <string name="setting_author_wechat">WeChat Official Account</string>
+    <string name="setting_author_wechat_name" translatable="false">Ankio</string>
+    <string name="setting_author_bilibili">Bilibili</string>
+    <string name="setting_author_bilibili_url" translatable="false">https://space.bilibili.com/442001950</string>
+
+    <!-- Rule Editor -->
+    <string name="rule_parse_form_failed">Failed to parse form data</string>
+    <string name="rule_test_data_required">Please enter test data first</string>
+    <string name="rule_ai_generating">AI is generating rule…</string>
+    <string name="rule_ai_generate_failed">AI generation failed</string>
+    <string name="rule_ai_generate_failed_with_reason">AI generation failed: %s</string>
+    <string name="rule_ai_generate_success">AI rule generated</string>
+    <string name="rule_test_failed">Rule test failed</string>
+    <string name="rule_save_failed">Failed to save rule</string>
+    <string name="clear_all_analysis">Clear All Analysis</string>
+    <string name="clear_all_analysis_message">Are you sure you want to delete all financial analysis tasks? This operation cannot be undone.</string>
+    <string name="clear_all_analysis_success">All analysis tasks cleared</string>
+    <string name="clear_all_analysis_failed">Clear failed, please try again</string>
+    <string name="switch_transfer_direction">Switch transfer direction</string>
+    <string name="transfer_direction_arrow" translatable="false">➜</string>
+    <string name="range_separator" translatable="false">–</string>
+    <string name="percentage_format" translatable="false">%d%%</string>
+    <string name="approximate_rate_format">≈ %1$s %2$s</string>
+    <string name="delete_data_count">Delete (%d)</string>
+    <string name="version_format" translatable="false">v%s</string>
+    <string name="bill_amount_format" translatable="false">%1$s%2$s%3$s</string>
+    <string name="setting_bill_export_category">Bill export</string>
+    <string name="setting_bill_export_enabled">Export bills to NAS</string>
+    <string name="setting_bill_export_enabled_summary">Read-only hourly export; never changes the accounting sync queue</string>
+    <string name="setting_bill_export_url">NAS endpoint</string>
+    <string name="setting_bill_export_url_summary">Full HTTPS endpoint ending in /autoaccounting/v1/bills</string>
+    <string name="setting_bill_export_token">NAS token</string>
+    <string name="setting_bill_export_token_summary">Independent Bearer token stored on this device</string>
+    <string name="setting_bill_export_test">Export now</string>
+    <string name="setting_bill_export_test_summary">Read and upload today’s three bill states</string>
+    <string name="setting_bill_export_test_queued">Bill export started</string>
+    <string name="setting_bill_export_test_success">Bill export complete: pulled %1$d, posted %2$d</string>
+    <string name="setting_bill_export_test_failed">Bill export failed: %1$s</string>
+    <string name="confirm_delete_action">Confirm delete</string>
+</resources>

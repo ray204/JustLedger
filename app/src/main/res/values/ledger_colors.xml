@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ledger_background">#F6F7F3</color>
+    <color name="ledger_surface">#FFFFFF</color>
+    <color name="ledger_ink">#202D29</color>
+    <color name="ledger_muted">#707B75</color>
+    <color name="ledger_primary">#356953</color>
+    <color name="ledger_soft">#E8EFE6</color>
+    <color name="ledger_outline">#E2E7DF</color>
+    <color name="ledger_hero">#284F40</color>
+    <color name="ledger_on_hero">#F8FBF5</color>
+    <color name="ledger_hero_muted">#CDDFD1</color>
+    <color name="justledger_icon_background">#244C3E</color>
+</resources>

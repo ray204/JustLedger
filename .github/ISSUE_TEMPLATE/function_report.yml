@@ -1,0 +1,10 @@
+name: 功能建议
+description: 提出 JustLedger 功能或界面改进
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 场景和建议
+      description: 说明使用场景、现有问题与预期效果。
+    validations:
+      required: true

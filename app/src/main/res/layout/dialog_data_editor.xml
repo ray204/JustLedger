@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <!-- Root vertical column -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/one_padding">
+
+        <!-- 1️⃣  Title -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/labelReplace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/data_editor"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+        <!-- 2️⃣  Raw / Replace inputs in one row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlRaw"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_raw">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRaw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlTarget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/one_padding"
+                android:hint="@string/hint_target">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTarget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- 3️⃣  Replace button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReplace"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height_small"
+            android:layout_marginTop="@dimen/one_padding"
+            android:text="@string/btn_replace" />
+
+        <!-- 4️⃣  Content label -->
+        <TextView
+            android:id="@+id/labelContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/one_padding"
+            android:text="@string/label_content"
+            android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+        <!-- 5️⃣  Multiline content box -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlContent"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/one_padding">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:minLines="6"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 6️⃣  Second button row: Cancel | Confirm -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/one_padding"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/btn_height_small"
+                android:layout_weight="1"
+                android:text="@string/btn_cancel" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirm"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/btn_height_small"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/one_padding"
+                android:text="@string/btn_confirm" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

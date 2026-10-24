@@ -1,0 +1,154 @@
+/*
+ * Copyright (C) 2025 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package net.ankio.auto.service
+
+import android.app.Notification
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.service.notification.NotificationListenerService
+import android.service.notification.StatusBarNotification
+import androidx.core.app.NotificationManagerCompat
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import net.ankio.auto.App
+import net.ankio.auto.BuildConfig
+import net.ankio.auto.autoApp
+import net.ankio.auto.constant.WorkMode
+import net.ankio.auto.http.api.JsAPI
+import net.ankio.auto.service.api.IService
+import net.ankio.auto.storage.Logger
+import net.ankio.auto.utils.PrefManager
+import org.ezbook.server.constant.DataType
+import org.ezbook.server.tools.MD5HashTable
+
+class NotificationService : NotificationListenerService() {
+    private val hashTable = MD5HashTable()
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onNotificationPosted(sbn: StatusBarNotification?) {
+        super.onNotificationPosted(sbn)
+        //获取用户通知
+        runCatching {
+            val posted = sbn ?: return
+            val notification = posted.notification
+            val app = posted.packageName
+            val title = runCatching {
+                notification.extras.getCharSequence(Notification.EXTRA_TITLE)?.toString() ?: ""
+            }.getOrElse { "" }
+            val text = runCatching {
+                notification.extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString()  // 首先尝试获取大文本
+                    ?: notification.extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()  // 如果没有大文本，则获取普通文本
+                    ?: ""  // 如果都没有，返回空字符串
+            }.getOrElse { "" }
+
+            checkNotification(app, title, text, posted.key, posted.postTime)
+        }.onFailure {
+            Logger.e("NotificationService error: ${it.message}", it)
+        }
+    }
+
+    /**
+     * 监听断开
+     */
+    override fun onListenerDisconnected() {
+        if (WorkMode.isXposed()) return
+        // 通知侦听器断开连接 - 请求重新绑定
+        requestRebind(
+            ComponentName(
+                this,
+                NotificationService::class.java
+            )
+        )
+    }
+
+    private fun checkNotification(
+        pkg: String,
+        title: String,
+        text: String,
+        notificationKey: String,
+        postedAt: Long,
+    ) {
+        val apps = PrefManager.appWhiteList
+
+        if (title.isEmpty() && text.isEmpty()) {
+            Logger.d("Notification skipped: pkg=$pkg, title and text empty")
+            return
+        }
+
+        val key = org.ezbook.server.tools.CapturePolicy.notificationEvent(notificationKey, postedAt, title, text)
+        if (hashTable.contains(key)) {
+            Logger.d("Notification skipped: pkg=$pkg, duplicate content")
+            return
+        }
+
+        if (!apps.contains(pkg)) {
+            Logger.d("Notification skipped: pkg=$pkg not in app whitelist")
+            return
+        }
+        val content = "$title $text".trim()
+        if (!AnalysisUtils.inWhitelist(content)) {
+            Logger.d("Notification skipped: pkg=$pkg, no keyword matched")
+            return
+        }
+        if (AnalysisUtils.inBlackList(content)) {
+            Logger.d("Notification skipped: pkg=$pkg, blacklist matched")
+            return
+        }
+
+        if (pkg == "com.android.mms") {
+            val json = JsonObject().apply {
+                addProperty("sender", "")
+                addProperty("body", text)
+                addProperty("t", postedAt)
+                addProperty("eventId", key)
+            }
+            CaptureInbox.enqueue(this, DataType.DATA, Gson().toJson(json), "com.android.phone")
+            // Analyze.start(DataType.DATA, Gson().toJson(json), "com.android.phone")
+        } else {
+            val json = JsonObject()
+            json.addProperty("title", title)
+            json.addProperty("text", text)
+            json.addProperty("t", postedAt)
+            json.addProperty("eventId", key)
+            CaptureInbox.enqueue(this, DataType.NOTICE, Gson().toJson(json), pkg)
+            //  Analyze.start(DataType.NOTICE, Gson().toJson(json), pkg)
+        }
+        hashTable.put(key)
+    }
+
+    companion object : IService {
+        /**
+         * 是否启用通知监听服务
+         * @return
+         */
+        override fun hasPermission(): Boolean {
+            val packageNames = NotificationManagerCompat.getEnabledListenerPackages(autoApp)
+            return packageNames.contains(BuildConfig.APPLICATION_ID)
+        }
+
+        override fun startPermissionActivity(context: Context) {
+            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
+
+
+    }
+}

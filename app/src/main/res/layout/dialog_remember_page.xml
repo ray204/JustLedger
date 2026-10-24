@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="自动识别这类页面？" android:textSize="18sp" android:textColor="@color/ledger_ink" android:fontFamily="sans-serif-medium" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" android:layout_marginBottom="20dp" android:text="记住后自动识别；永不则不再询问。\n仍可随时手动识别。"
+        android:textSize="12sp" android:lineSpacingExtra="3dp" android:textColor="@color/ledger_muted" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton android:id="@+id/neverButton"
+            style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:minWidth="0dp" android:paddingHorizontal="2dp" android:text="永不记住" android:textSize="12sp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/laterButton"
+            style="@style/Widget.Material3.Button.TonalButton" android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:layout_marginHorizontal="5dp" android:minWidth="0dp" android:paddingHorizontal="2dp" android:text="暂时不" android:textSize="12sp" app:cornerRadius="16dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/rememberButton"
+            android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
+            android:minWidth="0dp" android:paddingHorizontal="2dp" android:text="记住" android:textSize="12sp" app:cornerRadius="16dp" />
+    </LinearLayout>
+</LinearLayout>

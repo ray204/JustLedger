@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<resources>
+    <string-array name="xposed_scope">
+        <item>android</item>
+        <item>net.ankio.auto</item><!-- 模块自己 -->
+        <item>com.mutangtech.qianji</item><!-- 钱迹 -->
+
+        <item>com.android.phone</item><!-- 短信 -->
+        <item>com.tencent.mm</item><!-- 微信 -->
+
+        <item>com.eg.android.AlipayGphone</item><!-- 支付宝 -->
+
+
+    </string-array>
+
+
+    <string-array name="theme_texts" translatable="false">
+        <item>@string/dark_theme_off</item>
+        <item>@string/dark_theme_on</item>
+        <item>@string/dark_theme_follow_system</item>
+    </string-array>
+
+    <string-array name="theme_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="color_values" translatable="false">
+        <item>MATERIAL_DEFAULT</item>
+        <item>MATERIAL_SAKURA</item>
+        <item>MATERIAL_RED</item>
+        <item>MATERIAL_PINK</item>
+        <item>MATERIAL_PURPLE</item>
+        <item>MATERIAL_DEEP_PURPLE</item>
+        <item>MATERIAL_INDIGO</item>
+        <item>MATERIAL_BLUE</item>
+        <item>MATERIAL_LIGHT_BLUE</item>
+        <item>MATERIAL_CYAN</item>
+        <item>MATERIAL_TEAL</item>
+        <item>MATERIAL_GREEN</item>
+        <item>MATERIAL_LIGHT_GREEN</item>
+        <item>MATERIAL_LIME</item>
+        <item>MATERIAL_YELLOW</item>
+        <item>MATERIAL_AMBER</item>
+        <item>MATERIAL_ORANGE</item>
+        <item>MATERIAL_DEEP_ORANGE</item>
+        <item>MATERIAL_BROWN</item>
+        <item>MATERIAL_BLUE_GREY</item>
+    </string-array>
+
+    <string-array name="color_texts" translatable="false">
+        <item>@string/color_default</item>
+        <item>@string/color_sakura</item>
+        <item>@string/color_red</item>
+        <item>@string/color_pink</item>
+        <item>@string/color_purple</item>
+        <item>@string/color_deep_purple</item>
+        <item>@string/color_indigo</item>
+        <item>@string/color_blue</item>
+        <item>@string/color_light_blue</item>
+        <item>@string/color_cyan</item>
+        <item>@string/color_teal</item>
+        <item>@string/color_green</item>
+        <item>@string/color_light_green</item>
+        <item>@string/color_lime</item>
+        <item>@string/color_yellow</item>
+        <item>@string/color_amber</item>
+        <item>@string/color_orange</item>
+        <item>@string/color_deep_orange</item>
+        <item>@string/color_brown</item>
+        <item>@string/color_blue_grey</item>
+    </string-array>
+
+    <!-- Rule type filter options -->
+    <string-array name="rule_type_options" translatable="false">
+        <item>@string/filter_type_all</item>
+        <item>@string/filter_type_notify</item>
+        <item>@string/filter_type_data</item>
+        <item>@string/filter_type_ocr</item>
+    </string-array>
+
+    <!-- Creator filter options -->
+    <string-array name="creator_options" translatable="false">
+        <item>@string/filter_creator_all</item>
+        <item>@string/filter_creator_user</item>
+        <item>@string/filter_creator_official</item>
+    </string-array>
+
+    <!-- Match filter options for data page -->
+    <string-array name="match_options" translatable="false">
+        <item>@string/filter_type_all</item>
+        <item>@string/filter_match_only</item>
+        <item>@string/filter_unmatched_only</item>
+    </string-array>
+
+
+    <!-- Float click action options -->
+    <string-array name="float_click_texts" translatable="false">
+        <item>@string/float_action_edit</item>
+        <item>@string/float_action_dismiss</item>
+        <item>@string/float_action_auto_record</item>
+    </string-array>
+
+    <string-array name="float_click_values" translatable="false">
+        <item>POP_EDIT_WINDOW</item>
+        <item>NO_ACCOUNT</item>
+        <item>AUTO_ACCOUNT</item>
+    </string-array>
+
+    <!-- Float badge position options -->
+    <string-array name="float_position_texts" translatable="false">
+        <item>@string/float_position_left</item>
+        <item>@string/float_position_right</item>
+        <item>@string/float_position_top</item>
+    </string-array>
+
+    <string-array name="float_position_values" translatable="false">
+        <item>left</item>
+        <item>right</item>
+        <item>top</item>
+    </string-array>
+
+    <!-- Toast position options -->
+    <string-array name="toast_position_texts" translatable="false">
+        <item>@string/toast_position_top</item>
+        <item>@string/toast_position_center</item>
+        <item>@string/toast_position_bottom</item>
+    </string-array>
+
+    <string-array name="toast_position_values" translatable="false">
+        <item>top</item>
+        <item>center</item>
+        <item>bottom</item>
+    </string-array>
+
+    <!-- OCR auth mode options -->
+
+
+    <!-- Update channel options -->
+    <string-array name="update_channel_texts" translatable="false">
+        <item>@string/version_stable</item>
+        <item>@string/version_beta</item>
+        <item>@string/version_canary</item>
+    </string-array>
+
+    <string-array name="update_channel_values" translatable="false">
+        <item>stable</item>
+        <item>beta</item>
+        <item>canary</item>
+    </string-array>
+
+
+    <string name="filter_type_ocr" translatable="false">Ocr</string>
+</resources>

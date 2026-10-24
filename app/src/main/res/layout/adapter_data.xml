@@ -1,0 +1,205 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="@dimen/padding"
+    android:layout_marginEnd="@dimen/padding"
+    android:layout_marginBottom="@dimen/padding"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer"
+    app:cardCornerRadius="@dimen/radius"
+    app:cardElevation="0dp"
+    style="?attr/materialCardViewElevatedStyle"
+    android:id="@+id/groupCard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding">
+
+        <!-- 顶部信息行：应用logo + 应用名/时间 + 类型badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/one_padding">
+
+            <io.github.xiaofeidev.round.RoundFrameLayout
+                android:id="@+id/logo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="0dp"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:rd_radius="30dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitXY"
+                    android:id="@+id/appIcon"
+                    android:src="@mipmap/ic_launcher"
+                    app:srcCompat="@mipmap/ic_launcher_round" />
+            </io.github.xiaofeidev.round.RoundFrameLayout>
+
+            <!-- 应用名称和时间 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/padding">
+
+                <!-- 应用名称 -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/appName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="?colorOnSurface"
+                    tools:text="微信" />
+
+                <!-- 时间（无图标） -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="?colorOnSurfaceVariant"
+                    tools:text="2025-06-22 09:03:57" />
+
+            </LinearLayout>
+
+            <!-- 数据类型badge -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/typeBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/currency_label_background"
+                android:backgroundTint="?attr/colorPrimaryContainer"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                tools:text="通知" />
+
+        </LinearLayout>
+
+        <!-- 内容：文本或图片二选一展示 -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/one_padding"
+            android:paddingBottom="@dimen/one_padding">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textColor="?colorOnSurface"
+                tools:text="这是一个规则内容xxx这是一个规则内容xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/contentImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:maxHeight="200dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
+
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <!-- 规则名称行 -->
+        <net.ankio.auto.ui.components.IconView
+            android:id="@+id/ruleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/one_padding"
+            android:textColor="?colorOnSurface"
+            app:textColor="?colorOnSurface"
+            app:iconSrc="@drawable/home_rule"
+            app:iconTintEnabled="true"
+            tools:text="规则名示例" />
+
+        <!-- 操作按钮组 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/one_padding"
+            android:gravity="end|center_vertical">
+
+            <com.google.android.material.button.MaterialButtonGroup
+                android:id="@+id/buttonGroup"
+                style="@style/Widget.Material3.MaterialButtonGroup.Connected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:selectionRequired="false"
+                app:singleSelection="false">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/createRule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?attr/materialButtonTonalStyle"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    app:icon="@drawable/icon_edit"
+                    android:text="@string/btn_create_rule"
+                    app:iconGravity="textStart"
+                    app:iconPadding="1dp"
+                    android:textSize="11sp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:minWidth="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?attr/materialButtonTonalStyle"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    app:icon="@drawable/icon_upload"
+                    android:text="@string/btn_upload_adapter"
+                    app:iconGravity="textStart"
+                    app:iconPadding="1dp"
+                    android:textSize="11sp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:minWidth="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/testRule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?attr/materialButtonTonalStyle"
+                    android:paddingStart="@dimen/padding"
+                    android:paddingEnd="@dimen/padding"
+                    app:icon="@drawable/icon_test"
+                    android:text="@string/btn_test_rule"
+                    app:iconGravity="textStart"
+                    app:iconPadding="1dp"
+                    android:textSize="11sp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:minWidth="0dp" />
+
+            </com.google.android.material.button.MaterialButtonGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <rikka.material.preference.MaterialSwitchPreference android:defaultValue="true" android:key="autoRecordBill" android:summary="开启后直接入账并提醒；关闭后先核对" android:title="自动入账" />
+
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="autoGroup" android:summary="开启后合并同一交易的多渠道记录" android:title="重复识别" />
+
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="featureMultiCurrency" android:summary="开启后可选择账单币种" android:title="多币种" />
+
+        <Preference android:key="baseCurrency" app:dependency="featureMultiCurrency" android:summary="首页按此币种汇总" android:title="默认币种" />
+
+        <Preference android:key="selectedCurrencies" app:dependency="featureMultiCurrency" android:summary="编辑账单时显示这些币种" android:title="常用币种" />
+
+        </PreferenceScreen>

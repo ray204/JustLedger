@@ -1,0 +1,10 @@
+name: 使用问题
+description: 咨询安装、配置或使用
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: 问题
+      description: 请先阅读 README，并注意隐藏账户和密钥。
+    validations:
+      required: true

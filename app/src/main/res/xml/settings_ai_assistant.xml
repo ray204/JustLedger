@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.preference.Preference android:key="aiConfig" android:title="模型接口" android:summary="填写服务地址、API Key 和模型名称" />
+    <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="featureAiAvailable" android:title="允许使用 AI" android:summary="开启后允许调用你配置的模型服务" />
+    <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="aiBillRecognition" android:title="优先使用 AI 识别" android:summary="发送订单文字；失败最多重试 2 次，再用本地规则；结果需核对" />
+</PreferenceScreen>

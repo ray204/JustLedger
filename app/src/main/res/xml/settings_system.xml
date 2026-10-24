@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <rikka.preference.SimpleMenuPreference android:defaultValue="SYSTEM" android:key="language" android:summary="%s" android:title="语言" />
+
+
+        <rikka.preference.SimpleMenuPreference android:defaultValue="-1" android:entries="@array/theme_texts" android:entryValues="@array/theme_values" android:key="darkTheme" android:summary="%s" android:title="深色模式" />
+
+        </PreferenceScreen>

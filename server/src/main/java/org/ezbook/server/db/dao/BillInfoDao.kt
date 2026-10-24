@@ -1,0 +1,581 @@
+/*
+ * Copyright (C) 2024 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package org.ezbook.server.db.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
+import org.ezbook.server.constant.BillState
+import org.ezbook.server.constant.BillType
+import org.ezbook.server.db.model.BillInfoModel
+import org.ezbook.server.db.model.BillSummaryModel
+import org.ezbook.server.db.model.CategoryStatsModel
+import org.ezbook.server.db.model.ShopStatsModel
+import org.ezbook.server.db.model.TimeBucketStatsModel
+import org.ezbook.server.db.model.stat.AmountBucketCountModel
+import org.ezbook.server.db.model.stat.AmountCountModel
+import org.ezbook.server.db.model.stat.AmountSumModel
+import org.ezbook.server.db.model.stat.HeatmapStatsModel
+
+@Dao
+interface BillInfoDao {
+    @Query("SELECT * FROM BillInfoModel WHERE sourceKey = :key AND :key != '' LIMIT 1")
+    suspend fun bySource(key: String): BillInfoModel?
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND transactionNamespace = :namespace AND :namespace != '' AND ((transactionId = :transactionId AND :transactionId != '') OR (refundId = :refundId AND :refundId != ''))")
+    suspend fun byIdentity(namespace: String, transactionId: String, refundId: String): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE transactionNamespace = :namespace AND :namespace != '' AND ((transactionId = :transactionId AND :transactionId != '') OR (refundId = :refundId AND :refundId != ''))")
+    suspend fun byIdentityIncludingAliases(namespace: String, transactionId: String, refundId: String): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND state != 'Wait2Edit' AND (flag & 1) = 0 AND money = :money ORDER BY time DESC")
+    suspend fun enrichmentCandidates(money: Double): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE (money = :money OR (transactionId = :transactionId AND :transactionId != '') OR (refundId = :refundId AND :refundId != '')) AND bookName = :book AND (app = :app OR (transactionNamespace = :namespace AND :namespace != '')) ORDER BY time DESC")
+    suspend fun ocrRecognitionCandidates(money: Double, book: String, app: String, namespace: String, transactionId: String, refundId: String): List<BillInfoModel>
+
+    // Search all identifier aliases, including a different app displaying the same provider ID.
+    @Query("SELECT * FROM BillInfoModel WHERE bookName = :book AND (transactionId = :identity OR refundId = :identity OR instr(detailsJson, :identity) > 0)")
+    suspend fun ocrIdentityCandidates(book: String, identity: String): List<BillInfoModel>
+
+    @Query("SELECT COALESCE(SUM(money), 0) FROM BillInfoModel WHERE originalBillId = :originalId AND id != :excludeId AND type = 'IncomeRefund' AND groupId = -1 AND (flag & 1) = 0")
+    suspend fun refundedAmount(originalId: Long, excludeId: Long): Double
+
+    @Query("SELECT * FROM BillInfoModel WHERE type = 'Expend' AND groupId = -1 ORDER BY time DESC LIMIT 500")
+    suspend fun refundOriginals(): List<BillInfoModel>
+
+    @Insert
+    suspend fun insert(billInfo: BillInfoModel): Long
+
+    @Query("SELECT * FROM BillInfoModel WHERE money = :money AND time >= :startTime AND time <= :endTime AND groupId = -1 AND type=:type ORDER BY time ASC")
+    suspend fun query(
+        money: Double,
+        startTime: Long,
+        endTime: Long,
+        type: BillType
+    ): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE money = :money AND time >= :startTime AND time <= :endTime AND groupId = -1 ORDER BY time ASC")
+    suspend fun queryNoType(
+        money: Double,
+        startTime: Long,
+        endTime: Long,
+    ): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE id = :id")
+    suspend fun queryId(id: Long): BillInfoModel?
+
+    @Update
+    suspend fun update(billInfo: BillInfoModel)
+
+    // 删除策略，365天以前的所有数据（无论是否同步）
+    @Query("DELETE FROM BillInfoModel WHERE time < :time")
+    suspend fun clearOld(time: Long)
+
+    @Query("DELETE FROM BillInfoModel")
+    suspend fun clear()
+
+    @Query("SELECT * FROM BillInfoModel WHERE state = 'Wait2Edit' and groupId = -1")
+    suspend fun loadWaitEdit(): List<BillInfoModel>
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId=-1 and state in(:state) ORDER BY time DESC LIMIT :limit OFFSET :offset")
+    suspend fun loadPage(limit: Int, offset: Int, state: List<String>): List<BillInfoModel>
+
+    /**
+     * 按时间范围分页查询账单（用于按月份筛选）。
+     * 使用 [startTime, endTime) 半开区间，避免跨月边界的重复或遗漏。
+     */
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND state IN(:state) AND time >= :startTime AND time < :endTime ORDER BY time DESC LIMIT :limit OFFSET :offset")
+    suspend fun loadPageByTimeRange(
+        limit: Int,
+        offset: Int,
+        state: List<String>,
+        startTime: Long,
+        endTime: Long
+    ): List<BillInfoModel>
+
+    /** Read-only export query. It deliberately does not touch sync state. */
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND state = :state AND time >= :startTime AND time < :endTime ORDER BY time ASC, id ASC")
+    suspend fun exportByStateAndTimeRange(
+        state: BillState,
+        startTime: Long,
+        endTime: Long
+    ): List<BillInfoModel>
+
+    @Query("DELETE FROM BillInfoModel WHERE groupId = :groupId")
+    suspend fun deleteGroup(groupId: Long)
+
+    @Query("DELETE FROM BillInfoModel WHERE groupId != -1 AND id NOT IN (SELECT id FROM BillInfoModel)")
+    suspend fun deleteNoGroup()
+
+    @Query("UPDATE BillInfoModel SET groupId = -1 WHERE id = :id")
+    suspend fun unGroup(id: Long)
+
+    @Query("DELETE FROM BillInfoModel WHERE id =:id")
+    suspend fun deleteId(id: Long)
+
+    @Query("SELECT * FROM BillInfoModel WHERE state = 'Edited' and groupId = -1")
+    suspend fun queryNoSync(): List<BillInfoModel>
+
+    @Query("UPDATE BillInfoModel SET state = :status WHERE id = :id")
+    suspend fun updateStatus(id: Long, status: BillState)
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = :groupId")
+    suspend fun queryGroup(groupId: Long): List<BillInfoModel>
+
+    /**
+     * 按类型单独统计金额（money），排除 FLAG_NOT_COUNT
+     * 用于根据业务需要加减计算总收支
+     */
+    @Query(
+        """
+        SELECT COALESCE(SUM(money), 0) FROM BillInfoModel
+        WHERE type = :type AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time < :endTime
+        """
+    )
+    suspend fun sumByType(type: String, startTime: Long, endTime: Long): Double
+
+    /**
+     * 月度收入（仅 Income，排除报销/债务/不计收支）
+     */
+    @Query(
+        """
+        SELECT COALESCE(SUM(money), 0) FROM BillInfoModel
+        WHERE type = 'Income' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time < :endTime
+        """
+    )
+    suspend fun getMonthlyIncome(startTime: Long, endTime: Long): Double
+
+    /**
+     * 月度支出（Expend - IncomeRefund，退款冲减支出；排除报销/债务/不计收支）
+     */
+    @Query(
+        """
+        SELECT 
+          (SELECT COALESCE(SUM(money), 0) FROM BillInfoModel WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time < :endTime)
+          - (SELECT COALESCE(SUM(money), 0) FROM BillInfoModel WHERE type = 'IncomeRefund' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time < :endTime)
+        """
+    )
+    suspend fun getMonthlyExpense(startTime: Long, endTime: Long): Double
+
+    /**
+     * 汇总：收入（仅 Income，排除报销/债务/退款/不计收支）
+     */
+    @Query(
+        """
+        SELECT COALESCE(SUM(money), 0) FROM BillInfoModel
+        WHERE type = 'Income' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        """
+    )
+    suspend fun sumIncomeWithFee(startTime: Long, endTime: Long): Double
+
+    /**
+     * 汇总：支出（Expend - IncomeRefund，排除报销/债务/不计收支）
+     */
+    @Query(
+        """
+        SELECT 
+          (SELECT COALESCE(SUM(money), 0) FROM BillInfoModel WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime)
+          - (SELECT COALESCE(SUM(money), 0) FROM BillInfoModel WHERE type = 'IncomeRefund' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime)
+        """
+    )
+    suspend fun sumExpenseWithFee(startTime: Long, endTime: Long): Double
+
+    /**
+     * 趋势聚合：收入=Income，支出=Expend-IncomeRefund，排除报销/债务/不计收支
+     */
+    @Query(
+        """
+        SELECT 
+            strftime('%Y-%m-%d', datetime(time/1000, 'unixepoch', 'localtime')) as day,
+            SUM(CASE WHEN type = 'Income' THEN (money) ELSE 0 END) as income,
+            SUM(CASE WHEN type = 'Expend' THEN (money) ELSE 0 END) - SUM(CASE WHEN type = 'IncomeRefund' THEN (money) ELSE 0 END) as expense
+        FROM BillInfoModel
+        WHERE groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime
+        GROUP BY day
+        ORDER BY day ASC
+        """
+    )
+    suspend fun getDailyTrend(
+        startTime: Long,
+        endTime: Long
+    ): List<org.ezbook.server.db.model.TrendRowModel>
+
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 LIMIT :limit OFFSET :offset")
+    suspend fun getBillsBatch(limit: Int, offset: Int): List<BillInfoModel>
+
+    @Query("SELECT COUNT(*) FROM BillInfoModel WHERE groupId = -1")
+    suspend fun getBillsCount(): Int
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND time >= :startTime LIMIT :limit OFFSET :offset")
+    suspend fun getRecentBillsBatch(limit: Int, offset: Int, startTime: Long): List<BillInfoModel>
+
+    @Query("SELECT COUNT(*) FROM BillInfoModel WHERE groupId = -1 AND time >= :startTime")
+    suspend fun getRecentBillsCount(startTime: Long): Int
+
+    @Query("SELECT * FROM BillInfoModel WHERE groupId = -1 AND time >= :startTime AND time <= :endTime ORDER BY time DESC")
+    suspend fun getBillsByTimeRange(startTime: Long, endTime: Long): List<BillInfoModel>
+
+    // AI摘要相关查询
+
+    /** 获取支出分类统计（仅 Expend，排除报销/债务/不计收支） */
+    @Query(
+        """
+        SELECT cateName, SUM(money) as amount, COUNT(*) as count 
+        FROM BillInfoModel 
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY cateName 
+        ORDER BY amount DESC
+    """
+    )
+    suspend fun getExpenseCategoryStatsForAI(
+        startTime: Long,
+        endTime: Long
+    ): List<CategoryStatsModel>
+
+    /** 获取商户统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT shopName, SUM(money) as amount, COUNT(*) as count 
+        FROM BillInfoModel 
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY shopName 
+        ORDER BY amount DESC
+    """
+    )
+    suspend fun getExpenseShopStats(startTime: Long, endTime: Long): List<ShopStatsModel>
+
+
+    /** 小额支出分类统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT cateName, SUM(money) as amount, COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND (money) <= :maxAmount
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY cateName
+        ORDER BY amount DESC
+    """
+    )
+    suspend fun getSmallExpenseCategoryStats(
+        startTime: Long,
+        endTime: Long,
+        maxAmount: Double
+    ): List<CategoryStatsModel>
+
+    /** 获取大额交易样本（必须限制数量，避免过多） */
+    @Query(
+        """
+        SELECT time, type, money, cateName, shopName, shopItem 
+        FROM BillInfoModel 
+        WHERE money >= :threshold AND time >= :startTime AND time <= :endTime AND groupId = -1 
+        ORDER BY money DESC 
+        LIMIT :limit
+    """
+    )
+    suspend fun getLargeTransactions(
+        startTime: Long,
+        endTime: Long,
+        threshold: Double,
+        limit: Int
+    ): List<BillSummaryModel>
+
+    /** 获取账单样本（必须限制数量，避免过多） */
+    @Query(
+        """
+        SELECT time, type, money, cateName, shopName, shopItem 
+        FROM BillInfoModel 
+        WHERE time >= :startTime AND time <= :endTime AND groupId = -1 
+        ORDER BY time DESC 
+        LIMIT :limit
+    """
+    )
+    suspend fun getBillSamples(startTime: Long, endTime: Long, limit: Int): List<BillSummaryModel>
+
+    /** 获取指定时间范围内各类型账单数量 */
+    @Query("SELECT COUNT(*) FROM BillInfoModel WHERE type = 'Income' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime")
+    suspend fun getIncomeCount(startTime: Long, endTime: Long): Int
+
+    @Query("SELECT COUNT(*) FROM BillInfoModel WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime")
+    suspend fun getExpenseCount(startTime: Long, endTime: Long): Int
+
+    @Query("SELECT COUNT(*) FROM BillInfoModel WHERE type = 'Transfer' AND time >= :startTime AND time <= :endTime AND groupId = -1")
+    suspend fun getTransferCount(startTime: Long, endTime: Long): Int
+
+    /** 按星期聚合支出（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            strftime('%w', datetime(time/1000, 'unixepoch', 'localtime')) as bucket,
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY bucket
+        ORDER BY bucket ASC
+        """
+    )
+    suspend fun getExpenseWeekdayStats(
+        startTime: Long,
+        endTime: Long
+    ): List<TimeBucketStatsModel>
+
+    /** 按小时聚合支出（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            strftime('%H', datetime(time/1000, 'unixepoch', 'localtime')) as bucket,
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY bucket
+        ORDER BY bucket ASC
+        """
+    )
+    suspend fun getExpenseHourStats(
+        startTime: Long,
+        endTime: Long
+    ): List<TimeBucketStatsModel>
+
+    /** 按星期+小时聚合支出（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            strftime('%w', datetime(time/1000, 'unixepoch', 'localtime')) as bucketDay,
+            strftime('%H', datetime(time/1000, 'unixepoch', 'localtime')) as bucketHour,
+            SUM(money) as amount
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY bucketDay, bucketHour
+        ORDER BY bucketDay ASC, bucketHour ASC
+        """
+    )
+    suspend fun getExpenseHeatmapStats(
+        startTime: Long,
+        endTime: Long
+    ): List<HeatmapStatsModel>
+
+    /** 支出金额区间分布（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            CASE
+                WHEN (money) < 50 THEN '0-50'
+                WHEN (money) < 100 THEN '50-100'
+                WHEN (money) < 200 THEN '100-200'
+                WHEN (money) < 500 THEN '200-500'
+                WHEN (money) < 1000 THEN '500-1000'
+                ELSE '1000+'
+            END as bucket,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY bucket
+        """
+    )
+    suspend fun getExpenseAmountDistribution(
+        startTime: Long,
+        endTime: Long
+    ): List<AmountBucketCountModel>
+
+    /** 小额支出统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND (money) < :maxAmount
+          AND time >= :startTime AND time <= :endTime
+        """
+    )
+    suspend fun getSmallExpenseStats(
+        startTime: Long,
+        endTime: Long,
+        maxAmount: Double
+    ): AmountCountModel
+
+    /** 大额支出统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND (money) >= :minAmount
+          AND time >= :startTime AND time <= :endTime
+        """
+    )
+    suspend fun getLargeExpenseStats(
+        startTime: Long,
+        endTime: Long,
+        minAmount: Double
+    ): AmountCountModel
+
+    /** 周末支出统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            SUM(money) as amount
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+          AND strftime('%w', datetime(time/1000, 'unixepoch', 'localtime')) IN ('0','6')
+        """
+    )
+    suspend fun getWeekendExpenseSum(
+        startTime: Long,
+        endTime: Long
+    ): AmountSumModel
+
+    /**
+     * 统计指定时间范围内的总交易数
+     */
+    @Query(
+        """
+        SELECT COUNT(*) FROM BillInfoModel
+        WHERE groupId = -1
+          AND time >= :startTime AND time <= :endTime
+        """
+    )
+    suspend fun getBillsCountByTimeRange(
+        startTime: Long,
+        endTime: Long
+    ): Int
+
+    /**
+     * 按类型汇总金额（AI分析用）。
+     * 仅使用 money 字段，避免引入 fee 口径差异。
+     */
+    @Query(
+        """
+        SELECT SUM(money) FROM BillInfoModel
+        WHERE groupId = -1 
+          AND type IN (:types)
+          AND time >= :startTime AND time <= :endTime
+        """
+    )
+    suspend fun sumAmountByTypes(
+        startTime: Long,
+        endTime: Long,
+        types: List<BillType>
+    ): Double?
+
+    /** 简化的按天趋势：收入=Income，支出=Expend-IncomeRefund，排除不计收支 */
+    @Query(
+        """
+        SELECT 
+            strftime('%Y-%m-%d', datetime(time/1000, 'unixepoch', 'localtime')) as day,
+            SUM(CASE WHEN type = 'Income' THEN (money) ELSE 0 END) as income,
+            SUM(CASE WHEN type = 'Expend' THEN (money) ELSE 0 END) - SUM(CASE WHEN type = 'IncomeRefund' THEN (money) ELSE 0 END) as expense
+        FROM BillInfoModel
+        WHERE groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime
+        GROUP BY day
+        ORDER BY day ASC
+        """
+    )
+    suspend fun getSimpleDailyTrend(
+        startTime: Long,
+        endTime: Long
+    ): List<org.ezbook.server.db.model.TrendRowModel>
+
+    /** 简化的按月趋势：收入=Income，支出=Expend-IncomeRefund，排除不计收支 */
+    @Query(
+        """
+        SELECT 
+            strftime('%Y-%m', datetime(time/1000, 'unixepoch', 'localtime')) as day,
+            SUM(CASE WHEN type = 'Income' THEN (money) ELSE 0 END) as income,
+            SUM(CASE WHEN type = 'Expend' THEN (money) ELSE 0 END) - SUM(CASE WHEN type = 'IncomeRefund' THEN (money) ELSE 0 END) as expense
+        FROM BillInfoModel
+        WHERE groupId = -1 AND (flag & 1) = 0 AND time >= :startTime AND time <= :endTime
+        GROUP BY day
+        ORDER BY day ASC
+        """
+    )
+    suspend fun getSimpleMonthlyTrend(
+        startTime: Long,
+        endTime: Long
+    ): List<org.ezbook.server.db.model.TrendRowModel>
+
+    /** 支出分类统计（仅 Expend，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            cateName,
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Expend' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY cateName
+        ORDER BY amount DESC
+        """
+    )
+    suspend fun getExpenseCategoryStats(
+        startTime: Long,
+        endTime: Long
+    ): List<org.ezbook.server.db.model.CategoryStatsModel>
+
+    /** 收入分类统计（仅 Income，排除不计收支） */
+    @Query(
+        """
+        SELECT 
+            cateName,
+            SUM(money) as amount,
+            COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Income' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY cateName
+        ORDER BY amount DESC
+        """
+    )
+    suspend fun getIncomeCategoryStats(
+        startTime: Long,
+        endTime: Long
+    ): List<org.ezbook.server.db.model.CategoryStatsModel>
+
+    /** 收入分类统计（仅 Income，排除不计收支） */
+    @Query(
+        """
+        SELECT cateName, SUM(money) as amount, COUNT(*) as count
+        FROM BillInfoModel
+        WHERE type = 'Income' AND groupId = -1 AND (flag & 1) = 0
+          AND time >= :startTime AND time <= :endTime
+        GROUP BY cateName
+        ORDER BY amount DESC
+        """
+    )
+    suspend fun getIncomeCategoryStatsForAI(
+        startTime: Long,
+        endTime: Long
+    ): List<CategoryStatsModel>
+}

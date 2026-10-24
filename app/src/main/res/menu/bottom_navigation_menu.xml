@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/homeFragment" android:icon="@drawable/bottom_home_selector" android:title="@string/ledger_overview"/>
+    <item android:id="@+id/orderFragment" android:icon="@drawable/bottom_order_selector" android:title="@string/title_bill"/>
+    <item android:id="@+id/settingFragment" android:icon="@drawable/bottom_setting_selector" android:title="@string/title_setting"/>
+</menu>

@@ -1,0 +1,58 @@
+/*
+ * Copyright (C) 2025 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package net.ankio.auto.adapter
+
+import net.ankio.auto.BuildConfig
+import net.ankio.auto.constant.BookFeatures
+import org.ezbook.server.constant.BillAction
+import org.ezbook.server.db.model.BillInfoModel
+
+class AutoAdapter : IAppAdapter {
+    override val pkg: String
+        get() = BuildConfig.APPLICATION_ID
+    override val link: String
+        get() = ""
+    override val icon: String
+        get() = ""
+    override val desc: String
+        get() = "账单保存在 JustLedger 本地账本。"
+    override val name: String
+        get() = "JustLedger"
+
+    override fun features(): List<BookFeatures> {
+        return BookFeatures.entries
+    }
+
+    override fun syncAssets() {
+
+    }
+
+    override fun syncBill(billInfoModel: BillInfoModel) {
+        AppAdapterManager.markSynced(billInfoModel)
+    }
+
+    override fun sleep(): Long {
+        return 0L
+    }
+
+    override fun supportSyncAssets(): Boolean {
+        return false
+    }
+
+    override fun syncWaitBills(billAction: BillAction, bookName: String) {
+
+    }
+}

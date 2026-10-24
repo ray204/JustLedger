@@ -1,0 +1,1080 @@
+<!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<resources tools:locale="zh" xmlns:tools="http://schemas.android.com/tools">
+    <string name="select_month">选择月份</string>
+    <string name="about_view_source_code"><![CDATA[在 %s 上查看源代码]]></string>
+    <string name="title_home">首页</string>
+    <string name="title_data">数据</string>
+    <string name="title_rule">规则</string>
+    <string name="title_rule_edit">编辑规则</string>
+    <string name="tab_data_rules">数据规则</string>
+    <string name="tab_category_rules">分类规则</string>
+    <string name="search_rules">搜索规则</string>
+    <string name="search_currency_hint">搜索币种代码或名称</string>
+    <string name="title_order">账单</string>
+    <string name="title_setting">设置</string>
+    <string name="description">基于本地规则的自动记账模块。</string>
+    <string name="title_log">日志</string>
+    <string name="setting_theme">主题</string>
+    <string name="lang_follow_system">跟随系统</string>
+    <string name="setting_privacy">隐私</string>
+    <string name="ok">确定</string>
+    <string name="close">关闭</string>
+    <string name="delete_data">删除数据</string>
+    <string name="delete_msg">您确定要删除此数据吗？</string>
+    <string name="cancel_msg">关闭</string>
+    <string name="sure_msg">确认</string>
+    <string name="batch_delete">批量删除</string>
+    <string name="batch_delete_title">批量删除</string>
+    <plurals name="batch_delete_confirm">
+        <item quantity="other">确认删除 %d 条规则？删除后无法恢复。</item>
+    </plurals>
+    <string name="select_all">全选</string>
+    <string name="cancel_select_all">取消全选</string>
+    <string name="add">添加</string>
+    <string name="content_title">数据视图</string>
+    <string name="image_preview_title">图片预览</string>
+    <string name="if_condition_true">如果满足 </string>
+    <string name="condition_result_book">。则账本为</string>
+    <string name="condition_result_category">。分类为</string>
+    <string name="condition_result_remark">。备注为</string>
+    <string name="remark_input">输入备注</string>
+    <string name="remark_hint">备注内容</string>
+    <string name="remark_empty">无备注</string>
+    <string name="and">且</string>
+    <string name="or">或</string>
+    <string name="type_money">金额</string>
+    <string name="type_time">时间</string>
+    <string name="type_shop">商家</string>
+    <string name="type_item">项目</string>
+    <string name="type_type">交易类型</string>
+    <string name="lower_money">最小金额</string>
+    <string name="higher_money">最大金额</string>
+    <string name="money_range">填写金额范围</string>
+    <string name="money_error">金额必须大于或等于 0</string>
+    <string name="money_max_info">"金额大于 %s "</string>
+    <string name="money_min_info">金额小于 %s</string>
+    <string name="money_range_info" formatted="false">金额范围从 %s 到 %s</string>
+    <string name="money_equal_info">金额等于 %s</string>
+    <string name="time_range" formatted="false">时间在 %s - %s 之间</string>
+    <string name="date_range_simple" formatted="false">%s 至 %s</string>
+    <string name="select_time_lower">请选择开始时间</string>
+    <string name="select_time_higher">请选择结束时间</string>
+    <string name="regex">请输入匹配内容</string>
+    <string name="shop_input">请输入商家名称条件</string>
+    <string name="input_contains">包含</string>
+    <string name="input_regex">正则匹配</string>
+    <string name="shop_name_contains" formatted="false">%s 包含 【%s】</string>
+    <string name="shop_name_regex" formatted="false">%s 匹配 【%s】</string>
+    <string name="shop_item_input">请输入项目名称条件</string>
+    <string name="shop_name">商家名称</string>
+    <string name="shop_item_name">项目名称</string>
+    <string name="type_for_pay">支出</string>
+    <string name="type_for_income">收入</string>
+    <string name="type_pay">交易类型为 【%s】</string>
+    <string name="useless_condition">条件不能为空</string>
+    <string name="useless_book">账本不能为空</string>
+    <string name="useless_category">分类不能为空</string>
+    <string name="upload_waiting">上传中…</string>
+    <string name="sure_update">更新</string>
+    <string name="share_file">分享日志</string>
+    <string name="auto_success">自动记账成功，金额为 %s</string>
+    <string name="btn_save">保存</string>
+    <string name="float_remark">备注</string>
+    <string name="float_income">收入</string>
+    <string name="float_expend">支出</string>
+    <string name="float_transfer">转账（信用卡还款）</string>
+    <string name="float_expend_debt">欠款人</string>
+    <string name="float_income_debt">债主</string>
+    <string name="restart">重启 JustLedger</string>
+    <string name="copy_command_success">已复制到剪贴板</string>
+    <string name="cancel">关闭</string>
+
+    <string name="title_books">账本</string>
+    <string name="add_book">添加账本</string>
+
+    <!-- Book Edit Strings -->
+    <string name="title_book_edit">编辑账本</string>
+    <string name="edit_book">编辑账本</string>
+    <string name="book_name_hint">输入账本名称</string>
+    <string name="book_name_helper">账本名称应为 1–20 个字符</string>
+    <string name="book_icon_label">账本图标</string>
+    <string name="tap_to_select_icon">点击选择图标</string>
+    <string name="icon_selected">图标已选择</string>
+    <string name="btn_create">创建</string>
+    <string name="saving">保存中…</string>
+
+    <!-- Book Edit Messages -->
+    <string name="book_name_required">账本名称是必需的</string>
+    <string name="book_name_too_long">账本名称太长</string>
+    <string name="book_created_success">账本创建成功</string>
+    <string name="book_updated_success">账本更新成功</string>
+    <string name="book_create_failed">创建账本失败</string>
+    <string name="book_update_failed">更新账本失败</string>
+    <string name="set_default_book">默认</string>
+    <string name="set_default_book_success">已设为默认</string>
+    <string name="icon_select_failed">选择图标失败</string>
+    <string name="image_load_failed">加载图片失败</string>
+    <string name="image_process_failed">处理图片失败</string>
+    <string name="delete_book_message">您确定要删除账本 %s 吗？</string>
+    <string name="delete_book_success">账本删除成功</string>
+
+    <string name="title_category">分类</string>
+    <string name="title_category_mapping">分类映射</string>
+    <string name="title_assets">资产</string>
+    <string name="title_assets_map">资产映射</string>
+    <string name="add_asset">添加资产</string>
+    <string name="delete_asset">删除资产</string>
+    <string name="delete_asset_message">您确定要删除资产 %s 吗？</string>
+
+    <!-- Asset Edit Strings -->
+    <string name="title_asset_edit">编辑资产</string>
+    <string name="edit_asset">编辑资产</string>
+    <string name="asset_type_label">资产类型</string>
+    <string name="currency_label">货币</string>
+    <string name="asset_name_hint">输入资产名称</string>
+    <string name="asset_name_empty">资产名称不能为空</string>
+    <string name="asset_icon_empty">请选择资产图标</string>
+    <string name="asset_not_found">找不到资产</string>
+    <string name="asset_load_failed">加载资产失败</string>
+    <string name="save_asset_success">资产保存成功</string>
+    <string name="delete_asset_success">资产删除成功</string>
+    <string name="title_tag">标签</string>
+    <string name="title_app_whitelist">应用白名单</string>
+    <string name="title_data_filter">数据过滤</string>
+    <string name="app_icon_desc">应用图标</string>
+
+    <!-- Rule Edit labels -->
+    <string name="rule_name">名称</string>
+    <string name="rule_type">类型</string>
+    <string name="rule_edit_rule">编辑规则</string>
+    <string name="rule_tap_to_edit">点击编辑规则</string>
+    <string name="save_rule_success">规则保存成功</string>
+    <string name="rule_enabled_successfully">规则启用成功</string>
+    <string name="rule_disabled_successfully">规则禁用成功</string>
+    <string name="auto_record_enabled_successfully">自动记录启用成功</string>
+    <string name="auto_record_disabled_successfully">自动记录禁用成功</string>
+    <string name="delete_rule_title">删除规则</string>
+    <string name="delete_rule_message">您确定要删除规则 \"%s\" 吗？此操作无法撤销。</string>
+    <string name="rule_deleted_successfully">规则删除成功</string>
+
+    <string name="title_map">资产映射</string>
+    <string name="map_input_raw">请输入原始资产</string>
+    <string name="map_regex">正则匹配</string>
+    <string name="map_target">请选择目标资产</string>
+    <string name="map_empty">资产名称或映射资产不能为空</string>
+    <string name="reapply_asset_mapping">重新应用资产映射</string>
+    <string name="reapply_confirm_title">确认重新应用</string>
+    <string name="reapply_confirm_message">您确定要将资产映射重新应用到最近 3 个月的历史数据吗？此操作无法撤销。</string>
+    <string name="reapply_started">资产映射重新应用已开始</string>
+    <string name="reapply_success">资产映射重新应用成功完成</string>
+    <string name="delete_title">删除确认</string>
+    <string name="delete_message">您确定要删除 %s 吗？</string>
+
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="item_clear">清除</string>
+    <string name="backup_success">备份成功</string>
+    <string name="restore_loading">恢复中…</string>
+    <string name="unsupport_backup">无法恢复 【%s】 版本数据，请将应用降级到该版本后重试。</string>
+    <string name="backup_error">数据库备份失败。</string>
+    <string name="restore_success">恢复成功</string>
+    <string name="net_error_msg_rule">网络错误，请在设置中更改源后重试。</string>
+    <string name="backup_not_found">服务器上未找到备份文件</string>
+    <string name="restore_webdav">下载备份文件</string>
+    <string name="backup_webdav">准备上传…</string>
+    <string name="backup_pack">打包数据…</string>
+
+    <!-- Backup and Restore Error Messages -->
+    <string name="backup_error_select_path">请先选择备份保存路径</string>
+    <string name="backup_error_permission">权限不足，无法保存备份文件</string>
+    <string name="backup_error_create_file">无法创建备份文件，请检查存储空间和权限</string>
+    <string name="backup_error_write_file">无法写入备份文件，请检查存储空间</string>
+    <string name="backup_error_pack_data">数据打包失败：%s</string>
+    <string name="backup_error_unknown">备份失败：%s</string>
+
+    <string name="restore_error_open_file">无法打开备份文件，请检查文件是否存在</string>
+    <string name="restore_error_file_corrupted">备份文件损坏或格式不正确：%s</string>
+    <string name="restore_error_read_file">读取备份文件失败，请检查文件是否完整</string>
+    <string name="restore_error_unknown">恢复失败：%s</string>
+
+    <string name="webdav_error_auth">WebDAV认证失败（HTTP %d），请检查用户名和密码</string>
+    <string name="webdav_error_path_not_found">WebDAV路径不存在（HTTP %d），请检查配置的路径</string>
+    <string name="webdav_error_server_error">WebDAV服务器错误（HTTP %d），请稍后重试</string>
+    <string name="webdav_error_request_failed">WebDAV请求失败（HTTP %1$d）：%2$s</string>
+    <string name="webdav_error_connect">无法连接到WebDAV服务器，请检查网络连接和服务器地址</string>
+    <string name="webdav_error_connect_restore">无法连接到WebDAV服务器，请检查网络连接</string>
+    <string name="webdav_error_auth_simple">WebDAV认证失败，请检查用户名和密码</string>
+    <string name="webdav_error_backup_failed">WebDAV备份失败：%s</string>
+    <string name="webdav_error_restore_failed">WebDAV恢复失败：%s</string>
+    <string name="webdav_error_list_failed">获取备份列表失败（HTTP %1$d）：%2$s</string>
+    <string name="webdav_error_list_failed_simple">获取备份列表失败：%s</string>
+    <string name="webdav_error_file_not_found">备份文件不存在（HTTP %1$d）：%2$s</string>
+    <string name="webdav_error_download_failed">下载备份文件失败：%s</string>
+
+
+    <string name="setting_bill_remark">备注格式</string>
+    <string name="setting_bill_remark_desc">支持使用以下中文变量：\n基础信息：【商户名称】、【商品名称】、【金额】、【分类】、【账本】、【来源】、【原始资产】、【目标资产】、【渠道】\n扩展信息：【规则名称】、【AI】、【货币类型】、【手续费】、【标签】、【交易类型】、【时间】</string>
+    <string name="setting_auto_create_category">记住分类</string>
+    <string name="item_sync">同步</string>
+    <string name="auto_category">检测到保存账单时使用的分类与自动记账规则识别的分类不一致。是否要生成新的分类规则？</string>
+    <string name="rule">规则</string>
+    <string name="app">应用</string>
+    <string name="update_success">规则更新成功</string>
+    <string name="app_error_msg">JustLedger 运行时错误</string>
+    <string name="update_rule">更新规则：%s</string>
+    <string name="no_empty">两侧的替换内容不能为空。</string>
+    <string name="no_replace">没有内容被替换</string>
+    <string name="loading_logs">打包日志…</string>
+    <string name="no_need_to_update">无需更新。长按强制更新。</string>
+    <string name="check_update">检查更新…</string>
+    <string name="delete_bill_message">您确定要删除此账单吗？</string>
+    <string name="delete_data_message">您确定要删除此数据吗？</string>
+    <string name="copy">复制</string>
+
+    <!-- Filter dropdown options -->
+    <string name="filter_app">应用</string>
+    <string name="filter_rule_type">规则类型</string>
+    <string name="filter_creator">创建者</string>
+    <string name="filter_match">匹配</string>
+
+    <!-- Rule type filter options -->
+    <string name="filter_type_all">全部</string>
+    <string name="filter_time_all">全部时间</string>
+    <string name="filter_time_month">按月</string>
+    <string name="filter_type_data">数据</string>
+    <string name="filter_type_notify">通知</string>
+
+    <!-- Creator filter options -->
+    <string name="filter_creator_all">全部</string>
+    <string name="filter_creator_user">用户</string>
+    <string name="filter_creator_official">官方</string>
+
+    <!-- Match filter options -->
+    <string name="filter_match_only">仅匹配</string>
+    <string name="filter_unmatched_only">仅未匹配</string>
+
+    <string name="downloading">下载规则…</string>
+    <string name="update_error">更新失败</string>
+    <string name="delete_rule">移除无效规则…</string>
+    <string name="add_rule">添加规则：%s</string>
+    <string name="unzip_finish">解压完成</string>
+    <string name="unzip">解压：%s</string>
+    <string name="auto_record">自动</string>
+
+    <string name="item_search">搜索…</string>
+    <string name="item_purchase">购买</string>
+    <string name="auto_apps">请选择记账应用</string>
+    <string name="type_credit">信用账户</string>
+    <string name="type_normal">普通资产</string>
+    <string name="type_borrower">借出方</string>
+    <string name="type_creditor">债权人</string>
+    <string name="empty_text">暂无内容</string>
+    <string name="error_text">发生了一些错误</string>
+    <string name="auto_record_label">自动记录</string>
+    <string name="rule_type_cloud">云端</string>
+    <string name="rule_type_local">本地</string>
+    <string name="data_type_app">数据</string>
+    <string name="data_type_notice">通知</string>
+    <string name="data_type_ocr">OCR</string>
+    <string name="rule_desc_wechat_notice">%1$s - 需关注对应的公众号以接收通知</string>
+    <string name="rule_desc_alipay_app">%1$s - 需保持支付宝后台运行以抓取数据</string>
+    <string name="rule_desc_sms_hint">%1$s - 需开通银行短信提醒服务</string>
+    <string name="rule_desc_other_notice">%1$s - 需授权通知权限或设置作用域为安卓系统</string>
+
+    <string name="title_category_map">分类映射</string>
+    <string name="add_category_map">添加分类映射：%s</string>
+    <string name="delete_category_map">删除分类映射：%s</string>
+    <string name="no_rule_hint">没有匹配的规则</string>
+    <string name="lend">借出</string>
+    <string name="borrow">借入</string>
+    <string name="float_choose_bill">请选择账单</string>
+    <plurals name="float_choose_bills">
+        <item quantity="other">已选择 %d 个账单</item>
+    </plurals>
+    <string name="version_stable">稳定版</string>
+    <string name="version_beta">测试版</string>
+    <string name="version_canary">金丝雀版</string>
+    <string name="expend_repayment">债务还款</string>
+    <string name="income_repayment">债务收回</string>
+    <string name="expend_lending">债务 - 借出</string>
+    <string name="expend_repayment_info">债务 - 还款</string>
+    <string name="income_lending">债务 - 借入</string>
+    <string name="income_repayment_info">债务 - 收回</string>
+    <string name="repeat_bill">检测到重复账单，已自动合并。</string>
+    <string name="setting_bill_show_rule">在账单页面显示识别规则</string>
+    <string name="auto_create">自动生成</string>
+    <string name="setting_ai">AI 功能</string>
+    <string name="rule_testing">测试规则…</string>
+    <string name="loading">加载中…</string>
+    <string name="setting_bill_one_api_uri">API 地址</string>
+    <string name="setting_bill_auto_record">自动记录账单时显示提醒</string>
+    <string name="setting_clear_database">清除数据库</string>
+    <string name="clear_db_desc">不可逆操作，仅在卸载 JustLedger 时使用。</string>
+    <string name="clear_db_msg">您确定要清除数据库吗？请确保在清除数据库前进行备份。</string>
+    <string name="clear_database_failed">数据库清除失败：%s</string>
+    <string name="clear_success">清除成功</string>
+
+    <string name="server_error_restart_title">需要重新启动</string>
+    <string name="server_error_version_message">检测到版本不匹配：\n服务器版本：%1$s\n应用版本：%2$s\n\n请重启设备以确保功能正常运行。</string>
+    <string name="server_error_connection_message">无法连接到本地服务器（127.0.0.1:52045），请重启设备。</string>
+    <string name="server_error_btn_ok">我知道了</string>
+    <string name="setting_load_success">成功加载 JustLedger 后显示通知</string>
+    <string name="setting_title_ai_config">AI 配置</string>
+    <string name="setting_ai_config">AI 配置</string>
+    <string name="setting_ai_config_summary">配置 AI 模型和 API 设置</string>
+    <string name="setting_ai_feature_available">启用 AI 功能</string>
+    <string name="setting_ai_feature_available_summary">AI 功能总开关，关闭后将禁用识别与分析</string>
+    <string name="ai_test_connection">测试连接</string>
+    <string name="ai_test_result">测试结果</string>
+    <string name="ai_test_success_message">AI 连接成功！模型工作正常。</string>
+    <string name="ai_test_failed_message">AI 连接失败：%s</string>
+    <string name="ai_test_no_config">请先配置服务商、模型和 API 密钥</string>
+    <string name="setting_backup_to_local">备份到本地</string>
+    <string name="setting_backup_to_local_summary">导出数据到本地文件</string>
+    <string name="setting_restore_from_local">从本地恢复</string>
+    <string name="setting_restore_from_local_summary">从本地文件导入数据</string>
+    <string name="setting_category_auto_backup">自动备份</string>
+    <string name="setting_category_webdav_backup">WebDAV 备份</string>
+    <string name="setting_use_webdav_replace_local">使用 WebDAV 取代本地备份</string>
+    <string name="setting_use_webdav_replace_local_summary">启用后，自动备份将使用 WebDAV 而不是本地存储</string>
+    <string name="setting_webdav_config_incomplete">请先配置 WebDAV 主机、用户名和密码</string>
+    <string name="setting_backup_to_webdav">备份到 WebDAV</string>
+    <string name="setting_backup_to_webdav_summary">创建备份并上传到 WebDAV 服务器</string>
+    <string name="setting_restore_from_webdav">从 WebDAV 恢复</string>
+    <string name="setting_restore_from_webdav_summary">从 WebDAV 服务器下载并恢复最新备份</string>
+    <string name="unknown">未知</string>
+    <string name="title_category_rule">自动分类规则</string>
+    <string name="title_sms_edit">编辑数据过滤条件</string>
+    <string name="data_filter_whitelist_hint">白名单（每行一个关键词，匹配任一则通过）</string>
+    <string name="data_filter_blacklist_hint">黑名单（每行一个关键词，匹配任一则排除）</string>
+    <string name="picker_year">年</string>
+    <string name="picker_month">月</string>
+    <string name="picker_day">日</string>
+    <string name="picker_hour">:</string>
+    <string name="date">日期</string>
+    <string name="date_time">时间</string>
+    <string name="title_bill">账单</string>
+    <string name="setting_landscape_dnd">横屏勿扰</string>
+    <string name="un_group_title">拆分为独立账单</string>
+    <string name="un_group_message">您确定要将此账单从当前账单中拆分为独立账单吗？</string>
+    <string name="assets_map_title">发现未识别资产</string>
+    <string name="assets_map_description">记账应用无法处理未识别的资产，请映射以下资产以确保正确的资产名称。</string>
+    <string name="setting_duplicated">检测到重复账单弹出提醒</string>
+    <string name="setting_duplicated_summary">当检测到重复账单时，弹出提醒窗口</string>
+    <string name="income_reimbursement_info">报销 - %s</string>
+    <string name="income_refund_info">退款 - %s</string>
+    <string name="refund">退款</string>
+    <string name="item_wait_sync">待同步</string>
+    <string name="item_wait_edit">待编辑</string>
+    <string name="item_synced">已同步</string>
+    <string name="service_channel_description">JustLedger 后台监听服务</string>
+    <string name="service_notification_title">JustLedger 后台服务正在运行</string>
+
+    <!-- Colors -->
+    <string name="color_default">默认</string>
+    <string name="color_sakura">樱花</string>
+    <string name="color_red">红色</string>
+    <string name="color_pink">粉色</string>
+    <string name="color_purple">紫色</string>
+    <string name="color_deep_purple">深紫色</string>
+    <string name="color_indigo">靛蓝</string>
+    <string name="color_blue">蓝色</string>
+    <string name="color_light_blue">浅蓝色</string>
+    <string name="color_cyan">青色</string>
+    <string name="color_teal">蓝绿色</string>
+    <string name="color_green">绿色</string>
+    <string name="color_light_green">浅绿色</string>
+    <string name="color_lime">酸橙色</string>
+    <string name="color_yellow">黄色</string>
+    <string name="color_amber">琥珀色</string>
+    <string name="color_orange">橙色</string>
+    <string name="color_deep_orange">深橙色</string>
+    <string name="color_brown">棕色</string>
+    <string name="color_blue_grey">蓝灰色</string>
+
+    <!-- Intro -->
+    <string name="app_name">JustLedger</string>
+
+    <!-- Intro page -->
+    <string name="intro_title">JustLedger</string>
+    <string name="intro_subtitle">自动记录，清楚生活</string>
+    <string name="get_started">立即开始</string>
+
+    <!-- Title and labels -->
+    <string name="select_work_mode">选择工作模式</string>
+    <string name="select_work_mode_subtitle">
+    选择最适合您设备设置的提取方法。
+</string>
+    <!-- Xposed Mode -->
+    <string name="xposed_mode_title">Xposed 模式</string>
+    <string name="lspatch_mode_title">LSPatch 模式</string>
+    <string name="lspatch_mode_description">
+        无需 Root，通过对目标 App 重新打包注入 Hook（打补丁）实现深度集成，效果接近 Xposed，适合无法 Root 的设备；需要重新安装已打补丁的应用。
+    </string>
+    <string name="xposed_mode_description">
+        需要 Root + LSPosed。直接 Hook 应用 API 和通知进行实时、高精度数据捕获——适合高级用户或具有完全设备控制权的企业环境。
+    </string>
+
+    <!-- OCR Mode -->
+    <string name="ocr_mode_title">OCR 模式</string>
+    <string name="ocr_mode_description">
+        无需 Root。捕获截图或通知并运行 OCR/AI 提取账单详情——易于在任何设备上部署，适合日常用户和广泛兼容性场景。
+    </string>
+
+    <!-- OCR Auth Mode Selection -->
+    <string name="ocr_auth_accessibility_description">可选：读取付款页面并识别账单，作为通知和短信之外的补充。</string>
+
+    <!-- OCR Tile -->
+    <string name="ocr_tile_title">OCR识别</string>
+
+    <!-- OCR Shortcut -->
+    <string name="ocr_shortcut_short_label">OCR识别</string>
+    <string name="ocr_shortcut_long_label">启动OCR识别</string>
+    <string name="ocr_shortcut_disabled_message">OCR识别功能暂时不可用</string>
+
+    <!-- Action -->
+    <string name="action_next">下一步</string>
+
+    <string name="auth_title">开启自动记账</string>
+    <string name="auth_subtitle">付款通知与银行短信可自动识别交易。屏幕识别是补充，按需开启。</string>
+
+    <string name="perm_notification_title">付款通知识别</string>
+
+    <string name="perm_sms_title">银行短信识别</string>
+
+    <string name="perm_overlay_title">悬浮窗权限</string>
+    <string name="perm_overlay_desc">允许显示悬浮窗以快速提取工具。</string>
+
+    <string name="perm_ocr_perm_accessibility">屏幕识别</string>
+    <string name="perm_network_title">网络访问</string>
+    <string name="perm_network_desc">
+    允许应用访问互联网进行 AI 分析和数据同步。
+</string>
+
+    <string name="perm_xposed_title">Xposed 模块激活</string>
+    <string name="perm_xposed_desc">
+    请打开 LSPosed 管理器，转到模块 > JustLedger，启用开关，然后重启设备以完成激活。
+</string>
+
+    <string name="perm_xposed_tip">打开 LSPosed 管理器，启用模块，然后返回此处。</string>
+    <string name="keepalive_title">保持 JustLedger 运行</string>
+    <string name="keepalive_subtitle">
+        为确保持续后台运行，请配置这些设置：
+    </string>
+
+    <string name="keepalive_battery_title">忽略电池优化</string>
+    <string name="keepalive_battery_desc">
+        允许应用在设备空闲或屏幕关闭时不受限制地运行。
+    </string>
+
+    <string name="keepalive_autostart_title">启用自动启动</string>
+    <string name="keepalive_autostart_desc">
+        允许应用在设备重启后自动启动。
+    </string>
+
+    <string name="keepalive_tasklock_title">在任务管理器中锁定</string>
+    <string name="keepalive_tasklock_desc">
+        将应用从任务清理器中排除，防止被杀死。
+    </string>
+
+    <string name="action_continue">继续</string><!-- Shell 能力（Root 或 Shizuku） -->
+
+    <!-- Battery optimization -->
+    <string name="keepalive_battery_fail">
+    无法打开电池优化设置。请手动将应用添加到白名单。
+</string>
+
+    <!-- Auto‑start -->
+    <string name="keepalive_autostart_tip">
+    找到"自动启动"（或"启动管理"）屏幕并允许此应用自动启动。
+</string>
+    <string name="keepalive_autostart_fail">
+    无法打开自动启动设置。请手动配置。
+</string>
+
+    <!-- Task‑manager lock -->
+    <string name="keepalive_tasklock_tip">
+    打开最近应用屏幕，然后下拉或长按此应用的卡片并选择"锁定"以保持运行。
+</string>
+
+    <!-- Battery optimisation -->
+    <string name="keepalive_battery_tip_list">
+    在列表中找到此应用并将其切换到"不优化"。
+</string>
+    <string name="keepalive_battery_tip_details">
+    在下一个屏幕上点击"电池优化" → "不优化"。
+</string>
+    <string name="keepalive_battery_already">
+    此应用的电池优化已被禁用。
+</string>
+    <string name="select_ledger_title">选择记账应用</string>
+    <string name="select_ledger_subtitle">JustLedger 默认不包含数据可视化功能；您需要选择一个作为数据可视化分析工具。</string>
+    <string name="sync_title">同步资产</string>
+    <string name="sync_subtitle">JustLedger 需要访问目标应用的分类、资产和账本才能正确记录交易。</string>
+    <string name="action_sync">开始同步</string>
+    <string name="sync_state_not">数据尚未同步</string>
+
+    <!-- Page title & subtitle -->
+    <string name="title_feature_select">选择您需要的功能</string>
+    <string name="subtitle_feature_select">    勾选您想在账本中使用的功能。
+    确保在相应应用中也启用相同功能——否则不会生效。
+    应用不支持的功能会自动隐藏。</string>
+
+    <!-- Feature names & descriptions -->
+    <string name="feature_asset_manage">资产管理</string>
+    <string name="feature_asset_manage_desc">跟踪银行卡、现金、基金和其他资产的变化</string>
+
+    <string name="feature_multi_book">多账本</string>
+    <string name="feature_multi_book_desc">并行管理个人、家庭或项目账本</string>
+
+    <string name="feature_reimbursement">报销</string>
+    <string name="feature_reimbursement_desc">集中管理和跟踪您的报销流程</string>
+
+    <string name="feature_leading">债务</string>
+    <string name="feature_leading_desc">借贷、分期付款和还款提醒</string>
+
+    <string name="feature_fee">手续费/折扣</string>
+    <string name="feature_fee_desc">自动捕获手续费、优惠券和折扣</string>
+
+    <string name="feature_multi_currency">多货币</string>
+    <string name="feature_multi_currency_desc">多货币账户和自动转换</string>
+
+    <string name="feature_tag">标签</string>
+    <string name="feature_tag_desc">用于灵活统计的自定义标签</string>
+
+    <!-- Page titles & subtitles -->
+    <string name="ai_settings_title">AI 设置</string>
+    <string name="ai_settings_subtitle">配置您首选的 AI 服务、模型和 API 令牌</string>
+
+    <!-- Form hints / labels -->
+    <string name="ai_provider_hint">AI 提供商</string>
+    <string name="ai_model_hint">AI 模型</string>
+    <string name="ai_token_hint">API 令牌</string>
+    <string name="ai_get_token">获取令牌</string>
+
+    <string name="action_run">运行</string>
+    <string name="ai_assist">AI 辅助</string>
+
+    <!-- Runtime messages -->
+    <string name="sync_state_success">已同步数据</string>
+    <string name="error_token_required">请输入 API 令牌</string>
+
+    <string name="success_desc">设置成功图标</string>
+    <string name="success_title">开始记录生活</string>
+
+    <string name="success_subtitle">自动识别需开启相应权限，并配置渠道规则。</string>
+    <string name="success_button">开始使用</string>
+    <!-- Finance card labels -->
+    <string name="month_income">月收入</string>
+    <string name="month_expense">月支出</string>
+    <string name="action_back">上一步</string>
+    <string name="keepalive_notification_title">通知权限</string>
+    <string name="keepalive_notification_desc">允许应用发送通知以保持前台服务运行。</string>
+
+    <string name="settings_system_theme_color">系统主题颜色</string>
+    <string name="settings_theme_color">主题颜色</string>
+    <string name="dark_theme">深色主题</string>
+    <string name="settings_pure_black_dark_theme">纯黑深色主题</string>
+    <string name="settings_pure_black_dark_theme_summary">如果启用深色主题，则使用纯黑主题</string>
+    <string name="settings_expense_red_color">支出显示红色</string>
+    <string name="settings_expense_red_color_summary">支出显示为红色，收入显示为绿色</string>
+    <string name="settings_income_up_arrow">收入向上箭头</string>
+    <string name="settings_income_up_arrow_summary">收入显示向上箭头，支出显示向下箭头</string>
+    <string name="dark_theme_off">始终关闭</string>
+    <string name="dark_theme_on">始终开启</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="dark_theme_follow_system">@string/follow_system</string>
+
+    <string name="settings_language">语言</string>
+    <string name="data_editor">数据脱敏</string>
+
+    <string name="hint_raw">查找文本</string>
+    <string name="hint_target">替换为</string>
+
+    <string name="btn_replace">替换</string>
+    <string name="label_content">内容</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_confirm">确认</string>
+    <string name="rule_issue">规则包含错误</string>
+
+    <!-- Category Fragment -->
+    <string name="select_book_first">请先选择账本</string>
+    <string name="expend_category">支出</string>
+    <string name="income_category">收入</string>
+    <string name="action_switch_book">切换账本</string>
+    <string name="title_category_edit">编辑分类</string>
+    <string name="add_category">添加分类</string>
+    <string name="edit_category">编辑分类</string>
+    <string name="delete_category">删除分类</string>
+    <string name="delete_category_message">您确定要删除分类"%s"吗？</string>
+    <string name="delete_category_success">分类删除成功</string>
+    <string name="category_name_hint">输入分类名称</string>
+    <string name="parent_category_label">父分类</string>
+    <string name="no_parent_category">无父级（顶级）</string>
+    <string name="book_info_label">账本</string>
+    <string name="search_icon_hint">按名称搜索图标</string>
+    <string name="save_category_success">分类保存成功</string>
+    <string name="category_name_empty">分类名称不能为空</string>
+    <string name="category_icon_empty">请选择分类图标</string>
+    <string name="category_not_found">找不到分类</string>
+    <string name="category_load_failed">加载分类失败</string>
+    <string name="save_failed">保存失败</string>
+    <string name="delete_failed">删除失败</string>
+
+    <!-- Tag related strings -->
+    <string name="add_tag">添加标签</string>
+    <string name="edit_tag">编辑标签</string>
+    <string name="delete_tag">删除标签</string>
+    <string name="delete_tag_message">您确定要删除标签"%s"吗？</string>
+    <string name="tag_name">标签名称</string>
+    <string name="tag_name_helper">最多 50 个字符</string>
+    <string name="tag_name_required">标签名称是必需的</string>
+    <string name="tag_name_too_long">标签名称太长</string>
+    <string name="tag_name_exists">标签名称已存在</string>
+    <string name="tag_group">标签组</string>
+    <string name="tag_group_hint">选择或输入组名</string>
+    <plurals name="bill_tag_limit">
+        <item quantity="other">最多选择 %d 个标签</item>
+    </plurals>
+    <string name="bill_tag_unselected">选择标签</string>
+    <string name="select_color">选择颜色</string>
+    <string name="tag_created_successfully">标签创建成功</string>
+    <string name="tag_updated_successfully">标签更新成功</string>
+    <string name="tag_deleted_successfully">标签删除成功</string>
+    <string name="load_tag_failed">加载标签失败</string>
+    <string name="title_tag_edit">编辑标签</string>
+    <string name="restore_default_tags">恢复默认标签</string>
+    <string name="restore_default_tags_title">恢复默认标签</string>
+    <string name="restore_default_tags_message">此操作将清除所有现有标签并恢复默认标签。此操作无法撤销。是否继续？</string>
+    <string name="restore_default_tags_success">默认标签恢复成功</string>
+    <string name="restore_default_tags_failed">恢复默认标签失败</string>
+
+    <!-- Category reset -->
+    <string name="restore_default_categories">恢复默认分类</string>
+    <string name="restore_default_categories_title">恢复默认分类</string>
+    <string name="restore_default_categories_message">这将清除当前账本的所有分类并恢复默认分类。此操作无法撤销。继续？</string>
+    <string name="restore_default_categories_success">默认分类恢复成功</string>
+
+    <!-- JS Editor Strings -->
+    <string name="unknown_error">未知错误</string><!-- 设置分类标题 -->
+    <string name="setting_category_float_badge">记账小面板设置</string>
+    <string name="setting_category_ocr">OCR</string>
+    <string name="setting_category_asset_management">资产管理</string>
+    <string name="setting_category_local_backup">本地备份</string>
+    <string name="setting_category_update">更新设置</string>
+
+    <!-- 新的分类标题 -->
+    <string name="setting_category_book_app">记账应用</string>
+    <string name="setting_category_recording_mode">记录方式</string>
+    <string name="setting_category_bill_recognition">账单识别</string>
+    <string name="setting_category_bill_management">账单管理</string>
+    <string name="setting_category_bill_mark">账单标记</string>
+    <string name="setting_category_category_management">分类管理</string>
+    <string name="setting_category_notification_settings">提醒设置</string>
+    <string name="setting_category_popup_style_settings">弹窗风格</string>
+    <string name="setting_category_recording_panel">记账面板</string>
+    <string name="setting_category_prompt_management">提示词管理</string>
+    <string name="setting_category_advanced_features_settings">高级功能</string>
+    <string name="setting_category_app_info">应用信息</string>
+    <string name="setting_category_community">交流社区</string>
+    <string name="setting_category_author">作者信息</string>
+
+    <!-- 更新设置 -->
+    <string name="setting_auto_check_app_update">自动检查应用更新</string>
+    <string name="setting_auto_check_app_update_summary">自动检查应用程序更新</string>
+    <string name="setting_auto_check_rule_update">自动检查规则更新</string>
+    <string name="setting_auto_check_rule_update_summary">自动检查记账规则更新</string>
+    <string name="setting_app_channel">更新渠道</string><!-- 更新类型选项 --><!-- 设置项标题和摘要 -->
+    <string name="setting_auto_group">自动去重</string>
+    <string name="setting_auto_group_summary">有可靠交易凭据才合并；疑似重复先核对</string>
+    <string name="setting_auto_group_time_threshold">相似账单检查范围</string>
+    <plurals name="setting_auto_group_time_threshold_summary">
+        <item quantity="other">检查前后 %d 秒内的同额账单，缺少凭据时提示核对</item>
+    </plurals>
+    <string name="setting_auto_transfer_recognition">自动识别转账账单</string>
+    <string name="setting_auto_transfer_recognition_summary">仅在交易关联明确、两端均为自有账户时识别为转账</string>
+    <string name="setting_auto_transfer_time_threshold">转账合并时间阈值</string>
+    <plurals name="setting_auto_transfer_time_threshold_summary">
+        <item quantity="other">前后 %d 秒内的相同金额收入和支出账单会被识别为转账</item>
+    </plurals>
+    <string name="setting_bill_auto_record_summary">自动记录账单时显示提醒</string>
+    <string name="setting_load_success_summary">成功加载时显示提醒（只在Xposed模式）</string>
+    <string name="setting_default_book">默认账本</string>
+    <string name="setting_default_book_summary">新账单的默认账本</string>
+
+    <string name="setting_round_style">使用圆角弹窗风格</string>
+    <string name="setting_round_style_summary">为弹窗启用圆角样式</string>
+    <string name="setting_float_badge_timeout">记账小面板超时时间</string>
+    <string name="setting_float_badge_disabled">不显示记账小面板</string>
+    <string name="setting_float_timeout_action">超时操作</string>
+    <string name="setting_float_click">点击操作</string>
+    <string name="setting_float_long_click">长按操作</string>
+
+    <!-- 记账小面板位置设置 -->
+    <string name="setting_float_badge_position">面板显示位置</string>
+    <string name="float_position_left">左侧</string>
+    <string name="float_position_right">右侧</string>
+    <string name="float_position_top">顶部</string>
+    <string name="toast_position_top">顶部</string>
+    <string name="toast_position_center">中间</string>
+    <string name="toast_position_bottom">底部</string>
+    <string name="setting_toast_position">提醒位置</string>
+    <string name="setting_asset_manager">资产管理</string>
+    <string name="setting_asset_manager_summary">启用资产管理功能</string>
+    <string name="setting_currency_manager">多币种支持</string>
+    <string name="setting_currency_manager_summary">启用多货币支持</string>
+    <string name="setting_base_currency">本位币</string>
+    <string name="setting_base_currency_summary">当前：%s</string>
+    <string name="setting_selected_currencies">常用币种</string>
+    <plurals name="setting_selected_currencies_summary">
+        <item quantity="other">已选择 %d 个常用币种</item>
+    </plurals>
+    <string name="setting_selected_currencies_summary_default">配置常用币种</string>
+    <string name="setting_reimbursement">报销管理</string>
+    <string name="setting_reimbursement_summary">启用报销跟踪</string>
+    <string name="setting_debt">债务管理</string>
+    <string name="setting_debt_summary">启用债务和贷款跟踪</string>
+    <string name="setting_book_manager">使用多账本</string>
+    <string name="setting_book_manager_summary">启用多账本管理</string>
+    <string name="setting_fee">手续费/优惠管理</string>
+    <string name="setting_fee_summary">启用交易手续费跟踪</string>
+    <string name="setting_tag">标签管理</string>
+    <string name="setting_tag_summary">启用账单标签</string>
+    <string name="setting_auto_backup">自动备份</string>
+    <string name="setting_auto_backup_summary">自动本地备份数据</string>
+    <string name="setting_backup_keep_count">备份保留数量</string>
+    <plurals name="setting_backup_keep_count_summary">
+        <item quantity="other">保留 %d 个备份文件（适用于本地和WebDAV备份）</item>
+    </plurals>
+    <string name="setting_backup_keep_count_summary_default">配置本地和 WebDAV 备份保留数量</string>
+    <string name="setting_backup_keep_count_updated">备份保留数量已更新为 %d</string>
+    <string name="setting_backup_keep_count_invalid">请输入1到100之间的有效数字</string>
+    <string name="setting_webdav_url">WebDAV 服务器地址</string>
+    <string name="setting_webdav_url_summary">填写完整的 WebDAV URL，如：https://dav.jianguoyun.com/dav/</string>
+    <string name="setting_webdav_user">WebDAV 用户</string>
+    <string name="setting_webdav_user_summary">WebDAV 用户名</string>
+    <string name="setting_webdav_password">WebDAV 密码</string>
+    <string name="setting_webdav_password_summary">WebDAV 密码</string>
+    <string name="setting_debug_mode">调试模式</string>
+    <string name="setting_debug_mode_summary">启用调试日志和功能</string>
+    <string name="debug_tag">调试</string>
+    <string name="setting_send_error_report">错误报告</string>
+    <string name="setting_send_error_report_summary">自动发送崩溃报告</string>
+    <string name="setting_landscape_dnd_summary">当设备处于横屏状态时不会弹窗干扰</string><!-- AI Features -->
+    <string name="setting_ai_bill_recognition">使用AI识别账单</string>
+    <string name="setting_ai_bill_recognition_summary">从原始数据自动提取账单信息</string>
+    <string name="setting_ai_vision_recognition">直接将图片发给大模型识别</string>
+    <string name="setting_ai_vision_recognition_summary">跳过 OCR，将截图直接发给大模型。请选择具有视觉能力的模型（如 gpt-4o、gemini-pro-vision、qwen-vl 等）</string>
+    <string name="setting_rule_match_include_disabled">允许禁用规则参与匹配</string>
+    <string name="setting_rule_match_include_disabled_summary">命中禁用规则时直接丢弃，避免调用AI</string>
+    <string name="setting_ai_category_recognition">使用AI进行分类识别</string>
+    <string name="setting_ai_category_recognition_summary">自动为账单分配适当的分类</string>
+    <string name="setting_ai_asset_mapping">使用AI进行资产映射</string>
+    <string name="setting_ai_asset_mapping_summary">自动将账单映射到相应的资产账户</string>
+    <string name="setting_ai_monthly_summary">AI分析</string>
+    <string name="setting_ai_monthly_summary_summary">生成财务分析和摘要报告</string>
+
+    <!-- AI Advanced Settings -->
+    <string name="setting_ai_summary_prompt">自定义 AI 摘要提示</string>
+    <string name="setting_ai_summary_prompt_summary">自定义 AI 用于生成摘要的提示模板</string>
+    <string name="setting_ai_bill_recognition_prompt">账单识别提示词</string>
+    <string name="setting_ai_bill_recognition_prompt_summary">自定义 AI 用于识别账单的提示词</string>
+    <string name="setting_ai_asset_mapping_prompt">资产映射提示词</string>
+    <string name="setting_ai_asset_mapping_prompt_summary">自定义 AI 用于资产映射的提示词</string>
+    <string name="setting_ai_category_recognition_prompt">分类识别提示词</string>
+    <string name="setting_ai_category_recognition_prompt_summary">自定义 AI 用于分类识别的提示词</string>
+
+    <!-- WebDAV 相关字符串 -->
+<!-- AI Summary 相关字符串 -->
+    <string name="ai_summary_title">AI分析</string><!-- 分析任务状态 -->
+    <string name="analysis_status_pending">待处理</string>
+    <string name="analysis_status_processing">分析中</string>
+    <string name="analysis_status_completed">已完成</string>
+    <string name="analysis_status_failed">失败</string>
+
+    <!-- 分析详情 -->
+    <string name="analysis_detail_title">分析报告</string>
+    <string name="analysis_result_not_found">未找到分析结果</string>
+    <string name="analysis_result_empty">AI 分析结果为空，请重新生成</string>
+    <string name="analysis_result_parse_error">分析结果格式错误，请重新生成</string>
+    <string name="analysis_generating_image">生成图片中…</string>
+    <string name="analysis_share_title">分享分析</string>
+
+    <!-- 删除分析任务 -->
+    <string name="delete_analysis_task">删除分析任务</string>
+    <string name="delete_analysis_task_message">确定要删除分析任务"%s"吗？此操作无法撤销。</string>
+
+    <!-- 按钮文字 -->
+    <string name="btn_ai_analysis">AI</string>
+    <string name="btn_bill_sync">同步</string>
+    <string name="btn_bill_statistics">统计</string>
+    <string name="setting_manual_sync">手动同步账单</string>
+    <string name="setting_manual_sync_summary">开启后保存的账单不会自动同步至目标App</string>
+    <string name="setting_delayed_sync_threshold">延迟同步阈值</string>
+    <string name="setting_delayed_sync_threshold_summary">未同步账单达到 %d 条时自动同步</string>
+    <string name="setting_delayed_sync_threshold_realtime">实时同步（立即同步）</string>
+
+    <!-- 统计页面 -->
+    <string name="stat_title">统计</string>
+
+    <!-- 周期选择 -->
+    <string name="period_last_week">最近一周</string>
+    <string name="period_last_30_days">最近30天</string>
+    <string name="period_this_month">这个月</string>
+    <string name="period_last_year">最近一年</string>
+    <string name="period_this_year">今年</string>
+    <string name="period_custom_range">自定义区间</string>
+    <string name="select_start_date">选择开始日期</string>
+    <string name="select_end_date">选择结束日期</string>
+    <string name="time_range_invalid">结束日期必须晚于开始日期</string>
+
+    <!-- 以下为与默认英文 strings 对齐而新增的缺失条目 -->
+    <!-- 权限可选提示 -->
+    <string name="perm_optional">可选</string>
+    <plurals name="perm_optional_missing_hint">
+        <item quantity="other">%d 个可选权限未授予，可能影响部分功能</item>
+    </plurals>
+    <string name="perm_notification_desc_optional">接收微信、支付宝和银行的付款通知，按规则自动记账。需要开启通知访问权限。</string>
+    <string name="perm_sms_desc_optional">从银行交易短信识别收支。仅在需要短信记账时开启。</string>
+
+    <!-- 通用提示与吐司 -->
+    <string name="toast_target_app_not_installed">未安装目标应用"%1$s"，无法继续</string>
+
+    <!-- 金额与手续费编辑相关 -->
+    <string name="edit_amount">编辑金额</string>
+    <string name="edit_fee">编辑手续费/优惠</string>
+    <string name="hint_fee">负数为手续费，正数为优惠</string>
+    <string name="no_discount">无折扣</string>
+    <string name="discounted">已优惠 %.2f</string>
+    <string name="handling_fee">手续费 %.2f</string>
+    <!-- 金额显示组件：账单标志位 -->
+    <string name="bill_flag_not_count">不计收支</string>
+    <string name="bill_flag_not_budget">不计预算</string>
+
+    <!-- 账单列表标签 -->
+    <string name="bill_fee_label">手续费 %s</string>
+    <string name="bill_discount_label">优惠 %s</string>
+
+    <!-- 规则禁用相关 -->
+    <string name="disable_rule_title">禁用规则</string>
+    <string name="disable_rule_message">确定要禁用规则"%s"吗？</string>
+    <string name="rule_not_found">未找到规则</string>
+    <string name="rule_disable_failed">禁用规则失败</string>
+
+    <!-- 替换预览对话框补全 -->
+
+    <!-- 浮窗动作显示名称 & 通用字符串 -->
+    <string name="clearing">清除中…</string>
+    <plurals name="setting_timeout_seconds">
+        <item quantity="other">%d 秒</item>
+    </plurals>
+    <string name="float_action_edit">编辑账单</string>
+    <string name="float_action_dismiss">关闭</string>
+    <string name="float_action_auto_record">自动记录</string>
+    <string name="setting_ocr_show_animation">显示OCR状态提示</string>
+    <string name="setting_ocr_show_animation_summary">OCR和AI识别期间在顶部显示状态横幅</string>
+    <string name="ocr_status_processing_screenshot">正在处理截图…</string>
+    <string name="ocr_status_recognizing">正在OCR识别…</string>
+    <string name="ocr_status_ai_analyzing">正在AI识别…</string>
+    <string name="ocr_error_no_foreground_app">无法获取前台应用</string>
+    <string name="ocr_error_capture_failed">截图解码失败</string>
+    <string name="ocr_error_ocr_failed">OCR识别失败</string>
+    <string name="ocr_error_empty_result">未识别到文字</string>
+    <string name="ocr_error_keyword_filtered">未包含识别关键字</string>
+    <string name="setting_ocr_accessibility_keep_alive">常驻后台识别</string>
+    <string name="setting_ocr_accessibility_keep_alive_summary">关闭后，每次 OCR 识别结束将自动停止无障碍服务</string>
+    <string name="accessibility_service_label">JustLedger OCR</string>
+    <string name="accessibility_service_description">用于OCR屏幕识别：检测前台应用和截取屏幕</string>
+    <string name="ocr_error_accessibility_not_ready">无障碍服务未运行，请在系统设置中开启</string>
+    <string name="ocr_remember_page_title">记住此页面？</string>
+    <string name="ocr_remember_page_message">是否记住此页面（%s）以便下次自动识别？</string>
+    <string name="ocr_remember_page_activity_unknown">未知页面</string>
+    <string name="ocr_remember_page_confirm">记住</string>
+    <string name="ocr_remember_page_success">已记住此页面</string>
+    <string name="ocr_delete_page_confirm">移除 %s 的页面偏好？移除后恢复询问。</string>
+    <string name="setting_page_signatures">页面识别偏好</string>
+    <string name="setting_page_signatures_summary">管理自动触发 OCR 的页面（Activity + 内容特征）</string>
+    <string name="page_signatures_empty">暂无已记住的页面。在账单页手动触发识别，成功后点击「记住」即可。</string>
+    <string name="setting_ocr_back_tap_trigger">双击机身背部触发当前页面识别</string>
+    <string name="setting_ocr_back_tap_trigger_summary">非 Xposed 模式下可用；依赖加速度计与陀螺仪（Columbus Tap 模型）。请在白名单中配置应用以减少误触</string>
+    <string name="setting_ocr_accessibility_auto_trigger">页面切换自动触发OCR</string>
+    <string name="setting_ocr_accessibility_auto_trigger_summary">OCR模式使用无障碍授权时，切换到已记住页面时自动触发识别</string>
+
+    <!-- 资产与账单相关补全 -->
+    <string name="expend_reimbursement">支出报销</string>
+    <string name="income_reimbursement">收入报销</string>
+    <string name="setting_auto_asset_mapping_disabled">必须先启用资产管理功能</string>
+
+    <!-- 备份恢复过程提示 -->
+    <string name="backup_preparing">准备备份…</string>
+    <string name="backup_database">备份数据库…</string>
+    <string name="backup_preferences">备份偏好设置…</string>
+    <string name="backup_creating_index">创建索引文件…</string>
+    <string name="backup_compressing">压缩文件…</string>
+    <string name="restore_preparing">准备恢复…</string>
+    <string name="restore_extracting">解压备份…</string>
+    <string name="restore_validating">验证备份…</string>
+    <string name="restore_database">恢复数据库…</string>
+    <string name="restore_preferences">恢复偏好设置…</string>
+    <string name="restore_clearing_cache">清理缓存…</string>
+    <string name="restore_restarting">重启应用…</string>
+
+    <!-- Canary版本警告 -->
+    <string name="canary_warning_title">Canary版本风险警告</string>
+    <string name="canary_warning_message">您当前使用的是Canary版本，具有以下特点：\n\n• 每3小时自动构建\n• 包含最新功能和修复\n• 不保证稳定性和可用性\n• 可能包含未知错误\n\n建议：\n• 在生产环境中谨慎使用\n• 报告错误前请启用调试模式\n• 及时备份重要数据</string>
+    <string name="canary_warning_confirm">我了解</string>
+    <string name="canary_warning_enable_debug">启用调试模式</string>
+
+    <!-- 帮助文档提醒（与「关于 → 官网」同一链接） -->
+    <string name="help_doc_reminder_title">阅读使用文档</string>
+    <string name="help_doc_reminder_message">建议先阅读官方用户手册，了解工作模式与记账配置后再使用本应用。</string>
+    <string name="help_doc_reminder_positive">查看文档</string>
+    <string name="help_doc_reminder_negative">稍后</string>
+
+    <!-- JS编辑器相关 -->
+    <string name="js_executing">执行中…</string>
+    <string name="js_execution_result">执行结果</string>
+    <string name="js_saved">已保存</string>
+
+    <!-- 权限相关 -->
+    <string name="perm_required_not_complete">某些必需权限仍然缺失。请在继续之前授予它们。</string>
+
+    <!-- 设置相关补充 -->
+    <string name="setting_auto_asset_mapping">记住资产映射</string>
+    <string name="setting_auto_asset_mapping_summary">自动创建资产映射规则，记住本次账单选择的资产</string>
+    <string name="setting_auto_create_category_summary">自动创建分类规则记住上次识别账单的分类</string>
+    <string name="setting_auto_record_bill">全自动记账</string>
+    <string name="setting_auto_record_bill_summary">无需弹窗二次确认</string>
+    <string name="setting_bill_show_rule_summary">编辑账单时显示匹配规则的名称</string>
+    <string name="setting_book_app">记账软件</string>
+    <string name="setting_book_app_summary">目标记账应用包名</string>
+    <string name="setting_category_book_config">账本配置</string>
+    <string name="setting_category_appearance">外观</string>
+    <string name="setting_local_backup_path">本地备份路径</string>
+    <string name="setting_local_backup_path_summary">本地备份存储路径</string>
+
+    <!-- 提示 -->
+    <string name="remember_category_success">已自动记住分类：%s</string>
+
+    <!-- 简短标签 -->
+    <string name="regexLabel">正则</string>
+    <string name="btn_create_rule">规则</string>
+    <string name="btn_upload_adapter">适配</string>
+    <string name="btn_upload_feedback">反馈</string>
+    <string name="btn_test_rule">测试</string>
+
+    <!-- 删除二次确认设置 -->
+    <string name="setting_confirm_delete_bill">删除前二次确认</string>
+    <string name="setting_confirm_delete_bill_summary">删除账单时弹出确认提示</string>
+    <string name="status_working">工作中</string>
+    <string name="status_inactive">未激活</string>
+    <string name="whitelist_info">此白名单仅对通知与 OCR 数据生效，可直接过滤不希望获取数据的应用；手动发起的 OCR 不受此白名单影响。</string>
+
+    <!-- 日志相关 -->
+    <string name="log_level">日志级别</string>
+    <string name="log_level_debug">调试</string>
+    <string name="log_level_info">信息</string>
+    <string name="log_level_warn">警告</string>
+    <string name="log_level_error">错误</string>
+
+    <!-- 同步状态消息 -->
+    <string name="sync_starting">开始同步…</string>
+    <plurals name="sync_completed">
+        <item quantity="other">同步完成！已同步 %1$d 条账单</item>
+    </plurals>
+    <string name="sync_no_bills">没有需要同步的账单</string>
+    <string name="repeat_toast_action_dont_merge">不去重</string>
+
+    <!-- ============================================ -->
+    <!-- 设置页面相关字符串（方便review） -->
+    <!-- ============================================ -->
+
+    <!-- 新的7大分类 -->
+    <string name="setting_title_recording">记账偏好</string>
+    <string name="setting_desc_recording">自动入账 · 分类 · 账户与账本</string>
+
+    <string name="setting_title_interaction">屏幕识别与提醒</string>
+    <string name="setting_desc_interaction">入账提醒 · 屏幕识别 · 操作偏好</string>
+
+    <string name="setting_title_ai_assistant">AI 辅助识别</string>
+    <string name="setting_desc_ai_assistant">AI配置 · 提示词管理 · AI功能</string>
+
+
+    <string name="setting_title_data_management">备份与恢复</string>
+    <string name="setting_desc_data_management">自动备份 · 本地备份 · WebDAV备份</string>
+
+    <string name="setting_title_system">外观</string>
+    <string name="setting_desc_system">外观设置 · 更新设置 · 高级功能</string>
+
+    <string name="setting_title_about">关于应用</string>
+    <string name="setting_desc_about">版本与开源致谢</string>
+
+    <!-- Pro激活相关 -->
+    <string name="pro_rule_update_plan">规则更新计划</string>
+    <string name="pro_activate_click_to_enter">点击此处输入激活码</string>
+    <string name="pro_activate_dialog_title">输入激活码</string>
+    <string name="pro_activate_success">激活成功！</string>
+    <string name="pro_activate_failed">激活失败：%s</string>
+    <string name="pro_activate_code_format_error">激活码格式无效</string>
+    <string name="pro_activate_info_failed">获取激活信息失败：%s</string>
+    <string name="pro_activate_info_format">激活次数：%1$s\n激活时间：%2$s</string>
+
+    <!-- 关于应用相关 -->
+    <string name="setting_open_source_code">源代码</string>
+    <string name="setting_official_website">官网</string>
+    <string name="setting_activation_code">激活记录</string>
+    <string name="setting_update_log">更新日志</string>
+    <string name="setting_forum">论坛</string>
+    <string name="setting_qq_group">QQ群</string>
+    <string name="setting_telegram">Telegram</string>
+    <string name="setting_author_blog">博客</string>
+    <string name="setting_author_github">Github</string>
+    <string name="setting_author_contact">联系方式</string>
+    <string name="setting_author_coolapk">酷安</string>
+    <string name="setting_author_wechat">微信公众号</string>
+    <string name="setting_author_bilibili">哔哩哔哩</string>
+
+    <!-- 规则编辑器 -->
+    <string name="rule_parse_form_failed">解析表单数据失败</string>
+    <string name="rule_test_data_required">请先输入测试数据</string>
+    <string name="rule_ai_generating">AI 正在生成规则…</string>
+    <string name="rule_ai_generate_failed">AI生成失败</string>
+    <string name="rule_ai_generate_failed_with_reason">AI生成失败: %s</string>
+    <string name="rule_ai_generate_success">AI规则已生成</string>
+    <string name="rule_test_failed">测试规则失败</string>
+    <string name="rule_save_failed">保存规则失败</string>
+    <string name="clear_all_analysis">清空所有分析</string>
+    <string name="clear_all_analysis_message">确定要删除所有财务分析任务吗？此操作不可恢复。</string>
+    <string name="clear_all_analysis_success">已清空所有分析任务</string>
+    <string name="clear_all_analysis_failed">清空失败，请重试</string>
+    <string name="switch_transfer_direction">切换转账方向</string>
+    <string name="approximate_rate_format">≈ %1$s %2$s</string>
+    <string name="delete_data_count">删除（%d）</string>
+    <string name="setting_bill_export_category">账单导出</string>
+    <string name="setting_bill_export_enabled">同步账单到 NAS</string>
+    <string name="setting_bill_export_enabled_summary">每小时只读导出，不修改记账同步队列</string>
+    <string name="setting_bill_export_url">NAS 接收地址</string>
+    <string name="setting_bill_export_url_summary">完整 HTTPS 地址，以 /autoaccounting/v1/bills 结尾</string>
+    <string name="setting_bill_export_token">NAS 令牌</string>
+    <string name="setting_bill_export_token_summary">独立 Bearer Token，仅保存在本机</string>
+    <string name="setting_bill_export_test">立即导出</string>
+    <string name="setting_bill_export_test_summary">读取并上传今天的三种账单状态</string>
+    <string name="setting_bill_export_test_queued">账单导出已启动</string>
+    <string name="setting_bill_export_test_success">账单导出完成：读取 %1$d 条，发送 %2$d 条</string>
+    <string name="setting_bill_export_test_failed">账单导出失败：%1$s</string>
+    <string name="confirm_delete_action">确认删除</string>
+</resources>

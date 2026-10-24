@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<resources>
+    <declare-styleable name="WaveTextView">
+        <attr name="waveColor" format="color" />
+        <attr name="waveAmplitude" format="dimension" />
+        <attr name="waveFrequency" format="float" />
+        <!-- 保留自定义属性，避免与依赖库重复定义冲突：移除 waveSpeed -->
+        <attr name="waveBottomPadding" format="float" />
+    </declare-styleable>
+    <declare-styleable name="IconView">
+        <attr name="iconSrc" format="reference" />
+        <attr name="iconTintEnabled" format="boolean" />
+        <attr name="text" format="string" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="maxLines" format="integer" />
+        <attr name="iconSpacing" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="StatusPage">
+        <attr name="innerHeight" format="string" />
+    </declare-styleable>
+    <declare-styleable name="SettingItemView">
+        <attr name="settingIcon" format="reference" />
+        <attr name="settingTitle" format="string" />
+        <attr name="settingDesc" format="string" />
+    </declare-styleable>
+    <declare-styleable name="GradientImageView">
+        <attr name="cornerRadiusTopLeft" format="dimension" />
+        <attr name="cornerRadiusTopRight" format="dimension" />
+        <attr name="cornerRadiusBottomLeft" format="dimension" />
+        <attr name="cornerRadiusBottomRight" format="dimension" />
+        <attr name="cornerRadius" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="ExpandableCardView">
+        <!-- icon drawable -->
+        <attr name="ecv_icon" format="reference" />
+        <!-- 标题文字 -->
+        <attr name="ecv_titleText" format="string" />
+        <!-- 描述文字 -->
+        <attr name="ecv_descriptionText" format="string" />
+        <!-- 是否默认展开 -->
+        <attr name="ecv_expanded" format="boolean" />
+        <attr name="ecv_switch" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="IconTileView">
+        <attr name="tileIcon" format="reference" />
+        <attr name="tileLabel" format="string" />
+        <attr name="circleColor" format="color" />
+    </declare-styleable>
+
+    <!-- 分类图标 + 右下角 more 组件属性 -->
+    <declare-styleable name="CategoryIconMoreView">
+        <!-- 主图标资源（默认 @drawable/default_cate） -->
+        <attr name="cim_icon" format="reference" />
+        <!-- 右下角 more 图标资源（默认 @drawable/ic_more2） -->
+        <attr name="cim_moreIcon" format="reference" />
+        <!-- 主背景色：未设置时使用主题 colorPrimary -->
+        <attr name="cim_primaryColor" format="color" />
+        <!-- 副背景色：未设置时使用主题 colorSecondary -->
+        <attr name="cim_secondaryColor" format="color" />
+    </declare-styleable>
+
+</resources>

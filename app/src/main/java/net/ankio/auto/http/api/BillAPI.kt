@@ -1,0 +1,283 @@
+/*
+ * Copyright (C) 2025 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package net.ankio.auto.http.api
+
+import android.net.Uri
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import net.ankio.auto.http.LocalNetwork
+import net.ankio.auto.storage.Logger
+import net.ankio.auto.ui.models.OrderGroup
+import org.ezbook.server.constant.BillState
+import org.ezbook.server.db.model.BillInfoModel
+import org.ezbook.server.models.StatsResponse
+import org.ezbook.server.tools.runCatchingExceptCancel
+
+/**
+ * 账单API接口对象，提供与账单相关的所有网络请求操作
+ * 所有方法都是挂起函数，需要在协程作用域内调用
+ */
+object BillAPI {
+    suspend fun enrichmentCandidates(id: Long): List<BillInfoModel> = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.get<List<BillInfoModel>>("bill/enrichment/candidates?id=$id").getOrThrow()
+        check(response.code == 200) { response.msg }
+        response.data.orEmpty()
+    }
+
+    suspend fun enrich(source: BillInfoModel, target: BillInfoModel): BillInfoModel = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.post<BillInfoModel>("bill/enrichment/confirm", Gson().toJson(mapOf(
+            "sourceId" to source.id, "targetId" to target.id,
+            "sourceSnapshot" to org.ezbook.server.tools.MD5HashTable.md5(Gson().toJson(source)),
+            "targetSnapshot" to org.ezbook.server.tools.MD5HashTable.md5(Gson().toJson(target))
+        ))).getOrThrow()
+        check(response.code == 200) { response.msg }
+        requireNotNull(response.data)
+    }
+    /** Strict read-only export call; failures remain distinguishable from an empty result. */
+    suspend fun exportList(
+        state: BillState,
+        startTime: Long,
+        endTime: Long
+    ): Result<List<BillInfoModel>> = withContext(Dispatchers.IO) {
+        runCatchingExceptCancel {
+            val path = "bill/export/list?state=${state.name}&start=$startTime&end=$endTime"
+            LocalNetwork.get<List<BillInfoModel>>(path).getOrThrow().data ?: emptyList()
+        }
+    }
+
+    /**
+     * 添加或更新账单信息
+     * @param billInfoModel 账单信息模型
+     * @return 服务器响应结果
+     */
+    suspend fun put(billInfoModel: BillInfoModel, automatic: Boolean = false): Long = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.post<Long>("bill/put?automatic=$automatic", Gson().toJson(billInfoModel)).getOrThrow()
+        check(response.code == 200) { response.msg }
+        requireNotNull(response.data) { "保存未返回账单编号" }
+    }
+
+    suspend fun pendingNotices(): List<org.ezbook.server.db.model.BillNoticeModel> = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.get<List<org.ezbook.server.db.model.BillNoticeModel>>("bill/notices/pending").getOrThrow()
+        check(response.code == 200) { response.msg }
+        response.data.orEmpty()
+    }
+
+    suspend fun acknowledgeNotice(id: Long, snapshot: String) = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.post<String>("bill/notices/ack", Gson().toJson(mapOf("id" to id, "snapshot" to snapshot))).getOrThrow()
+        check(response.code == 200) { response.msg }
+    }
+
+    suspend fun refundOriginals(): List<BillInfoModel> = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.get<List<BillInfoModel>>("bill/refund/originals").getOrThrow()
+        check(response.code == 200) { response.msg }
+        response.data.orEmpty()
+    }
+
+    /**
+     * 删除指定ID的账单
+     * @param id 账单ID
+     * @return 服务器响应结果
+     */
+    suspend fun remove(id: Long) = withContext(Dispatchers.IO) {
+
+        runCatchingExceptCancel {
+            val response = LocalNetwork.post<String>("bill/remove", Gson().toJson(mapOf("id" to id))).getOrThrow()
+            check(response.code == 200) { response.msg }
+        }.getOrElse {
+            Logger.e("remove error: ${it.message}", it)
+            net.ankio.auto.ui.utils.ToastUtils.error(it.message ?: "删除失败")
+
+        }
+    }
+
+    /**
+     * 获取指定ID的账单详情
+     * @param id 账单ID
+     * @return 账单信息模型，如果获取失败则返回null
+     */
+    suspend fun get(id: Long): BillInfoModel? = withContext(Dispatchers.IO) {
+
+        return@withContext runCatchingExceptCancel {
+            val resp = LocalNetwork.get<BillInfoModel>("bill/get?id=$id").getOrThrow()
+            resp.data
+        }.getOrElse {
+            Logger.e("get error: ${it.message}", it)
+            null
+        }
+    }
+
+    /**
+     * 获取按日期分组的账单列表（服务端分组）
+     * 加载整月数据，由服务端完成分组，避免分页+客户端分组的性能问题
+     * @param type 账单类型列表
+     * @param year 年份
+     * @param month 月份
+     * @param keyword 搜索关键字
+     * @return 按日期分组的账单列表
+     */
+    suspend fun listGrouped(
+        type: MutableList<String>,
+        year: Int? = null,
+        month: Int? = null,
+        keyword: String = "" // 新增关键字参数
+    ): List<OrderGroup> =
+        withContext(Dispatchers.IO) {
+            val syncType = type.joinToString(",")
+            val timeQuery = if (year != null && month != null) "&year=$year&month=$month" else ""
+            // 在 URL 中增加 keyword 参数
+            val url = "bill/list-grouped?type=$syncType$timeQuery&keyword=${Uri.encode(keyword)}"
+
+            return@withContext runCatchingExceptCancel {
+                val resp = LocalNetwork.get<List<OrderGroup>>(url).getOrThrow()
+                resp.data ?: emptyList()
+            }.getOrElse {
+                Logger.e("listGrouped error: ${it.message}", it)
+                emptyList()
+            }
+        }
+
+    /**
+     * 获取需要同步的账单列表
+     * @return 需要同步的账单信息模型列表
+     */
+    suspend fun sync(): List<BillInfoModel> = withContext(Dispatchers.IO) {
+
+        return@withContext runCatchingExceptCancel {
+            val resp = LocalNetwork.get<List<BillInfoModel>>("bill/sync/list").getOrThrow()
+            resp.data ?: emptyList()
+        }.getOrElse {
+            Logger.e("sync error: ${it.message}", it)
+            emptyList()
+        }
+    }
+
+    /**
+     * 更新账单同步状态
+     * @param id 账单ID
+     * @param sync 是否同步
+     * @return 服务器响应结果
+     */
+    suspend fun status(id: Long, sync: Boolean) = withContext(Dispatchers.IO) {
+
+        runCatchingExceptCancel {
+            LocalNetwork.post<String>(
+                "bill/status",
+                Gson().toJson(mapOf("id" to id, "sync" to sync))
+            ).getOrThrow()
+        }.getOrElse {
+            Logger.e("status error: ${it.message}", it)
+
+        }
+    }
+
+    /**
+     * 获取指定分组下的所有账单
+     * @param id 分组ID
+     * @return 该分组下的账单信息模型列表
+     */
+    suspend fun getBillByGroup(id: Long): List<BillInfoModel> = withContext(Dispatchers.IO) {
+
+        return@withContext runCatchingExceptCancel {
+            val resp = LocalNetwork.get<List<BillInfoModel>>("bill/group?id=$id").getOrThrow()
+            resp.data ?: emptyList()
+        }.getOrElse {
+            Logger.e("getBillByGroup error: ${it.message}", it)
+            emptyList()
+        }
+    }
+
+    /**
+     * 清空所有账单数据
+     * @return 服务器响应结果
+     */
+    suspend fun clear() = withContext(Dispatchers.IO) {
+
+        runCatchingExceptCancel {
+            LocalNetwork.post<String>("bill/clear").getOrThrow()
+        }.getOrElse {
+            Logger.e("clear error: ${it.message}", it)
+
+        }
+    }
+
+    /**
+     * 获取需要编辑的账单列表
+     * @return 需要编辑的账单信息模型列表
+     */
+    suspend fun edit(): List<BillInfoModel> = withContext(Dispatchers.IO) {
+
+        return@withContext runCatchingExceptCancel {
+            val resp = LocalNetwork.get<List<BillInfoModel>>("bill/edit").getOrThrow()
+            resp.data ?: emptyList()
+        }.getOrElse {
+            Logger.e("edit error: ${it.message}", it)
+            emptyList()
+        }
+    }
+
+    /**
+     * 解除账单去重
+     * @param id 账单ID
+     * @return 服务器响应结果
+     */
+    suspend fun unGroup(id: Long) = withContext(Dispatchers.IO) {
+        val response = LocalNetwork.post<Int>("bill/unGroup", Gson().toJson(mapOf("id" to id))).getOrThrow()
+        check(response.code == 200) { response.msg }
+    }
+
+    /**
+     * 获取指定年月的收支统计
+     * @param year 年份
+     * @param month 月份（1-12）
+     * @return 包含收入和支出总额的Map，如果请求失败则返回null
+     */
+    suspend fun getMonthlyStats(year: Int, month: Int): Map<String, Double>? =
+        withContext(Dispatchers.IO) {
+
+            return@withContext runCatchingExceptCancel {
+                val resp = LocalNetwork.post<Map<String, Double>>(
+                    "/bill/monthly/stats?year=$year&month=$month",
+                    "{}"
+                ).getOrThrow()
+                resp.data
+            }.getOrElse {
+                Logger.e("getMonthlyStats error: ${it.message}", it)
+                null
+            }
+        }
+
+
+    /**
+     * 获取WebView展示用的完整消费分析数据
+     *
+     * @param startTime 开始时间戳（毫秒）
+     * @param endTime 结束时间戳（毫秒）
+     * @param period 周期名称（如"2024年1月"）
+     * @return Map格式的数据，可直接转JSON给WebView
+     */
+    suspend fun summary(startTime: Long, endTime: Long, period: String): Map<String, Any?>? =
+        withContext(Dispatchers.IO) {
+            return@withContext runCatchingExceptCancel {
+                val url = "bill/summary?start=$startTime&end=$endTime&period=$period"
+                val resp = LocalNetwork.get<Map<String, Any?>>(url).getOrThrow()
+                resp.data
+            }.getOrElse {
+                Logger.e("summary error: ${it.message}", it)
+                null
+            }
+        }
+}

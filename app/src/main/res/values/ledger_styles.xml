@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ThemeOverlay.ClearLedger" parent="">
+        <item name="colorPrimary">@color/ledger_primary</item>
+        <item name="colorOnPrimary">@color/ledger_surface</item>
+        <item name="colorPrimaryContainer">@color/ledger_soft</item>
+        <item name="colorOnPrimaryContainer">@color/ledger_ink</item>
+        <item name="colorSecondary">@color/ledger_primary</item>
+        <item name="colorSecondaryContainer">@color/ledger_soft</item>
+        <item name="colorOnSecondaryContainer">@color/ledger_ink</item>
+        <item name="colorSurface">@color/ledger_surface</item>
+        <item name="colorSurfaceVariant">@color/ledger_soft</item>
+        <item name="colorOnSurface">@color/ledger_ink</item>
+        <item name="colorOnSurfaceVariant">@color/ledger_muted</item>
+        <item name="colorSurfaceContainer">@color/ledger_surface</item>
+        <item name="colorSurfaceContainerLow">@color/ledger_background</item>
+        <item name="colorSurfaceContainerHigh">@color/ledger_soft</item>
+        <item name="colorSurfaceContainerHighest">@color/ledger_soft</item>
+        <item name="colorOutline">@color/ledger_muted</item>
+        <item name="colorOutlineVariant">@color/ledger_outline</item>
+        <item name="android:colorBackground">@color/ledger_background</item>
+        <item name="android:windowBackground">@color/ledger_background</item>
+        <item name="colorOnBackground">@color/ledger_ink</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.ClearLedger</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.ClearLedger</item>
+    </style>
+    <style name="ShapeAppearance.ClearLedger" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+    <style name="LedgerSection" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/ledger_ink</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <rikka.material.preference.MaterialSwitchPreference android:defaultValue="true" android:key="showSuccessPopup" android:summary="开启后提示保存成功；不影响自动入账确认" android:title="手动保存提示" />
+
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="true" android:key="ocrBackTapTrigger" android:summary="开启后可轻敲手机触发识别" android:title="轻敲背面识别" />
+
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="true" android:key="ocrAccessibilityAutoTrigger" android:summary="自动识别新订单；已识别订单跳过，仍可手动识别" android:title="自动屏幕识别" />
+
+        <androidx.preference.Preference android:key="pageSignatures" android:summary="管理已记住与永不记住的页面" android:title="页面识别偏好" />
+        <androidx.preference.Preference android:key="aiFallback" android:title="AI 辅助识别" android:summary="配置后 AI 优先，失败时使用本地规则" />
+    </PreferenceScreen>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="48dp">
+    <net.ankio.auto.ui.components.GradientImageView android:id="@+id/book_image" android:layout_width="1dp" android:layout_height="1dp" android:visibility="gone" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center_vertical" android:paddingHorizontal="16dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="编辑账单" android:textSize="19sp" android:fontFamily="sans-serif-medium" android:textColor="@color/ledger_ink" />
+        <TextView android:id="@+id/bookName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxWidth="160dp" android:maxLines="1" android:ellipsize="end" android:textSize="13sp" android:textColor="@color/ledger_muted" />
+    </LinearLayout>
+    <View android:id="@+id/book_image_click" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="选择账本" />
+</FrameLayout>

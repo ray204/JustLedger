@@ -1,0 +1,1220 @@
+<!--
+  ~ Copyright (C) 2026 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 财务报告风格整合</title>
+    <script src="./echarts.min.js"></script>
+    <script src="./html2canvas.min.js"></script>
+    <style>
+        /**
+         * CSS 变量定义 - Material 3 主题色系统
+         * 参考 summary.html 的设计系统，统一全局色阶
+         */
+        :root {
+            /* 基础背景色 */
+            --color-bg: #fffbfe;
+            --color-card: #fffbfe;
+            --color-card-hover: #f5eff7;
+            
+            /* 文字颜色 */
+            --color-text: #1c1b1f;
+            --color-text-light: #49454f;
+            --color-text-muted: #79747e;
+            
+            /* Material 3 主题色 */
+            --color-primary: #6750a4;
+            --color-primary-light: #eaddff;
+            --color-secondary: #625b71;
+            --color-tertiary: #7d5260;
+            --color-on-primary: #ffffff;
+            --color-on-secondary: #ffffff;
+            
+            /* 语义化颜色 */
+            --color-success: #006c4b;
+            --color-success-bg: #b6f1d8;
+            --color-danger: #b3261e;
+            --color-danger-bg: #f9dedc;
+            --color-warning: #8d6e00;
+            --color-warning-bg: #ffddb4;
+            
+            /* 辅助颜色 */
+            --color-border: #79747e;
+            --color-surface-variant: #e7e0ec;
+            --color-outline: #79747e;
+            
+            /* RGB 格式（用于 rgba） */
+            --color-primary-rgb: 103, 80, 164;
+            --color-success-rgb: 0, 108, 75;
+            --color-danger-rgb: 179, 38, 30;
+            --color-warning-rgb: 141, 110, 0;
+
+            /* 收支颜色（动态注入） */
+            --color-income: var(--color-success);
+            --color-expense: var(--color-danger);
+        }
+        /**
+         * 全局基础样式 - Material 3 排版系统
+         */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .page {
+            padding: 20px 0 40px;
+        }
+        
+        .theme {
+            padding: 0;
+        }
+
+        /**
+         * 容器与布局 - Material 3 流式布局
+         */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /**
+         * 网格布局 - 自适应响应式
+         * 使用传统 margin 方式，避免 gap 兼容性问题
+         */
+        .grid {
+            display: flex;
+            flex-direction: column;
+            margin: -8px 0; /* 负边距抵消首尾元素的多余间距 */
+        }
+        
+        .grid > * {
+            margin: 8px 0; /* 每个子元素上下各 8px，总间距 16px */
+        }
+        
+        /**
+         * 卡片基础样式 - Material 3 高程系统
+         */
+        .card {
+            background: var(--color-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        /**
+         * 头部卡片 - Material 3 主色背景
+         */
+        .header-card {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+        /**
+         * 头部布局 - 双栏自适应
+         */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .header-row > * {
+            margin-right: 20px;
+        }
+        
+        .header-row > *:last-child {
+            margin-right: 0;
+        }
+        
+        .header-title {
+            margin: 10px 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-desc {
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .header-score {
+            text-align: right;
+        }
+        
+        .header-score-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .header-score-value {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        /**
+         * 间距辅助类
+         */
+        .grid-top {
+            margin-top: 20px;
+        }
+        
+        .grid-main {
+            margin-top: 20px;
+        }
+        
+        /**
+         * 统计数据块样式 - Material 3 排版
+         */
+        .stat-label {
+            font-size: 14px;
+            color: var(--color-text-light);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .stat-val {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 8px 0;
+            line-height: 1.2;
+        }
+        
+        .stat-val-primary {
+            color: var(--color-primary);
+        }
+        
+        .stat-val-danger {
+            color: var(--color-danger);
+        }
+        
+        .stat-val-warning {
+            color: var(--color-warning);
+        }
+
+        .color-income {
+            color: var(--color-income);
+        }
+
+        .color-expense {
+            color: var(--color-expense);
+        }
+        
+        .stat-note {
+            font-size: 13px;
+            color: var(--color-text-muted);
+        }
+        
+        .stat-note-success {
+            color: var(--color-success);
+        }
+        
+        .stat-note-warning {
+            color: var(--color-warning);
+        }
+        
+        .stat-note-muted {
+            color: var(--color-text-muted);
+        }
+        /**
+         * 图表容器
+         */
+        .chart {
+            width: 100%;
+            height: 380px;
+            margin-top: 16px;
+        }
+        
+        .chart-box {
+            height: 300px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        /**
+         * 徽章样式 - Material 3 Chip
+         */
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+        }
+        
+        /**
+         * AI 文本块 - 带侧边装饰
+         */
+        .ai-text {
+            font-size: 14px;
+            line-height: 1.8;
+            border-left: 4px solid var(--color-primary);
+            padding-left: 16px;
+            margin: 16px 0;
+            color: var(--color-text-light);
+        }
+        
+        /**
+         * 章节标题 - Material 3 标题样式
+         */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title > * {
+            margin-right: 8px;
+        }
+        
+        .section-title > *:last-child {
+            margin-right: 0;
+        }
+        
+        .section-title-warning {
+            color: var(--color-warning);
+        }
+        
+        .section-title-success {
+            color: var(--color-success);
+        }
+        /**
+         * 分析文本段落
+         */
+        .analysis-text {
+            color: var(--color-text-light);
+            font-size: 14px;
+            text-align: justify;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        
+        .analysis-text b,
+        .analysis-text strong {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        /**
+         * 洞察盒子 - Material 3 Surface
+         */
+        .insight-box {
+            background: var(--color-primary-light);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--color-primary);
+            margin-top: 16px;
+        }
+        
+        .insight-warning {
+            background: var(--color-warning-bg);
+            border-left-color: var(--color-warning);
+        }
+        /**
+         * 标签组件 - Material 3 Chip
+         */
+        .tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .tag-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            margin-left: -4px;
+            margin-right: -4px;
+        }
+        
+        .tag-row > * {
+            margin: 0 4px; /* 左右各 4px，总间距 8px */
+        }
+        
+        .tag-success {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+        
+        .tag-info {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+        
+        .tag-warning {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+        
+        /**
+         * 分析章节样式
+         */
+        .analysis-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            color: var(--color-text);
+        }
+        
+        .analysis-section h3 > * {
+            margin-right: 8px;
+        }
+        
+        .analysis-section h3 > *:last-child {
+            margin-right: 0;
+        }
+        
+        .analysis-subtitle {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--color-text);
+        }
+        
+        .analysis-p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        
+        .highlight {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        /**
+         * 警告框 - Material 3 Alert
+         */
+        .warning-box {
+            background: var(--color-warning-bg);
+            border: 1px solid var(--color-warning);
+            padding: 16px;
+            border-radius: 12px;
+            color: var(--color-warning);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .warning-box strong {
+            font-weight: 700;
+        }
+        /**
+         * 卡片修饰样式 - 强调边框
+         */
+        .card-warning-bottom {
+            border-bottom: 4px solid var(--color-warning);
+        }
+        
+        .card-warning-left {
+            border-left: 4px solid var(--color-warning);
+        }
+        
+        .card-title-primary {
+            color: var(--color-primary);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .card-title-compact {
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        /**
+         * 内部面板 - 次级容器
+         */
+        .risk-panel {
+            background: var(--color-surface-variant);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .risk-list {
+            font-size: 14px;
+            color: var(--color-text-light);
+            padding-left: 24px;
+            line-height: 1.8;
+        }
+        
+        .risk-list li {
+            margin-bottom: 8px;
+        }
+        
+        /**
+         * 行动清单
+         */
+        .action-list {
+            font-size: 14px;
+            color: var(--color-text-light);
+            padding-left: 24px;
+            line-height: 1.8;
+        }
+        
+        .action-list li {
+            margin-bottom: 12px;
+        }
+        
+        .action-list b,
+        .action-list strong {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        /**
+         * 响应式布局 - 移动端优化
+         */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            
+            .grid {
+                margin: -6px 0;
+            }
+            
+            .grid > * {
+                margin: 6px 0; /* 每个子元素上下各 6px，总间距 12px */
+            }
+            
+            .grid-main {
+                margin-top: 24px;
+            }
+            
+            /* 头部区域垂直堆叠 */
+            .header-row {
+                flex-direction: column;
+            }
+            
+            .header-row > * {
+                margin-bottom: 16px;
+            }
+            
+            .header-row > *:last-child {
+                margin-bottom: 0;
+            }
+            
+            .header-score {
+                text-align: left;
+            }
+            
+            .header-score-value {
+                font-size: 48px;
+            }
+            
+            /* 图表高度优化 */
+            .chart {
+                height: 280px;
+            }
+            
+            .chart-box {
+                height: 240px;
+            }
+            
+            /* 统计数值缩小 */
+            .stat-val {
+                font-size: 24px;
+            }
+        }
+        
+        /**
+         * 页面头部 - 品牌标识区
+         */
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 24px 20px 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header > * {
+            margin-right: 12px;
+        }
+        
+        .page-header > *:last-child {
+            margin-right: 0;
+        }
+        
+        .page-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .page-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .page-logo-emoji {
+            font-size: 24px;
+            line-height: 1;
+        }
+        
+        .page-header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        /**
+         * 页面底部 - 版权信息
+         */
+        .page-footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--color-text-muted);
+            font-size: 14px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <!-- 页面头部 -->
+    <div class="page-header">
+        <div class="page-logo" id="pageLogo"></div>
+        <p class="page-header-title" id="pageHeaderTitle">自动记账 • 财务分析</p>
+    </div>
+    <!-- 主内容区 -->
+    <section class="theme">
+        <div class="container">
+            <!-- 报告头部：身份与评分概览 -->
+            <div class="card header-card">
+                <div class="header-row">
+                    <div>
+                        <span class="badge" id="identityBadge"></span>
+                        <h1 class="header-title" id="reportTitle"></h1>
+                        <p class="header-desc" id="headerDesc"></p>
+                    </div>
+                    <div class="header-score">
+                        <div class="header-score-label" id="healthScoreLabel"></div>
+                        <div class="header-score-value" id="healthScore"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 核心指标：收支与波动 -->
+            <div class="grid grid-top">
+                <div class="card">
+                    <div class="stat-label" id="incomeLabel"></div>
+                    <div class="stat-val color-income" id="totalIncome"></div>
+                    <div class="stat-note stat-note-success" id="savingsNote"></div>
+                </div>
+                <div class="card">
+                    <div class="stat-label" id="expenseLabel"></div>
+                    <div class="stat-val color-expense" id="totalExpense"></div>
+                    <div class="stat-note stat-note-warning" id="maxSingleNote"></div>
+                </div>
+                <div class="card card-warning-bottom">
+                    <div class="stat-label" id="outlierLabel"></div>
+                    <div class="stat-val stat-val-warning" id="outlierIndex"></div>
+                    <div class="stat-note stat-note-muted" id="outlierDesc"></div>
+                </div>
+            </div>
+
+            <!-- 报告主体：模块化结构 -->
+            <div class="grid grid-main">
+                <!-- 消费结构模块（树图 + 结构描述） -->
+                <div class="card">
+                    <h3 class="card-title-primary" id="consumeTitle"></h3>
+                    <div id="treeChart1" class="chart"></div>
+                    <div class="ai-text" id="consumeAnalysis1"></div>
+                    <div class="ai-text" id="consumeAnalysis2"></div>
+                </div>
+
+                <!-- 结构画像模块（雷达：稳定/自律/投资/风险） -->
+                <div class="card">
+                    <h3 id="radarTitle"></h3>
+                    <div id="radarChart1" class="chart"></div>
+                </div>
+
+                <!-- 异常风险模块（独秀指数 + 异常信号） -->
+                <section class="card card-warning-left">
+                    <div class="section-title section-title-warning" id="riskTitle"></div>
+                    <div class="analysis-text" id="outlierAnalysis"></div>
+                    <div class="analysis-text" id="largeTransactionAnalysis"></div>
+                    <div class="analysis-text" id="latteFactorAnalysis"></div>
+                </section>
+
+                <!-- 消费画像模块（偏好 + 时间规律） -->
+                <section class="card">
+                    <div class="section-title" id="behaviorTitle"></div>
+                    <div class="grid">
+                        <div>
+                            <p class="analysis-subtitle" id="preferenceSubtitle"></p>
+                            <div class="analysis-text" id="preferenceAnalysis"></div>
+                        </div>
+                        <div>
+                            <p class="analysis-subtitle" id="timePatternSubtitle"></p>
+                            <div class="analysis-text" id="timePatternAnalysis"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 综合结论模块（健康等级 + 标签） -->
+                <section class="card">
+                    <div class="section-title" id="conclusionTitle"></div>
+                    <div class="analysis-text" id="conclusion1"></div>
+                    <div class="analysis-text" id="conclusion2"></div>
+                    <div class="insight-box" id="expertSummary"></div>
+                    <div id="radarChart3" class="chart-box"></div>
+                    <div class="tag-row" id="tagRow"></div>
+                </section>
+
+                <!-- 行动清单模块（可执行项） -->
+                <section class="card analysis-section">
+                    <div class="section-title section-title-success" id="actionTitle"></div>
+                    <p class="analysis-text" id="actionIntro"></p>
+                    <ul class="action-list" id="actionList"></ul>
+                    <h3 id="executionTitle"></h3>
+                    <p class="analysis-p" id="executionPriority"></p>
+                    <h3 id="recordQualityTitle"></h3>
+                    <p class="analysis-p" id="recordQuality"></p>
+                    <div class="warning-box" id="warningBox"></div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页面底部 -->
+    <div class="page-footer" id="pageFooter">
+        由自动记账生成
+    </div>
+</div>
+
+<script>
+    /**
+     * ========================================
+     * 默认数据结构定义
+     * ========================================
+     *
+     * 该数据结构定义了 AI 财务报告的完整数据模型
+     * 外部通过 window.setJson(data) 注入数据后会与此默认结构合并
+     */
+    const defaultData = {
+        // 页面头部和底部
+        logoBase64: "",
+        pageHeaderTitle: "自动记账 • 财务分析",
+        pageFooter: "由自动记账生成",
+
+        // 页面标题和标签
+        reportTitle: "财务全景透视报告",
+        healthScoreLabel: "AI 财务健康分",
+        incomeLabel: "总收入 (含工资/理财)",
+        expenseLabel: "本月总支出",
+        outlierLabel: "独秀指数 (Outlier)",
+        outlierDesc: "支出模式存在明显波动",
+
+        // 章节标题
+        consumeTitle: "🧩 消费结构分析",
+        radarTitle: "🚀 结构画像雷达",
+        riskTitle: "<span>⚠️</span> 异常风险",
+        behaviorTitle: "🔍 消费画像与行为规律",
+        conclusionTitle: "<span>⚖️</span> 综合结论与健康等级",
+        actionTitle: "<span>✅</span> 行动清单",
+        executionTitle: "✅ 执行优先级",
+        recordQualityTitle: "🧭 记录质量提升",
+
+        // 子标题
+        preferenceSubtitle: "🎯 潜在偏好：技能树投资",
+        timePatternSubtitle: "🕰️ 时间规律：深夜决策风险",
+
+        // 基础信息
+        identity: "技术型进取者",
+        period: "xxx周期",
+        totalExpenseInDesc: "12,450",
+        headerDescription: "基于xxx周期内 <strong>¥12,450</strong> 支出流向，AI 识别出你正处于「技能跃迁」与「健康重塑」的双重成长期。",
+        healthScore: 89,
+
+        // 收入数据
+        totalIncome: 18500.00,
+        savingsRate: 32.7,
+        savingsStatus: "健康",
+
+        // 支出数据
+        totalExpense: 12450.41,
+        maxSingleAmount: 5600,
+        maxSingleCategory: "摄影器材",
+        outlierIndex: 76,
+
+        // 消费结构分析文本
+        consumeAnalysis1: "<strong>【摄影与自我投资】</strong><br>本月摄影器材支出占总开支的 45%。作为一种「昂贵的爱好」，AI 建议将其摊销到未来 12 个月分析。你对专业工具的追求与你在 SOC 协作中对细节的把控逻辑高度一致。",
+        consumeAnalysis2: "<strong>【饮食健康反馈】</strong><br>监测到「全热食计划」执行良好，外卖/冷食支出下降 40%。但本月蛋白质采购（里脊/鸡腿）成本因节假日上升，建议关注生鲜平台的周期性优惠。",
+
+        // 异常风险分析文本
+        outlierAnalysis: "<b>独秀指数分析：</b>本周期触发了 <b>82%</b> 的偏离预警。主要诱因是出现一笔金额明显高于历史均值的交易，且与常规消费节奏不一致。建议回看该笔交易的用途与必要性，确认是否为一次性大额支出或临时性预算波动。",
+        largeTransactionAnalysis: "<b>大额交易分析：</b>本周期出现一笔金额为 <b>¥5,600</b> 的单笔交易（商户：摄影器材购置）。该金额约为本月平均单笔支出的 <b>4.5 倍</b>，且发生在月中，导致当周可支配预算明显收紧。建议标记该笔为一次性大额采购，并在下周期预留大件预算，避免挤压日常支出。",
+        latteFactorAnalysis: "<b>拿铁因子观察：</b>检测到「云端存储服务」每日扣费 <b>¥18</b>，已连续出现 <b>92</b> 天，累计约 <b>¥1,656</b>。若维持当前频率，年度支出将达 <b>¥6,570</b>。建议核对是否存在重复订阅或低使用率服务，并设置月度小额订阅上限。",
+
+        // 消费画像文本
+        preferenceAnalysis: "通过商户语义分析，AI 发现你本周期在<b>教育与工具类（占总支出 24.8%）</b>上的投入呈现高频特征。这表明你倾向于通过付费获取时间效率，属于典型的<b>「生产力驱动型」</b>画像。",
+        timePatternAnalysis: "约有 15% 的非计划消费发生在 <b>23:00 以后</b>。尽管单笔金额较小，但 AI 建议警惕由于生理性疲劳导致的「冲动型」数字订阅，这类支出往往具有极高的长期隐形成本。",
+
+        // 综合结论文本
+        conclusion1: "本周期内，你的财务系统表现出极强的<b>「防御性扩张」</b>特征。尽管总支出有所上升，但<b>核心盈余率（32.5%）</b>仍高于该资产量级用户的平均基准。AI 监测到你的消费决策路径正在发生偏移：从过去的「补偿型消费」转向了当前的<b>「投资型消费」</b>。",
+        conclusion2: "你的支出波动主要集中在月末，这通常与固定周期的订阅费用结算相关。值得肯定的是，你在<b>非必需品（如娱乐开销）</b>上的自控力表现卓越，这类开支仅占总比的 4.2%。",
+        expertSummary: "<b>💡 专家总结：</b>你目前的财务状态非常健康，抗风险能力等级为 <b>A-</b>。由于你的固定支出占比极低，你拥有极大的财务灵活性来应对下一周期的突发性投入。",
+
+        // 标签数据
+        tags: [
+            { text: "稳定性：优", type: "success" },
+            { text: "自律度：优", type: "info" },
+            { text: "防御力：一般", type: "warning" }
+        ],
+
+        // 行动清单文本
+        actionIntro: "本周期呈现「高支出 + 订阅累积 + 大额采购」三类压力源。行动清单以「先稳现金流、再压可选支出、最后补齐数据」为优先级，避免因信息不完整导致误判。",
+        actions: [
+            "<b>储蓄优先：</b>将本期盈余先划拨至缓冲账户，目标是不低于月支出的 15%。",
+            "<b>控制可选消费：</b>对餐饮/社交设定上限，连续超支两周则降低下一周预算 10%。",
+            "<b>大额支出归类：</b>将本期大额交易标记为「一次性/可复发」，可复发类需在下期预留预算。",
+            "<b>订阅精简：</b>列出全部自动扣费服务，低使用率项先暂停 1 个周期再决定是否续费。",
+            "<b>收入补录：</b>补记最近一笔工资或主要收入，测算可支撑月数。"
+        ],
+        executionPriority: "执行顺序建议为：先补齐收入 → 再处理大额交易归类 → 最后清理订阅。这样能确保现金流底盘稳定后再做结构调整。",
+        recordQuality: "记录粒度建议从「金额」升级到「用途 + 是否复发 + 必需/可选」。这样系统能区分一次性采购与持续性支出，结论更稳定，也更能指导预算配置。",
+        warningBox: "<strong>💡 建议执行：</strong> 你现在的账单里只有支出，没有收入，AI 没法算出你的「财务安全感」。建议记一笔最近的工资，看看你的钱能撑多久？",
+
+        // 图表数据：树图
+        treeData: [
+            { name: "器材投资 (摄影)", value: 5600 },
+            { name: "饮食健康 (热食)", value: 2800 },
+            { name: "技能树 (公共课)", value: 1200 },
+            { name: "固定成本 (房租/水电)", value: 2500 },
+            { name: "拿铁因子 (小额订阅)", value: 350 }
+        ],
+
+        // 图表数据：雷达图1
+        radar1Data: {
+            indicators: [
+                { name: "节俭 (Frugality)", max: 100 },
+                { name: "稳定 (Stability)", max: 100 },
+                { name: "多元 (Diversified)", max: 100 },
+                { name: "投资 (Self-Invest)", max: 100 },
+                { name: "安全 (Risk-Ctrl)", max: 100 }
+            ],
+            values: [65, 80, 45, 95, 88],
+            name: "财务性格"
+        },
+
+        // 图表数据：雷达图3
+        radar3Data: {
+            indicators: [
+                { name: "省钱指数", max: 100 },
+                { name: "支出稳定", max: 100 },
+                { name: "投资自己", max: 100 },
+                { name: "风险意识", max: 100 },
+                { name: "钱包深度", max: 100 }
+            ],
+            values: [95, 98, 70, 90, 30],
+            name: "财务画像"
+        }
+    };
+
+    // 当前数据
+    let currentData = defaultData;
+
+    // 主题颜色配置
+    let themeColors = {
+        income: '#006c4b', // 默认绿色
+        expense: '#b3261e' // 默认红色
+    };
+
+    /**
+     * 格式化金额为中文货币格式（统一保留 2 位小数）
+     * @param {number} amount - 金额数值
+     * @returns {string} 格式化后的金额字符串（如 "¥1,234.56"）
+     */
+    function formatMoney(amount) {
+        const n = Number(amount) || 0;
+        return '¥' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    /**
+     * 安全设置元素的 HTML 内容
+     * @param {string} id - 元素 ID
+     * @param {string} content - 要设置的内容（支持 HTML）
+     */
+    function setText(id, content) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = content;
+    }
+
+    /**
+     * 渲染页面所有数据
+     * @param {Object} data - 完整的数据对象
+     */
+    function renderData(data) {
+        // 页面头部和底部
+        if (data.logoBase64) {
+            document.getElementById("pageLogo").innerHTML = `<img src="${data.logoBase64}" alt="Logo" class="page-logo">`;
+        } else {
+            document.getElementById("pageLogo").innerHTML = '<span class="page-logo-emoji">💰</span>';
+        }
+        if (data.pageHeaderTitle) {
+            setText("pageHeaderTitle", data.pageHeaderTitle);
+        }
+        if (data.pageFooter) {
+            setText("pageFooter", data.pageFooter);
+        }
+        
+        // 页面标题和标签
+        setText("reportTitle", data.reportTitle);
+        setText("healthScoreLabel", data.healthScoreLabel);
+        setText("incomeLabel", data.incomeLabel);
+        setText("expenseLabel", data.expenseLabel);
+        setText("outlierLabel", data.outlierLabel);
+        setText("outlierDesc", data.outlierDesc);
+        
+        // 章节标题
+        setText("consumeTitle", data.consumeTitle);
+        setText("radarTitle", data.radarTitle);
+        setText("riskTitle", data.riskTitle);
+        setText("behaviorTitle", data.behaviorTitle);
+        setText("conclusionTitle", data.conclusionTitle);
+        setText("actionTitle", data.actionTitle);
+        setText("executionTitle", data.executionTitle);
+        setText("recordQualityTitle", data.recordQualityTitle);
+        
+        // 子标题
+        setText("preferenceSubtitle", data.preferenceSubtitle);
+        setText("timePatternSubtitle", data.timePatternSubtitle);
+        
+        // 头部信息
+        setText("identityBadge", `身份识别：${data.identity}`);
+        setText("headerDesc", data.headerDescription);
+        setText("healthScore", data.healthScore);
+        
+        // 核心指标
+        setText("totalIncome", formatMoney(data.totalIncome));
+        setText("savingsNote", `储蓄率: ${data.savingsRate}% (${data.savingsStatus})`);
+        setText("totalExpense", formatMoney(data.totalExpense));
+        setText("maxSingleNote", `最高单笔: ${formatMoney(data.maxSingleAmount)} (${data.maxSingleCategory})`);
+        setText("outlierIndex", `${data.outlierIndex}%`);
+        
+        // 消费结构分析
+        setText("consumeAnalysis1", data.consumeAnalysis1);
+        setText("consumeAnalysis2", data.consumeAnalysis2);
+        
+        // 异常风险分析
+        setText("outlierAnalysis", data.outlierAnalysis);
+        setText("largeTransactionAnalysis", data.largeTransactionAnalysis);
+        setText("latteFactorAnalysis", data.latteFactorAnalysis);
+        
+        // 消费画像
+        setText("preferenceAnalysis", data.preferenceAnalysis);
+        setText("timePatternAnalysis", data.timePatternAnalysis);
+        
+        // 综合结论
+        setText("conclusion1", data.conclusion1);
+        setText("conclusion2", data.conclusion2);
+        setText("expertSummary", data.expertSummary);
+        
+        // 标签
+        const tagRow = document.getElementById("tagRow");
+        if (tagRow) {
+            tagRow.innerHTML = data.tags.map(tag => 
+                `<span class="tag tag-${tag.type}">${tag.text}</span>`
+            ).join("");
+        }
+        
+        // 行动清单
+        setText("actionIntro", data.actionIntro);
+        const actionList = document.getElementById("actionList");
+        if (actionList) {
+            actionList.innerHTML = data.actions.map(action => `<li>${action}</li>`).join("");
+        }
+        setText("executionPriority", data.executionPriority);
+        setText("recordQuality", data.recordQuality);
+        setText("warningBox", data.warningBox);
+        
+        // 渲染图表
+        renderCharts(data);
+    }
+
+    /**
+     * 渲染所有图表组件
+     * @param {Object} data - 包含图表数据的对象
+     */
+    function renderCharts(data) {
+        // 图表专用配色方案（独立于 Material 3，保持原始视觉风格）
+        const chartColors = {
+            primary: '#6366f1',      // 靛蓝
+            primaryDark: '#818cf8',  // 浅靛蓝
+            secondary: '#94a3b8',    // 灰蓝
+            success: '#22c55e',      // 绿色
+            warning: '#f59e0b',      // 橙色
+            textSubtle: '#4b5563',   // 深灰
+        };
+
+        /**
+         * 消费结构名称优化：含 "-" 时取最后一个分段（如 "餐饮-美食" -> "美食"）
+         */
+        function formatTreeName(name) {
+            if (!name || typeof name !== 'string') return name;
+            return name.includes('-') ? name.split('-').pop().trim() : name;
+        }
+
+        /**
+         * 1. 消费结构树图（Treemap）
+         * 展示各类消费的占比和金额
+         */
+        const treeOption = {
+            tooltip: {
+                formatter: function(params) {
+                    var label = params.data.originalName || params.name;
+                    return label + '<br/>' + formatMoney(params.value);
+                }
+            },
+            series: [{
+                type: 'treemap',
+                data: data.treeData.map((item, idx) => ({
+                    name: formatTreeName(item.name),
+                    originalName: item.name,
+                    value: item.value,
+                    itemStyle: { 
+                        color: [chartColors.primary, chartColors.success, chartColors.primaryDark, 
+                                chartColors.secondary, chartColors.warning][idx % 5]
+                    }
+                }))
+            }]
+        };
+        const treeChart = echarts.init(document.getElementById('treeChart1'));
+        treeChart.setOption(treeOption);
+
+        /**
+         * 2. 财务性格雷达图
+         * "节俭 (Frugality)" 在括号前换行显示，保留完整内容
+         */
+        const radarOption1 = {
+            radar: {
+                center: ['50%', '50%'],
+                radius: '55%',
+                indicator: data.radar1Data.indicators.map(function(ind) {
+                    var n = ind.name;
+                    var i = n.indexOf(' (');
+                    return { name: i > 0 ? n.substring(0, i) + '\n' + n.substring(i + 1) : n, max: ind.max };
+                }),
+                axisName: { color: chartColors.secondary, fontSize: 11 }
+            },
+            series: [{
+                type: 'radar',
+                data: [{
+                    value: data.radar1Data.values,
+                    name: data.radar1Data.name,
+                    areaStyle: { color: 'rgba(99, 102, 241, 0.4)' },
+                    lineStyle: { color: chartColors.primary }
+                }]
+            }]
+        };
+        const radarChart1 = echarts.init(document.getElementById('radarChart1'));
+        radarChart1.setOption(radarOption1);
+
+        /**
+         * 3. 财务画像雷达图
+         * "省钱指数" 四字中间换行，保留完整内容
+         */
+        const radarOption3 = {
+            radar: {
+                indicator: data.radar3Data.indicators,
+                shape: 'circle',
+                splitNumber: 4,
+                axisName: { color: chartColors.textSubtle, fontSize: 11 },
+                splitLine: { lineStyle: { color: 'rgba(99, 102, 241, 0.1)' } },
+                splitArea: { show: false }
+            },
+            series: [{
+                type: 'radar',
+                data: [{
+                    value: data.radar3Data.values,
+                    name: data.radar3Data.name,
+                    itemStyle: { color: chartColors.primary },
+                    areaStyle: { color: 'rgba(99, 102, 241, 0.2)' }
+                }]
+            }]
+        };
+        const radarChart3 = echarts.init(document.getElementById('radarChart3'));
+        radarChart3.setOption(radarOption3);
+
+        // 响应式处理
+        window.addEventListener('resize', () => {
+            treeChart.resize();
+            radarChart1.resize();
+            radarChart3.resize();
+        });
+    }
+
+    // ==========================================================
+    // 外部调用接口：setJson
+    // ==========================================================
+    function setJson(jsonData) {
+        // 合并用户数据和默认数据
+        const data = Object.assign({}, defaultData, jsonData);
+        currentData = data; // 更新全局数据
+        renderData(data);
+    }
+
+    /**
+     * 外部调用接口：设置主题颜色
+     * @param {string} incomeColor - 收入颜色 (hex)
+     * @param {string} expenseColor - 支出颜色 (hex)
+     */
+    function setThemeColors(incomeColor, expenseColor) {
+        themeColors.income = incomeColor;
+        themeColors.expense = expenseColor;
+        
+        // 更新CSS变量
+        document.documentElement.style.setProperty('--color-income', incomeColor);
+        document.documentElement.style.setProperty('--color-expense', expenseColor);
+        
+        // 重新渲染图表以应用新颜色（如果图表使用了收支颜色）
+        // 目前 ai.html 的图表主要是结构分析，暂时保持默认配色或根据需要调整
+        // renderCharts(currentData); 
+    }
+
+    // ==========================================================
+    // 页面初始化：使用默认数据渲染
+    // ==========================================================
+    document.addEventListener('DOMContentLoaded', function() {
+
+    });
+
+    /**
+     * ========================================
+     * 隐私模式控制：隐藏/显示金额
+     * ========================================
+     * @param {boolean} enabled - true=隐藏金额，false=显示金额
+     */
+    function togglePrivacyMode(enabled) {
+        // 递归遍历指定元素的所有文本节点
+        function processTextNodes(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (enabled) {
+                    // 开启隐私模式：匹配金额格式
+                    // 支持格式：¥100, ¥ 100, ¥-100, ¥ -100
+                    if (/¥\s*-?[\d,.]+/.test(node.nodeValue)) {
+                        if (!node._originalText) {
+                            node._originalText = node.nodeValue;
+                        }
+                        node.nodeValue = node.nodeValue.replace(/¥\s*-?[\d,.]+/g, '¥***');
+                    }
+                } else {
+                    // 关闭隐私模式：如果有备份则恢复
+                    if (node._originalText) {
+                        node.nodeValue = node._originalText;
+                        delete node._originalText;
+                    }
+                }
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                // 递归处理子节点
+                node.childNodes.forEach(processTextNodes);
+            }
+        }
+
+        // 选择所有可能包含金额的容器
+        const selectors = [
+            '.stat-val',           // 统计数值
+            '.stat-note',          // 统计备注
+            '.header-desc',        // 头部描述（基于最近xx支出）
+            '.header-score-value', // 头部评分（可能包含百分比）
+            '.analysis-text',      // 分析文本
+            '.ai-text',            // AI 文本
+            '.insight-content',    // 洞察内容
+            '.action-list',        // 行动清单
+            '.analysis-p',         // 分析段落
+            '.warning-box',        // 警告框
+            '.insight-box'         // 洞察盒子
+        ];
+
+        // 遍历所有匹配的元素
+        document.querySelectorAll(selectors.join(', ')).forEach(el => {
+            processTextNodes(el);
+        });
+    }
+
+    /**
+     * ========================================
+     * 导出为图片（解决 WebView.draw 无法捕获 Canvas 的问题）
+     * Android WebView.draw(Canvas) 无法正确捕获 ECharts 等 HTML5 Canvas 内容，
+     * 使用 html2canvas 在页面内渲染为图片，通过 JS Bridge 回传 base64
+     * ========================================
+     */
+    function captureForExport() {
+        if (typeof html2canvas !== 'function') {
+            if (window.AndroidExport) window.AndroidExport.onCaptureFailed('html2canvas 未加载');
+            return;
+        }
+        const target = document.querySelector('.page') || document.body;
+        html2canvas(target, {
+            useCORS: true,
+            allowTaint: true,
+            scale: 2,
+            logging: false
+        }).then(function(canvas) {
+            const dataUrl = canvas.toDataURL('image/png');
+            if (window.AndroidExport) {
+                window.AndroidExport.onImageCaptured(dataUrl);
+            }
+        }).catch(function(err) {
+            if (window.AndroidExport) window.AndroidExport.onCaptureFailed(String(err));
+        });
+    }
+
+    // 暴露接口到全局
+    window.setJson = setJson;
+    window.setThemeColors = setThemeColors;
+    window.togglePrivacyMode = togglePrivacyMode;
+    window.captureForExport = captureForExport;
+</script>
+</body>
+</html>

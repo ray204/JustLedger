@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:fitsSystemWindows="true" android:background="@color/ledger_background">
+    <com.google.android.material.appbar.AppBarLayout android:id="@+id/appBarLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/ledger_background" app:liftOnScroll="false" app:elevation="0dp" android:fitsSystemWindows="true" app:liftOnScrollTargetViewId="@id/content_view">
+        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/topAppBar" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="?attr/actionBarSize" app:menu="@menu/bill_menu" app:title="@string/title_bill"/>
+    </com.google.android.material.appbar.AppBarLayout>
+    <!-- 主内容区域 - 使用 LinearLayout 包装 ChipGroup 和 SwipeRefreshLayout -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!-- 筛选区域：月份 + 同步状态（输入框样式） -->
+        <LinearLayout android:id="@+id/filterContainer" android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:layout_marginHorizontal="20dp" android:gravity="center_vertical">
+            <com.google.android.material.button.MaterialButton android:id="@+id/input_month_button" style="?attr/borderlessButtonStyle" android:layout_width="wrap_content" android:layout_height="48dp" android:textSize="14sp" android:paddingHorizontal="4dp" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/input_month_chevron" style="?attr/materialIconButtonStyle" android:layout_width="40dp" android:layout_height="48dp" android:contentDescription="日期范围" app:icon="@drawable/m3_split_button_chevron_avd" />
+            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/input_status_button" style="?attr/borderlessButtonStyle" android:layout_width="wrap_content" android:layout_height="48dp" android:textSize="13sp" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/input_status_chevron" style="?attr/materialIconButtonStyle" android:layout_width="36dp" android:layout_height="48dp" android:contentDescription="账单状态" app:icon="@drawable/m3_split_button_chevron_avd" />
+        </LinearLayout>
+        <HorizontalScrollView android:layout_width="match_parent" android:layout_height="48dp" android:scrollbars="none" android:clipToPadding="false" android:paddingHorizontal="20dp">
+            <com.google.android.material.chip.ChipGroup android:id="@+id/channelFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" app:singleLine="true" app:singleSelection="true" app:selectionRequired="true" app:chipSpacingHorizontal="8dp" />
+        </HorizontalScrollView>
+        <net.ankio.auto.ui.components.LedgerChartsView android:id="@+id/ledgerCharts" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="20dp" android:layout_marginTop="8dp" android:layout_marginBottom="8dp" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipe_refresh_layout" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+            <net.ankio.auto.ui.components.StatusPage android:id="@+id/status_page" android:layout_width="match_parent" android:layout_height="match_parent"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

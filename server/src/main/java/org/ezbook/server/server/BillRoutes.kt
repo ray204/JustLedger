@@ -1,0 +1,455 @@
+/*
+ * Copyright (C) 2024 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package org.ezbook.server.server
+
+import androidx.room.withTransaction
+import com.google.gson.Gson
+import org.ezbook.server.tools.RefundManager
+import org.ezbook.server.tools.LedgerPolicy
+import org.ezbook.server.tools.ReceiptPolicy
+import org.ezbook.server.tools.GroupUndo
+import org.ezbook.server.db.model.BillNoticeModel
+import io.ktor.application.call
+import io.ktor.request.receive
+import io.ktor.request.receiveText
+import io.ktor.response.respond
+import io.ktor.routing.Route
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.route
+import org.ezbook.server.constant.BillState
+import org.ezbook.server.db.Db
+import org.ezbook.server.db.model.BillInfoModel
+import org.ezbook.server.models.OrderGroupDto
+import org.ezbook.server.models.ResultModel
+import org.ezbook.server.log.ServerLog
+import org.ezbook.server.tools.StatisticsService
+import org.ezbook.server.tools.BillExportSignal
+import org.ezbook.server.tools.roundAmount
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+/**
+ * 账单管理路由配置
+ * 提供账单的完整生命周期管理，包括增删改查、状态管理、统计分析等功能
+ */
+fun Route.billRoutes() {
+    route("/bill") {
+        get("/enrichment/candidates") {
+            val id = call.request.queryParameters["id"]?.toLongOrNull() ?: 0
+            try { call.respond(ResultModel.ok(org.ezbook.server.tools.BillEnrichment.candidates(id))) }
+            catch (e: IllegalArgumentException) { call.respond(ResultModel<Any?>(422, e.message ?: "无法读取候选账单", null)) }
+        }
+        post("/enrichment/confirm") {
+            val json = Gson().fromJson(call.receiveText(), com.google.gson.JsonObject::class.java)
+            try {
+                val bill = org.ezbook.server.tools.BillEnrichment.confirm(
+                    json.get("sourceId")?.asLong ?: 0, json.get("targetId")?.asLong ?: 0,
+                    json.get("sourceSnapshot")?.asString.orEmpty(), json.get("targetSnapshot")?.asString.orEmpty())
+                BillExportSignal.notifyCommitted()
+                call.respond(ResultModel.ok(bill))
+            } catch (e: IllegalArgumentException) { call.respond(ResultModel<Any?>(409, e.message ?: "无法更新账单", null)) }
+        }
+        get("/notices/pending") {
+            call.respond(ResultModel.ok(Db.get().billNoticeDao().pending()))
+        }
+        post("/notices/ack") {
+            val json = Gson().fromJson(call.receiveText(), com.google.gson.JsonObject::class.java)
+            val id = json.get("id").asLong
+            require(id > 0) { "确认记录无效" }
+            val snapshot = json.get("snapshot")?.asString.orEmpty()
+            val accepted = Db.get().withTransaction {
+                val notice = Db.get().billNoticeDao().get(id)
+                if (notice == null || !ReceiptPolicy.matchesSnapshot(notice.billJson, snapshot)) false
+                else {
+                    Db.get().billNoticeDao().acknowledge(id, ReceiptPolicy.acknowledge(0, true, System.currentTimeMillis()))
+                    true
+                }
+            }
+            call.respond(if (accepted) ResultModel.ok("OK") else ResultModel(409, "账单已更新，请重新核对", null))
+        }
+        get("/refund/originals") {
+            call.respond(ResultModel.ok(Db.get().billInfoDao().refundOriginals()))
+        }
+
+        /**
+         * GET /bill/list-grouped - 获取按日期分组的账单列表
+         * 服务端完成分组，避免客户端重复计算，提升性能
+         * 
+         * @param type 状态筛选，默认包含已编辑、已同步、待编辑状态
+         * @param year 年份，可选；不传表示全部时间
+         * @param month 月份，可选；与 year 同时传入时按月筛选
+         * @return ResultModel 包含按日期分组的账单数据
+         */
+        get("/list-grouped") {
+            val defaultStates = listOf(
+                BillState.Edited.name,
+                BillState.Synced.name,
+                BillState.Wait2Edit.name
+            )
+            val type = parseBillListStates(call.request.queryParameters["type"], defaultStates)
+
+            val year = call.request.queryParameters["year"]?.toIntOrNull()
+            val month = call.request.queryParameters["month"]?.toIntOrNull()
+            val keyword = call.request.queryParameters["keyword"] ?: ""
+
+            // 计算时间范围：
+            // - 传 year+month：按月过滤
+            // - 不传：返回全部时间
+            val calendar = java.util.Calendar.getInstance()
+            val startTime = if (year != null && month != null) {
+                calendar.apply {
+                    set(year, month - 1, 1, 0, 0, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                calendar.timeInMillis
+            } else {
+                0L
+            }
+            val endTime = if (year != null && month != null) {
+                calendar.add(java.util.Calendar.MONTH, 1)
+                calendar.timeInMillis
+            } else {
+                Long.MAX_VALUE
+            }
+
+            ServerLog.d("获取分组账单列表：year=$year, month=$month, type=$type, hasKeyword=${keyword.isNotEmpty()}")
+
+            // 获取整月数据（不分页）
+            val bills = Db.get().billInfoDao().getBillsByTimeRange(startTime, endTime)
+                .filter { it.groupId == -1L && type.contains(it.state.name) }
+                .filter {
+                    keyword.isEmpty() ||
+                            it.shopName.contains(keyword, ignoreCase = true) ||
+                            it.shopItem.contains(keyword, ignoreCase = true) ||
+                            it.remark.contains(keyword, ignoreCase = true) ||
+                            it.cateName.contains(keyword, ignoreCase = true) ||
+                            it.tags.contains(keyword, ignoreCase = true) ||
+                            it.accountNameFrom.contains(keyword, ignoreCase = true) ||
+                            it.accountNameTo.contains(keyword, ignoreCase = true)
+                }
+                .sortedByDescending { it.time }
+
+            // 服务端按日期分组
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val groupedBills = bills
+                .groupBy { dateFormat.format(it.time) }
+                .map { (date, billList) -> OrderGroupDto(date, billList) }
+
+            call.respond(ResultModel.ok(groupedBills))
+        }
+
+        /**
+         * GET /bill/group - 获取账单去重信息
+         *
+         * @param id 账单ID
+         * @return ResultModel 包含账单去重数据
+         */
+        get("/group") {
+            val id = call.request.queryParameters["id"]?.toLong() ?: 0
+            val result = Db.get().billInfoDao().queryGroup(id)
+            call.respond(ResultModel.ok(result))
+        }
+
+        /**
+         * POST /bill/unGroup - 取消账单去重
+         *
+         * @param body 包含id的JSON对象
+         * @return ResultModel 操作结果
+         */
+        post("/unGroup") {
+            val requestBody = call.receiveText()
+            val json =
+                com.google.gson.Gson().fromJson(requestBody, com.google.gson.JsonObject::class.java)
+            val id = json?.get("id")?.asLong ?: 0
+            try {
+                GroupUndo.undo(id)
+                BillExportSignal.notifyCommitted()
+                call.respond(ResultModel.ok(0))
+            } catch (e: IllegalArgumentException) {
+                call.respond(ResultModel<Any?>(409, e.message ?: "无法撤销", null))
+            }
+        }
+
+        /**
+         * POST /bill/put - 保存或更新账单
+         * 根据账单ID自动判断是插入新账单还是更新现有账单
+         *
+         * @param body BillInfoModel 账单数据
+         * @return ResultModel 包含账单ID
+         */
+        post("/put") {
+            val bill = call.receive(BillInfoModel::class)
+            val automatic = call.request.queryParameters["automatic"] == "true"
+            try {
+                val id = Db.get().withTransaction {
+                    LedgerPolicy.minorUnits(bill.money)
+                    bill.money = bill.money.roundAmount()
+                    bill.fee = bill.fee.roundAmount()
+                    require(!automatic || bill.reviewReason.isBlank()) { "账单需要人工确认" }
+                    RefundManager.validateOriginalChanges(bill)
+                    RefundManager.validate(bill)
+                    if (!automatic && bill.reviewReason.isNotBlank()) {
+                        bill.reviewReason = ""
+                        bill.setFlag(BillInfoModel.FLAG_NOT_COUNT, false)
+                    }
+                    val dao = Db.get().billInfoDao()
+                    val existing = dao.queryId(bill.id)
+                    if (!automatic) bill.auto = false // Preserve explicitly saved user values during later enrichment.
+                    val savedId = if (existing != null) {
+                        dao.update(bill)
+                        bill.id
+                    } else dao.insert(bill)
+                    bill.id = savedId
+                    val notices = Db.get().billNoticeDao()
+                    notices.refreshPending(savedId, Gson().toJson(bill))
+                    if (ReceiptPolicy.shouldCreate(automatic, bill.state != BillState.Wait2Edit,
+                            bill.groupId != -1L, notices.count(savedId, "AUTO_SAVED") > 0)) {
+                        notices.insert(BillNoticeModel(billId = savedId, billJson = Gson().toJson(bill),
+                            createdAt = System.currentTimeMillis()))
+                    }
+                    savedId
+                }
+                BillExportSignal.notifyCommitted()
+                call.respond(ResultModel.ok(id))
+            } catch (e: IllegalArgumentException) {
+                call.respond(ResultModel<Long>(422, e.message ?: "账单校验失败", null))
+            }
+
+        }
+
+        /**
+         * POST /bill/remove - 删除账单
+         * 同时删除账单本身和相关的去重信息
+         *
+         * @param body 包含id的JSON对象
+         * @return ResultModel 操作结果
+         */
+        post("/remove") {
+            val requestBody = call.receiveText()
+            val json =
+                com.google.gson.Gson().fromJson(requestBody, com.google.gson.JsonObject::class.java)
+            val id = json?.get("id")?.asLong ?: 0
+            ServerLog.d("删除账单：$id")
+            try {
+                Db.get().withTransaction {
+                    require(Db.get().billInfoDao().refundedAmount(id, 0) == 0.0) { "请先处理关联退款，再删除原支出账单" }
+                    val notices = Db.get().billNoticeDao()
+                    Db.get().billInfoDao().queryGroup(id).forEach { notices.deleteForBill(it.id) }
+                    notices.deleteForBill(id)
+                    Db.get().billInfoDao().deleteId(id)
+                    Db.get().billInfoDao().deleteGroup(id)
+                }
+                BillExportSignal.notifyCommitted()
+                call.respond(ResultModel.ok(0))
+            } catch (e: IllegalArgumentException) {
+                call.respond(ResultModel<Int>(409, e.message ?: "无法删除", null))
+            }
+        }
+
+        /**
+         * POST /bill/clear - 清空所有账单
+         *
+         * @return ResultModel 操作结果
+         */
+        post("/clear") {
+            Db.get().billInfoDao().clear()
+            call.respond(ResultModel.ok("OK"))
+        }
+
+        /**
+         * GET /bill/sync/list - 获取未同步账单列表
+         *
+         * @return ResultModel 包含未同步的账单数据
+         */
+        get("/sync/list") {
+            val result = Db.get().billInfoDao().queryNoSync()
+            call.respond(ResultModel.ok(result))
+        }
+
+        /**
+         * GET /bill/export/list - read-only side-channel export.
+         * Requires one concrete state and a [start,end) millisecond window.
+         */
+        get("/export/list") {
+            val state = call.request.queryParameters["state"]?.let {
+                runCatching { BillState.valueOf(it) }.getOrNull()
+            }
+            val start = call.request.queryParameters["start"]?.toLongOrNull()
+            val end = call.request.queryParameters["end"]?.toLongOrNull()
+            if (state == null || start == null || end == null || start >= end) {
+                call.respond(ResultModel.error(400, "state/start/end 参数无效"))
+                return@get
+            }
+            val result = Db.get().billInfoDao().exportByStateAndTimeRange(state, start, end)
+            call.respond(ResultModel.ok(result))
+        }
+
+        /**
+         * POST /bill/status - 更新账单同步状态
+         *
+         * @param body 包含id和sync的JSON对象
+         * @return ResultModel 操作结果
+         */
+        post("/status") {
+            val requestBody = call.receiveText()
+            val json =
+                com.google.gson.Gson().fromJson(requestBody, com.google.gson.JsonObject::class.java)
+            val id = json?.get("id")?.asLong ?: 0
+            val status = json?.get("sync")?.asBoolean ?: false
+            val newState = if (status) BillState.Synced else BillState.Edited
+            Db.get().billInfoDao().updateStatus(id, newState)
+            BillExportSignal.notifyCommitted()
+            call.respond(ResultModel.ok(0))
+        }
+
+        /**
+         * GET /bill/get - 获取指定账单详情
+         *
+         * @param id 账单ID
+         * @return ResultModel 包含账单详细信息
+         */
+        get("/get") {
+            val id = call.request.queryParameters["id"]?.toLong() ?: 0
+            val result = Db.get().billInfoDao().queryId(id)
+            call.respond(ResultModel.ok(result))
+        }
+
+        /**
+         * GET /bill/edit - 获取待编辑账单列表
+         *
+         * @return ResultModel 包含待编辑的账单列表
+         */
+        get("/edit") {
+            val bills = Db.get().billInfoDao().loadWaitEdit()
+            call.respond(ResultModel.ok(bills))
+        }
+
+        /**
+         * GET /bill/range - 获取指定时间范围内的账单列表
+         *
+         * @param start 开始时间戳（毫秒）
+         * @param end 结束时间戳（毫秒）
+         * @return ResultModel 包含时间范围内的账单列表
+         */
+        get("/range") {
+            val startTime = call.request.queryParameters["start"]?.toLong() ?: 0
+            val endTime =
+                call.request.queryParameters["end"]?.toLong() ?: System.currentTimeMillis()
+            val bills = Db.get().billInfoDao().getBillsByTimeRange(startTime, endTime)
+            call.respond(ResultModel.ok(bills))
+        }
+
+        /**
+         * POST /bill/monthly/stats - 获取月度统计数据
+         * 计算指定月份的收入和支出统计
+         *
+         * @param year 年份，必填
+         * @param month 月份，必填
+         * @return ResultModel 包含收入和支出统计数据
+         */
+        post("/monthly/stats") {
+            val year = call.request.queryParameters["year"]?.toInt()
+                ?: return@post call.respond(ResultModel.error(400, "Year parameter is required"))
+            val month = call.request.queryParameters["month"]?.toInt()
+                ?: return@post call.respond(ResultModel.error(400, "Month parameter is required"))
+
+            // 计算时间范围
+            val calendar = java.util.Calendar.getInstance().apply {
+                set(year, month - 1, 1, 0, 0, 0)
+                set(java.util.Calendar.MILLISECOND, 0)
+            }
+            val startTime = calendar.timeInMillis
+
+            calendar.add(java.util.Calendar.MONTH, 1)
+            val endTime = calendar.timeInMillis
+
+            val currency = call.request.queryParameters["currency"]
+                ?: org.ezbook.server.tools.SettingUtils.baseCurrency()
+            val rows = Db.get().billInfoDao().getBillsByTimeRange(startTime, endTime)
+                .filter { it.time < endTime && it.groupId == -1L && it.state != BillState.Wait2Edit &&
+                    !it.hasFlag(BillInfoModel.FLAG_NOT_COUNT) && it.currencyModel().code == currency }
+            fun sum(type: org.ezbook.server.constant.BillType) = rows.filter { it.type == type }
+                .sumOf { runCatching { LedgerPolicy.minorUnits(it.money) }.getOrDefault(0L) } / 100.0
+            val income = sum(org.ezbook.server.constant.BillType.Income)
+            val expense = sum(org.ezbook.server.constant.BillType.Expend) - sum(org.ezbook.server.constant.BillType.IncomeRefund)
+
+            call.respond(ResultModel.ok(mapOf("income" to income, "expense" to expense)))
+        }
+
+        /**
+         * GET /bill/summary - 获取WebView展示用的完整消费分析数据
+         * 返回包含分类、商户、账单明细的完整JSON，供summary.html使用
+         *
+         * @param start 开始时间戳（毫秒）必填
+         * @param end 结束时间戳（毫秒）必填
+         * @param period 周期名称（可选）
+         */
+        get("/summary") {
+            val startTime = call.request.queryParameters["start"]?.toLong()
+                ?: return@get call.respond(
+                    ResultModel.error(
+                        400,
+                        "Start time parameter is required"
+                    )
+                )
+            val endTime = call.request.queryParameters["end"]?.toLong()
+                ?: return@get call.respond(ResultModel.error(400, "End time parameter is required"))
+            val period = call.request.queryParameters["period"] ?: "未知周期"
+
+            val summaryData = StatisticsService.buildSummaryForWebView(startTime, endTime, period)
+            call.respond(ResultModel.ok(summaryData))
+        }
+
+        /**
+         * GET /bill/book/list - 获取账本账单列表
+         *
+         * @param type 账单类型
+         * @return ResultModel 包含账本账单数据
+         */
+        get("/book/list") {
+            val type = call.request.queryParameters["type"] ?: ""
+            val data = Db.get().bookBillDao().list(type)
+            call.respond(ResultModel.ok(data))
+        }
+
+        /**
+         * POST /bill/book/put - 批量更新账本账单数据
+         *
+         * @param md5 数据的MD5校验值
+         * @param type 账单类型
+         * @param body Array<BookBillModel> 账本账单数据数组
+         * @return ResultModel 操作结果
+         */
+        post("/book/put") {
+            val md5 = call.request.queryParameters["md5"] ?: ""
+            val type = call.request.queryParameters["type"] ?: ""
+            val bills = call.receive<Array<org.ezbook.server.db.model.BookBillModel>>()
+            Db.get().bookBillDao().put(bills.toList(), type)
+            setByInner(type, md5)
+            call.respond(ResultModel.ok("OK"))
+        }
+    }
+}
+
+internal fun parseBillListStates(typeParam: String?, defaultStates: List<String>): List<String> {
+    return typeParam
+        ?.split(",")
+        ?.map { it.trim() }
+        ?.filter { it.isNotEmpty() }
+        ?.takeIf { it.isNotEmpty() }
+        ?: defaultStates
+}

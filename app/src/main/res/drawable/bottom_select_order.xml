@@ -1,0 +1,25 @@
+<!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960"
+    android:tint="?colorOnBackground">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M222,880q-43.75,0 -74.38,-30.63T117,775v-125h127v-570l59.8,60 59.8,-60 59.8,60 59.8,-60 59.8,60 60,-60 60,60 60,-60 60,60 60,-60v695q0,43.75 -30.63,74.38T738,880L222,880ZM736.5,820q19.5,0 31.5,-12.5t12,-32.5v-611L307,164v536h390v75q0,20 10,32.5t29.5,12.5ZM360,318v-60h240v60L360,318ZM360,452v-60h240v60L360,452ZM693,318q-12,0 -21,-9t-9,-21q0,-12 9,-21t21,-9q12,0 21,9t9,21q0,12 -9,21t-21,9ZM693,447q-12,0 -21,-9t-9,-21q0,-12 9,-21t21,-9q12,0 21,9t9,21q0,12 -9,21t-21,9Z" />
+</vector>

@@ -1,0 +1,226 @@
+/*
+ * Copyright (C) 2025 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 3.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-3.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package net.ankio.auto.ui.fragment
+
+import android.os.Bundle
+import android.view.View
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import net.ankio.auto.R
+import net.ankio.auto.databinding.FragmentAiSummaryBinding
+import net.ankio.auto.http.api.AnalysisTaskAPI
+import net.ankio.auto.ui.adapter.AnalysisTaskAdapter
+import net.ankio.auto.ui.api.BasePageFragment
+import net.ankio.auto.ui.api.BaseSheetDialog
+import net.ankio.auto.ui.components.WrapContentLinearLayoutManager
+import net.ankio.auto.ui.dialog.BottomSheetDialogBuilder
+import net.ankio.auto.ui.dialog.DateTimePickerDialog
+import net.ankio.auto.ui.utils.ListPopupUtilsGeneric
+import net.ankio.auto.ui.utils.ToastUtils
+import net.ankio.auto.utils.PeriodSelector
+import java.util.*
+import net.ankio.auto.utils.PrefManager
+import org.ezbook.server.db.model.AnalysisTaskModel
+
+/**
+ * AI分析任务管理页面
+ *
+ * 功能概览：
+ * 1. 显示所有AI分析任务列表
+ * 2. 支持创建新的分析任务
+ * 3. 支持查看已完成的分析报告
+ * 4. 支持删除任务
+ */
+class AiSummaryFragment : BasePageFragment<AnalysisTaskModel, FragmentAiSummaryBinding>() {
+
+    private var autoRefreshJob: Job? = null
+
+    override suspend fun loadData(): List<AnalysisTaskModel> =
+        AnalysisTaskAPI.getTasksPage(page, pageSize)
+
+    override fun onCreateAdapter(): RecyclerView.Adapter<*> {
+        val recyclerView = binding.statusPage.contentView
+
+        // 设置布局管理器为垂直线性布局
+        recyclerView?.layoutManager = WrapContentLinearLayoutManager(requireContext())
+
+        return AnalysisTaskAdapter()
+            .setOnItemClickListener { task ->
+                // 点击查看分析结果
+                navigateToDetail(task.id)
+            }
+            .setOnItemLongClickListener { task ->
+                // 长按删除任务
+                showDeleteConfirmation(task)
+            }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 检查AI月度总结功能是否启用
+        if (!PrefManager.aiMonthlySummary) {
+            findNavController().popBackStack()
+            return
+        }
+
+        setupUI()
+        startAutoRefresh()
+    }
+
+    override fun onDestroyView() {
+        stopAutoRefresh()
+        super.onDestroyView()
+    }
+
+    /**
+     * 开始智能自动刷新
+     */
+    private fun startAutoRefresh() {
+        autoRefreshJob = launch {
+            var refreshCount = 0
+            while (uiReady()) {
+                delay(15_000) // 15秒检查一次
+
+                refreshCount++
+                // 前5次刷新（用户刚进入页面，可能有处理中的任务）
+                // 之后每4次刷新一次（1分钟一次）
+                if (refreshCount <= 5 || refreshCount % 4 == 0) {
+                    reload()
+                }
+            }
+        }
+    }
+
+    /**
+     * 停止自动刷新
+     */
+    private fun stopAutoRefresh() {
+        autoRefreshJob?.cancel()
+        autoRefreshJob = null
+    }
+
+    /**
+     * 设置UI组件
+     */
+    private fun setupUI() {
+        // 设置创建任务按钮
+        binding.fabCreate.setOnClickListener {
+            PeriodSelector.show(requireContext(), it) { start, end, label ->
+                createAnalysisTask(
+                    PeriodSelector.PeriodData(
+                        PeriodSelector.Period.CUSTOM,
+                        start,
+                        end,
+                        label
+                    )
+                )
+            }
+        }
+
+        // 设置返回按钮
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        // 设置菜单项点击监听器
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_clear_all -> {
+                    showClearAllConfirmation()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+
+    /**
+     * 创建分析任务
+     */
+    private fun createAnalysisTask(periodData: PeriodSelector.PeriodData) {
+
+
+        launch {
+            val taskId = AnalysisTaskAPI.createTask(
+                title = periodData.displayName,
+                startTime = periodData.startTime,
+                endTime = periodData.endTime
+            )
+
+
+
+            if (taskId != null) {
+                ToastUtils.info("分析任务创建成功，正在后台处理...")
+                reload() // 刷新列表
+            } else {
+                ToastUtils.error("创建任务失败，可能已存在相同时间范围的任务")
+            }
+        }
+    }
+
+    /**
+     * 导航到详情页面
+     */
+    private fun navigateToDetail(taskId: Long) {
+        val bundle = bundleOf("task_id" to taskId)
+        findNavController().navigate(R.id.analysisDetailFragment, bundle)
+    }
+
+    /**
+     * 显示删除确认对话框
+     */
+    private fun showDeleteConfirmation(task: AnalysisTaskModel) {
+        BaseSheetDialog.create<BottomSheetDialogBuilder>(requireContext())
+            .setTitle(getString(R.string.delete_analysis_task))
+            .setMessage(getString(R.string.delete_analysis_task_message, task.title))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                this@AiSummaryFragment.launch {
+                    AnalysisTaskAPI.deleteTask(task.id)
+                    reload()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .show()
+    }
+
+    /**
+     * 显示清空所有任务确认对话框
+     */
+    private fun showClearAllConfirmation() {
+        BaseSheetDialog.create<BottomSheetDialogBuilder>(requireContext())
+            .setTitle(getString(R.string.clear_all_analysis))
+            .setMessage(getString(R.string.clear_all_analysis_message))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                this@AiSummaryFragment.launch {
+                    val success = AnalysisTaskAPI.clearAllTasks()
+                    if (success) {
+                        ToastUtils.info(getString(R.string.clear_all_analysis_success))
+                        reload()
+                    } else {
+                        ToastUtils.error(getString(R.string.clear_all_analysis_failed))
+                    }
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .show()
+    }
+
+}

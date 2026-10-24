@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="24dp">
+    <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilAiBaseUrl"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="接口地址" app:helperText="服务商提供的地址，可包含 /v1">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etAiBaseUrl" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textUri" android:maxLines="2" android:importantForAutofill="no" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilAiToken"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:hint="API Key" app:endIconMode="password_toggle" app:helperText="仅保存在本机，用于此接口认证">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etAiToken" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword" android:singleLine="true" android:importantForAutofill="no" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilAiModel"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:hint="模型名称" app:helperText="填写服务商提供的完整模型 ID">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/actAiModel" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textVisiblePassword|textNoSuggestions" android:maxLines="2" android:importantForAutofill="no" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.button.MaterialButton android:id="@+id/btnTestAi" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="28dp" android:text="保存并测试" />
+    <com.google.android.material.card.MaterialCardView android:id="@+id/cardTestResult" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:visibility="gone" app:cardCornerRadius="16dp" app:cardElevation="0dp">
+        <TextView android:id="@+id/tvTestResultContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:textSize="14sp" android:accessibilityLiveRegion="polite" />
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

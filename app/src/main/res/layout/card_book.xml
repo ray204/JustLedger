@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- 头部信息卡片 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_header"
+        style="@style/HomeCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/cardPadding2">
+
+            <!-- ① 应用 Icon：圆形背景 + 图标 -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivAppIcon"
+                android:layout_width="@dimen/image_size"
+                android:layout_height="@dimen/image_size"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="@string/app_icon_desc"
+                app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+            <!-- ② 应用名：占满剩余空间 -->
+            <LinearLayout
+                android:id="@+id/app"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/one_padding"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvAppName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="自动记账"
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvPackageName"
+                    style="@style/TextAppearance.Material3.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="com.example.app" />
+            </LinearLayout>
+
+            <!-- ③ 刷新按钮 -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/icon_restart"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 功能操作卡片 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_actions"
+        style="@style/HomeCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding">
+
+        <GridLayout
+            android:id="@+id/gridActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="4"
+            android:padding="@dimen/cardPadding2">
+
+        </GridLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

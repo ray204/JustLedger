@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2023 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<resources>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="info">#155FDA</color>
+    <color name="danger">#E52544</color>
+    <color name="success">#189D4C</color>
+    <!-- 背景用淡色版本 -->
+    <color name="danger_bg">#1AE52544</color>  <!-- 10% 透明度的红色 -->
+    <color name="success_bg">#1A189D4C</color> <!-- 10% 透明度的绿色 -->
+    <!-- 成功 -->
+    <color name="log_info">#007BFF</color> <!-- 信息 -->
+    <color name="log_warning">#FFC107</color> <!-- 警告 -->
+    <color name="log_error">#DC3545</color> <!-- 错误 -->
+    <color name="log_debug">#6C757D</color> <!-- 调试 -->
+    <color name="black">#FF000000</color>
+    <color name="gray40">#30000000</color>
+    <color name="transparent">#00000000</color>
+
+<!-- 48 % 黑：整张卡半透明暗化 -->
+<!-- 50 % 黑：待同步条 -->
+<!-- 收入/支出标签 -->
+
+
+
+<!-- 亮蓝 -->
+<!-- 红 -->
+<!-- 70% 黑 -->
+
+
+
+
+
+    <!-- 提高明度并略增饱和度的现代柔和色系，更新 palette_* 背景色，保留命名以确保兼容 -->
+    <color name="palette_01_bg">#FFFCE8E9</color>  <!-- 温暖粉红 -->
+    <color name="palette_02_bg">#FFFCE9E6</color>  <!-- 温暖橙粉 -->
+    <color name="palette_03_bg">#FFFEEEE6</color>  <!-- 温暖米色 -->
+    <color name="palette_04_bg">#FFFEF2DB</color>  <!-- 温暖米黄 -->
+    <color name="palette_05_bg">#FFFEF5E6</color>  <!-- 淡黄 -->
+    <color name="palette_06_bg">#FFF5F9E6</color>  <!-- 淡绿黄 -->
+    <color name="palette_07_bg">#FFECF5E6</color>  <!-- 淡绿 -->
+    <color name="palette_08_bg">#FFE6F5E9</color>  <!-- 清新绿 -->
+    <color name="palette_09_bg">#FFE6F5F0</color>  <!-- 薄荷绿 -->
+    <color name="palette_10_bg">#FFE8F6F6</color>  <!-- 清新青绿 -->
+    <color name="palette_11_bg">#FFE8F2F6</color>  <!-- 淡青 -->
+    <color name="palette_12_bg">#FFEAEEF8</color>  <!-- 淡蓝 -->
+    <color name="palette_13_bg">#FFEEEAF8</color>  <!-- 淡紫蓝 -->
+    <color name="palette_14_bg">#FFF2EAF8</color>  <!-- 淡紫 -->
+    <color name="palette_15_bg">#FFF5EAF8</color>  <!-- 淡紫红 -->
+    <color name="palette_16_bg">#FFF8EAF5</color>  <!-- 淡粉紫 -->
+    <color name="palette_17_bg">#FFFCE6F0</color>  <!-- 淡粉 -->
+    <color name="palette_18_bg">#FFFCE6EC</color>  <!-- 温暖粉 -->
+    <color name="palette_19_bg">#FFFCE9EC</color>  <!-- 温暖粉橙 -->
+    <color name="palette_20_bg">#FFFCECE6</color>  <!-- 温暖橙粉 -->
+    <color name="palette_21_bg">#FFFCEFE6</color>  <!-- 温暖橙 -->
+    <color name="palette_22_bg">#FFFEF0E7</color>  <!-- 温暖橙黄 -->
+    <color name="palette_23_bg">#FFFEF2E8</color>  <!-- 淡橙黄 -->
+    <color name="palette_24_bg">#FFFEF4E8</color>  <!-- 淡黄橙 -->
+    <color name="palette_25_bg">#FFFEF6E8</color>  <!-- 淡黄 -->
+    <color name="palette_26_bg">#FFFEF7CC</color>  <!-- 温暖淡黄 -->
+    <color name="palette_27_bg">#FFF8FCE8</color>  <!-- 淡黄绿 -->
+    <color name="palette_28_bg">#FFF2FCE8</color>  <!-- 淡绿黄 -->
+    <color name="palette_29_bg">#FFECFCE9</color>  <!-- 清新淡绿 -->
+    <color name="palette_30_bg">#FFE9FCE9</color>  <!-- 清新绿 -->
+    <color name="palette_31_bg">#FFE6FCE9</color>  <!-- 清新绿薄荷 -->
+    <color name="palette_32_bg">#FFE6FCEC</color>  <!-- 薄荷绿 -->
+    <color name="palette_33_bg">#FFE6FCF0</color>  <!-- 清新青绿 -->
+    <color name="palette_34_bg">#FFE8F8FC</color>  <!-- 清新青 -->
+    <color name="palette_35_bg">#FFE8F5FC</color>  <!-- 淡青 -->
+    <color name="palette_36_bg">#FFE8F2FC</color>  <!-- 淡蓝青 -->
+    <color name="palette_37_bg">#FFEAEFF8</color>  <!-- 淡蓝 -->
+    <color name="palette_38_bg">#FFECEAF8</color>  <!-- 淡蓝紫 -->
+    <color name="palette_39_bg">#FFEEEAF8</color>  <!-- 淡紫蓝 -->
+    <color name="palette_40_bg">#FFF0EAF8</color>  <!-- 淡紫 -->
+    <color name="palette_41_bg">#FFF2EAF8</color>  <!-- 淡紫红 -->
+    <color name="palette_42_bg">#FFF5EAF5</color>  <!-- 淡粉紫 -->
+    <color name="palette_43_bg">#FFFCE8F2</color>  <!-- 淡粉红 -->
+    <color name="palette_44_bg">#FFFCE6F0</color>  <!-- 温暖粉 -->
+    <color name="palette_45_bg">#FFFCE6EC</color>  <!-- 温暖粉橙 -->
+    <color name="palette_46_bg">#FFFCE9E9</color>  <!-- 温暖粉红 -->
+    <color name="palette_47_bg">#FFFCECE6</color>  <!-- 温暖橙粉 -->
+    <color name="palette_48_bg">#FFFCEFE6</color>  <!-- 温暖橙 -->
+    <color name="palette_49_bg">#FFF2E9F8</color>  <!-- 淡紫粉 -->
+    <color name="palette_50_bg">#FFE0D7F8</color>  <!-- 淡紫蓝 -->
+
+</resources>

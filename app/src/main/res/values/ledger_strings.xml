@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ledger_overview">概览</string>
+    <string name="ledger_greeting">每一笔，都清楚。</string>
+    <string name="ledger_subtitle"></string>
+    <string name="ledger_month">%1$d 年 %2$d 月</string>
+    <string name="ledger_balance">本月结余</string>
+    <string name="ledger_privacy">隐藏或显示金额</string>
+    <string name="ledger_view_bills">查看本月账单</string>
+    <string name="ledger_capture">自动记账</string>
+    <string name="ledger_active">自动采集已开启</string>
+    <string name="ledger_inactive">完成设置，开始自动记账</string>
+    <string name="ledger_capture_hint">识别通知与短信，按渠道规则入账</string>
+    <string name="ledger_capture_setup">先开启通知或短信，再配置渠道规则</string>
+    <string name="ledger_quick">常用功能</string>
+    <string name="ledger_bills_desc">查看、搜索和核对每一笔收支</string>
+    <string name="ledger_manage">账户与分类</string>
+    <string name="ledger_manage_desc">整理账本，让收支井井有条</string>
+    <string name="ledger_rules">记账规则</string>
+    <string name="ledger_rules_desc">管理支付渠道与识别规则</string>
+    <string name="ledger_raw">原始记录</string>
+    <string name="ledger_raw_desc">核对通知、短信与识别结果</string>
+    <string name="ledger_recognition">辅助识别</string>
+    <string name="ledger_recognition_desc">配置截图与账单识别，不生成消费建议</string>
+    <string name="ledger_tools">记账工具</string>
+    <string name="ledger_system">应用与服务</string>
+    <string name="ledger_amount_unavailable">暂时无法读取账单，返回页面可重试</string>
+    <string name="ledger_privacy_hidden">金额已隐藏</string>
+    <string name="ledger_privacy_visible">金额已显示</string>
+    <string name="ledger_quiet_note"></string>
+    <string name="ledger_storage_target">当前账单保存位置</string>
+</resources>

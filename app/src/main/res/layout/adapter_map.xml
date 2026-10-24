@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2024 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_effect"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="?listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding">
+
+    <!-- 左侧内容区域，包含文本和标签 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical">
+
+        <!-- 左侧文本 -->
+        <TextView
+            android:id="@+id/raw"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/containment_chip"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="映射文本很长很映射文本很长很长很长映射文本很长很长很长映射文本很长很长很长映射文本很长很长很长长很长" />
+
+        <!-- 包含关系标签，附在右上角 -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/containment_chip"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:enabled="false"
+            android:minHeight="24dp"
+            android:text="@string/regexLabel"
+            android:textSize="11sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 中间固定宽度的箭头图标 -->
+    <ImageView
+        android:id="@+id/icon_header"
+        android:layout_width="@dimen/image_size_small"
+        android:layout_height="@dimen/image_size_small"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="@dimen/one_padding"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        android:src="@drawable/icon_map_right" />
+
+    <!-- 右侧文本 -->
+    <net.ankio.auto.ui.components.IconView
+        android:id="@+id/target"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        app:iconTintEnabled="false"
+        app:maxLines="2"
+        app:textColor="?colorOnBackground"
+        app:textSize="@dimen/abc_text_size_medium_material"
+        tools:text="映射文本很长很长映射文本很长很长很长映射文本很长很长很长映射文本很长很长很长映射文本很长很长很长映射文本很长很长很长很长" />
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+name: 问题反馈
+description: 报告 JustLedger 使用问题
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 问题与预期
+      description: 请描述实际发生的情况和期望行为。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请使用虚构订单说明，勿上传未遮挡的交易、聊天、账户或密钥。
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      placeholder: 手机型号、Android 版本、JustLedger 版本

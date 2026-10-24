@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="receipt_updated_title">这笔账单已更新</string>
+    <string name="receipt_title">已记入账本</string>
+    <string name="receipt_explanation">已保存到 JustLedger。确认仅表示您已知悉，不会再次记账。</string>
+    <string name="receipt_confirm">确认本笔</string>
+    <string name="receipt_queue_count">还有 %1$d 笔入账记录待您确认</string>
+    <string name="receipt_ack_failed">确认未保存，请重试；账单已计入，不会重复记账。</string>
+    <string name="receipt_unknown_shop">未提供商户</string>
+    <string name="receipt_unknown_account">未提供付款账户</string>
+    <string name="receipt_channel">入账确认</string>
+    <string name="receipt_notification_title">有自动入账记录待确认</string>
+    <string name="receipt_notification_body">%1$d 笔已计入 JustLedger，点击查看并确认。</string>
+    <string name="receipt_manual_toast_title">手动保存提示</string>
+    <string name="receipt_manual_toast_summary">控制手动保存的短提示；自动入账仍需逐笔确认知悉。</string>
+    <string name="receipt_auto_record_summary">可信账单自动保存。多笔左右滑动查看，可修改后逐笔确认。</string>
+</resources>

@@ -1,0 +1,234 @@
+/*
+ * Copyright (C) 2024 ankio(ankio@ankio.net)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+
+package org.ezbook.server.ai.providers
+
+
+import com.google.gson.JsonParser
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.ezbook.server.log.ServerLog
+import org.ezbook.server.tools.runCatchingExceptCancel
+
+/**
+ * OpenAI风格API的基础实现类
+ * 提供了通用的OpenAI接口实现，继承此类的提供商只需要实现必要的属性即可
+ */
+abstract class BaseOpenAIProvider : BaseAIProvider() {
+
+
+    /**
+     * 获取可用的模型列表
+     */
+    override suspend fun getAvailableModels(): List<String> {
+        // 日志：开始获取可用模型列表
+        ServerLog.d("AI Provider: 获取可用模型列表")
+        val request = Request.Builder()
+            .url(OpenAIEndpoint.url(getApiUri(), "models"))
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
+            .addUserAgent()
+            .build()
+
+
+        return runCatchingExceptCancel {
+            client.newCall(request).execute().use { response ->
+
+
+                val body = response.body?.string() ?: throw RuntimeException("Empty response body")
+                val jsonObject = JsonParser.parseString(body).asJsonObject
+                val models = mutableListOf<String>()
+
+                jsonObject.getAsJsonArray("data")?.forEach { model ->
+                    models.add(model.asJsonObject.get("id").asString)
+                }
+
+                // 日志：获取模型成功，记录数量
+                ServerLog.d("AI Provider: 模型获取成功，count=${models.size}")
+                return models
+            }
+        }.getOrElse {
+            ServerLog.e("AI Provider: 获取模型失败：${it.message}", it)
+            emptyList()
+        }
+    }
+
+
+    /**
+     * 发送请求到AI并获取响应（支持流式输出、视觉识别）
+     */
+    override suspend fun request(
+        system: String,
+        user: String,
+        image: String,
+        onChunk: ((String) -> Unit)?
+    ): Result<String> {
+        ServerLog.d("AI Provider: 发起请求，model=${getModel()}, stream=${onChunk != null}, hasImage=${image.isNotBlank()}")
+        val messages = mutableListOf<Any>()
+        if (system.isNotEmpty()) {
+            messages.add(mapOf("role" to "system", "content" to system))
+        }
+        val userContent = if (image.isNotBlank()) {
+            val dataUrl =
+                if (image.startsWith("data:image")) image else "data:image/jpeg;base64,$image"
+            mapOf(
+                "role" to "user",
+                "content" to listOf(
+                    mapOf("type" to "text", "text" to user),
+                    mapOf("type" to "image_url", "image_url" to mapOf("url" to dataUrl))
+                )
+            )
+        } else {
+            mapOf("role" to "user", "content" to user)
+        }
+        messages.add(userContent)
+
+        val requestBody = mutableMapOf(
+            "model" to getModel(),
+            "messages" to messages,
+            "temperature" to 0.1,
+            "max_tokens" to 1200
+        )
+        // Receipt extraction does not need a paid reasoning trace; supported by DeepSeek's API.
+        if (getModel().contains("deepseek", ignoreCase = true)) requestBody["thinking"] = mapOf("type" to "disabled")
+
+        // 如果启用流式输出，添加stream参数
+        if (onChunk != null) {
+            requestBody["stream"] = true
+        }
+
+        val request = Request.Builder()
+            .url(OpenAIEndpoint.url(getApiUri(), "chat/completions"))
+            .addHeader("Authorization", "Bearer ${getApiKey()}")
+            .addHeader("Content-Type", "application/json")
+            .apply {
+                if (onChunk != null) {
+                    addHeader("Accept", "text/event-stream")
+                }
+            }
+            .addUserAgent()
+            .post(gson.toJson(requestBody).toRequestBody("application/json".toMediaTypeOrNull()))
+            .build()
+
+        return runCatchingExceptCancel {
+            if (onChunk != null) {
+                // 流式处理
+                ServerLog.d("AI Provider: 开始流式响应处理")
+                handleStreamResponse(request, onChunk)
+                "" // 流式模式以空串占位
+            } else {
+                // 普通处理
+                client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        val body =
+                            response.body?.string()?.removeThink() ?: error("Empty response body")
+                        // 日志：非流式失败，打印响应片段
+                        ServerLog.e("AI Provider: HTTP ${response.code}")
+                        val message = parseErrorMessage(body)
+                        error(message)
+                    }
+
+                    val body =
+                        response.body?.string()?.removeThink() ?: error("Empty response body")
+                    // 日志：非流式成功，打印响应片段以便排查
+                    val jsonObject = JsonParser.parseString(body).asJsonObject
+                    jsonObject.getAsJsonObject("usage")?.let { usage ->
+                        ServerLog.d("AI usage: prompt=${usage.get("prompt_tokens")}, completion=${usage.get("completion_tokens")}, total=${usage.get("total_tokens")}")
+                    }
+
+                    jsonObject
+                        .getAsJsonArray("choices")
+                        ?.get(0)
+                        ?.asJsonObject
+                        ?.getAsJsonObject("message")
+                        ?.get("content")
+                        ?.asString
+                        ?: error("Empty choices content")
+                }
+            }
+        }
+    }
+
+    /**
+     * 解析错误响应中的消息文本
+     * 兼容 OpenAI 格式 {"error":{"message":"..."}} 及通用格式 {"message":"...","code":xxx}
+     */
+    private fun parseErrorMessage(body: String): String {
+        return runCatching {
+            val json = JsonParser.parseString(body).asJsonObject
+            json.getAsJsonObject("error")?.get("message")?.asString
+                ?: json.get("message")?.asString
+                ?: body
+        }.getOrElse { body }
+    }
+
+    /**
+     * 处理流式响应
+     * @param request HTTP请求
+     * @param onChunk 数据块回调函数
+     */
+    private suspend fun handleStreamResponse(request: Request, onChunk: (String) -> Unit) {
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    ServerLog.e("AI Provider: Stream 请求失败: ${response.code}")
+                    return@withContext
+                }
+
+                val source = response.body?.source()
+                if (source == null) {
+                    ServerLog.e("AI Provider: Stream 响应体为空")
+                    return@withContext
+                }
+
+                runCatchingExceptCancel {
+                while (!source.exhausted()) {
+                    val line = source.readUtf8Line() ?: break
+
+                    // 处理SSE格式的数据
+                    if (line.startsWith("data: ")) {
+                        val data = line.substring(6) // 移除"data: "前缀
+
+                        if (data == "[DONE]") {
+                            break
+                        }
+
+                        runCatchingExceptCancel {
+                            val jsonObject = JsonParser.parseString(data).asJsonObject
+                            val choices = jsonObject.getAsJsonArray("choices")
+                            if (choices != null && choices.size() > 0) {
+                                val choice = choices[0].asJsonObject
+                                val delta = choice.getAsJsonObject("delta")
+                                val content = delta?.get("content")?.asString
+
+                                if (content != null) {
+                                    onChunk(content)
+                                }
+                            }
+                        }.onFailure {
+                            ServerLog.e("AI Provider: Stream 解析数据块失败: ${it.message}")
+                        }
+
+                    }
+                }
+                }.onFailure {
+                    ServerLog.e("AI Provider: ${it.message}", it)
+                }
+            }
+        }
+    }
+
+
+}

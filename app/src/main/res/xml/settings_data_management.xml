@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory android:title="@string/setting_category_auto_backup">
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="auto_backup" android:summary="开启后定期备份到所选位置" android:title="自动备份" />
+
+        <androidx.preference.Preference android:key="setting_backup_keep_count" android:summary="超出后删除最早的备份" android:title="保留份数" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="@string/setting_category_local_backup">
+        <androidx.preference.Preference android:key="backupToLocal" android:summary="保存到账单备份目录" android:title="立即备份" />
+
+        <androidx.preference.Preference android:key="restoreFromLocal" android:summary="用备份恢复账本，请先备份当前数据" android:title="恢复备份" />
+
+        <androidx.preference.Preference android:key="setting_local_backup_path" android:summary="选择保存位置" android:title="备份目录" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="云备份（可选）" android:key="cloudBackup" app:initialExpandedChildrenCount="1">
+        <rikka.material.preference.MaterialSwitchPreference android:defaultValue="false" android:key="setting_use_webdav" android:summary="开启后自动备份到 WebDAV；关闭后存本地" android:title="云备份" />
+
+        <androidx.preference.Preference android:dependency="setting_use_webdav" android:key="setting_webdav_url" android:summary="填写 WebDAV 地址" android:title="服务器" />
+
+        <androidx.preference.Preference android:dependency="setting_use_webdav" android:key="setting_webdav_user" android:summary="用于连接备份服务器" android:title="用户名" />
+
+        <androidx.preference.Preference android:dependency="setting_use_webdav" android:key="setting_webdav_password" android:summary="仅用于备份连接" android:title="密码" />
+
+        <androidx.preference.Preference android:dependency="setting_use_webdav" android:key="backupToWebdav" android:summary="上传当前账本" android:title="备份到云端" />
+
+        <androidx.preference.Preference android:dependency="setting_use_webdav" android:key="restoreFromWebdav" android:summary="选择一份备份恢复" android:title="从云端恢复" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

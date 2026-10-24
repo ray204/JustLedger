@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="14dp" android:background="?attr/selectableItemBackground">
+    <ImageView android:id="@+id/categoryIcon" android:layout_width="34dp" android:layout_height="34dp" android:layout_marginEnd="12dp" android:padding="7dp" android:background="@drawable/ledger_category_background" android:scaleType="fitCenter" android:importantForAccessibility="no" />
+    <TextView android:id="@+id/merchant" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:maxLines="1" android:ellipsize="end" android:textSize="14sp" android:textColor="@color/ledger_ink" />
+    <TextView android:id="@+id/channel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxWidth="72dp" android:layout_marginHorizontal="8dp" android:maxLines="1" android:ellipsize="end" android:textSize="11sp" android:textColor="@color/ledger_muted" />
+    <com.google.android.material.textview.MaterialTextView android:id="@+id/money" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="15sp" android:fontFamily="sans-serif-medium" android:maxLines="1" />
+</LinearLayout>

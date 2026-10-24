@@ -1,0 +1,226 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- 左侧：状态卡 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/status_card"
+        style="@style/HomeCard"
+        android:layout_width="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:layout_marginEnd="@dimen/padding">
+
+        <FrameLayout
+            android:id="@+id/card_content_status"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimaryContainer"
+            android:clickable="true"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- 背景图标：状态卡右下角，略微溢出 -->
+            <ImageView
+                android:id="@+id/status_bg_icon"
+                android:layout_width="@dimen/image_size_large_max_2"
+                android:layout_height="@dimen/image_size_large_max_2"
+                android:layout_gravity="bottom|end"
+                android:translationX="@dimen/padding"
+                android:translationY="@dimen/padding"
+                android:src="@drawable/home_active_success"
+                app:tint="?colorPrimary"
+                android:alpha="0.3"
+                android:contentDescription="@null" />
+            <!-- 调试标签：固定在状态卡右上角 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/debug_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="@dimen/cardPadding2"
+                android:layout_marginEnd="@dimen/cardPadding2"
+                android:background="@drawable/bg_debug_tag"
+                android:paddingHorizontal="@dimen/one_padding"
+                android:paddingVertical="@dimen/mini_padding"
+                android:text="@string/debug_tag"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="?colorOnTertiaryContainer"
+                android:visibility="gone"
+                tools:text="调试"
+                tools:visibility="visible" />
+            <!-- 前景内容 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="@dimen/cardPadding2">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/one_padding"
+                    android:layout_marginBottom="@dimen/one_padding"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    android:textColor="?colorOnPrimaryContainer"
+                    tools:text="工作中" />
+
+                <!-- 模式标签行：Xposed/OCR + 调试标签（与 mode_text 风格统一） -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/mode_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_mode_tag"
+                        android:paddingHorizontal="@dimen/one_padding"
+                        android:paddingVertical="@dimen/mini_padding"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="?colorOnPrimary"
+                        tools:text="Xposed" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 右侧列：上（App 版本卡） + 下（规则版本卡） -->
+    <LinearLayout
+        android:id="@+id/right_column"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+
+        android:orientation="vertical">
+
+        <!-- 右上：App 版本卡 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/app_version_card"
+            style="@style/HomeCard"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/card_content_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimaryContainer"
+                android:clickable="true"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <!-- 背景图标：App 版本卡右下角，略微溢出 -->
+                <ImageView
+                    android:id="@+id/app_bg_icon"
+                    android:alpha="0.3"
+                    android:layout_width="@dimen/image_size_large_max_2"
+                    android:layout_height="@dimen/image_size_large_max_2"
+                    android:layout_gravity="bottom|end"
+                    android:translationX="@dimen/padding"
+                    android:translationY="@dimen/padding"
+                    android:src="@drawable/ic_apps"
+                    app:tint="?colorPrimary"
+
+                    android:contentDescription="@null" />
+
+                <!-- 前景内容：右对齐的单行 App 版本文本 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:padding="@dimen/cardPadding2">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/subtitle_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textColor="?colorOnPrimaryContainer"
+                        android:textAlignment="viewEnd"
+                        tools:text="App：v1.2.3" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/channel_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="?colorOnPrimaryContainer"
+                        android:paddingTop="@dimen/mini_padding"
+                        tools:text="稳定版" />
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 右下：规则版本卡 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/rule_version_card"
+            style="@style/HomeCard"
+            android:layout_width="match_parent"
+            android:layout_margin="0dp"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/card_content_rule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimaryContainer"
+                android:clickable="true"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <!-- 背景图标：固定在右下角，略微溢出容器（使用 translation，不参与测量） -->
+                <ImageView
+                    android:layout_width="@dimen/image_size_large_max_2"
+                    android:layout_height="@dimen/image_size_large_max_2"
+                    android:layout_gravity="bottom|end"
+                    android:translationX="@dimen/padding"
+                    android:translationY="@dimen/padding"
+                    android:src="@drawable/home_rule"
+                    app:tint="?colorPrimary"
+                    android:alpha="0.3"
+                    android:contentDescription="@null" />
+
+                <!-- 前景内容：右对齐的两行文本（规则版本 / 更新时间），去除胶囊样式 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:layout_gravity="start"
+                    android:padding="@dimen/cardPadding2">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/rule_version_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textColor="?colorOnPrimaryContainer"
+                        tools:text="v0.0.0" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/rule_update_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="?colorOnPrimaryContainer"
+                        android:paddingTop="@dimen/mini_padding"
+                        tools:text="更新：2025-01-01" />
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</LinearLayout>

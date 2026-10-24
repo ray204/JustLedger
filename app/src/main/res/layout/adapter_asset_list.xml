@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2025 ankio(ankio@ankio.net)
+  ~ Licensed under the Apache License, Version 3.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-3.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+<!-- RecyclerView item root intentionally owns its pressed-state ripple. -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="14dp"
+    android:minHeight="72dp"
+    tools:ignore="Overdraw">
+
+    <!-- 资产图标 -->
+    <ImageView
+        android:id="@+id/iv_asset_icon"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:importantForAccessibility="no"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@drawable/default_asset" />
+
+    <!-- 资产名称 -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_asset_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="招商银行储蓄卡"
+        app:layout_constraintStart_toEndOf="@+id/iv_asset_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_asset_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_labels"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- 标签容器（类型 + 货币） -->
+    <LinearLayout
+        android:id="@+id/ll_labels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/iv_asset_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_asset_name"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_asset_icon">
+
+        <!-- 类型标签 -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textSize="11sp"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:background="@drawable/currency_label_background"
+            android:backgroundTint="?attr/colorPrimaryContainer"
+            android:maxLines="1"
+            tools:text="普通资产" />
+
+        <!-- 货币标签 -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_currency_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textSize="11sp"
+            android:textColor="?attr/colorOnSecondaryContainer"
+            android:background="@drawable/currency_label_background"
+            android:backgroundTint="?attr/colorSecondaryContainer"
+            android:maxLines="1"
+            tools:text="CNY" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
