@@ -1,5 +1,3 @@
-import java.util.Calendar
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -51,11 +49,12 @@ materialThemeBuilder {
     generatePalette = true
 }
 
-val appVersionCode = calculateVersionCode()
-val appVersionName = "4.0.2"
+// Monotonic install sequence; retain the old range so existing installations can upgrade.
+val appVersionCode = 20261026
+val appVersionName = "0.1.0"
 
 base {
-    archivesName.set("app-$appVersionName($appVersionCode)")
+    archivesName.set("JustLedger-$appVersionName")
 }
 
 android {
@@ -160,13 +159,6 @@ android {
         )
     }
 
-}
-fun calculateVersionCode(): Int {
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH) + 1
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
-    return year * 10000 + month * 100 + day
 }
 
 configurations.configureEach {
