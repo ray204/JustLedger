@@ -2,7 +2,7 @@
 
 **基于 [AutoAccounting](https://github.com/AutoAccountingOrg/AutoAccounting) 二次开发的 Android 自动记账本。** 保留付款采集与识别，重新设计界面，使用独立本地账本；不提供 AI 消费建议或财务分析。
 
-[下载安装](https://github.com/ray204/JustLedger/releases) · [交互预览](https://ray204.github.io/JustLedger/design/preview.html) · [上游项目](https://github.com/AutoAccountingOrg/AutoAccounting) · [GPL-3.0](LICENSE)
+[下载安装](https://github.com/ray204/JustLedger/releases) · [更新日志](CHANGELOG.md) · [交互预览](https://ray204.github.io/JustLedger/design/preview.html) · [上游项目](https://github.com/AutoAccountingOrg/AutoAccounting) · [GPL-3.0](LICENSE)
 
 ## 界面预览
 
@@ -22,6 +22,7 @@
 - **完整编辑**：修改金额、收支类型、分类、商户、商品、渠道、时间和备注，额外订单信息可展开查看。
 - **AI 识别可选**：配置后优先判断整页是否为真实交易凭证，再提取信息和分类。明确判定非交易时停止；调用或解析失败最多重试两次，仍失败或未配置时使用本地规则。
 - **补全与去重**：可信订单号、平台交易号及精确时间与内容等组合键匹配原账单，补齐缺失信息；金额相同本身不构成唯一键。模糊匹配显示候选，由用户确认关联。
+- **退款关联**：先按账本、币种、可退金额及交易线索筛选，明确匹配时默认选中原账单；可选 AI 最多比较 8 笔候选，仍支持手动更换。
 - **入账确认**：自动入账后展示确认弹窗，多笔可左右切换；可进入编辑。已识别订单再次自动触发时静默处理，手动识别仍可查看和补充。
 - **页面偏好**：识别成功后选择“记住”“暂时不”或“永不记住”；可在设置中移除偏好。记住的是页面类型，不是某一笔账单。
 

@@ -21,13 +21,43 @@ object RefundManager {
         LedgerPolicy.validateRefund(bill.money, 0.0, refunded)
     }
 
+    /** Read-only suggestion; callers keep manual selection editable and validate again on save. */
+    suspend fun suggest(bill: BillInfoModel): BillInfoModel? {
+        if (bill.type != BillType.IncomeRefund || bill.eventStatus != "COMPLETED") return null
+        val dao = Db.get().billInfoDao()
+        if (bill.originalBillId > 0) return runCatchingExceptCancel { validate(bill); dao.queryId(bill.originalBillId) }.getOrNull()
+        val payments = dao.refundOriginals().toMutableList()
+        if (bill.originalTransactionId.isNotBlank()) payments.addAll(dao.ocrIdentityCandidates(bill.bookName,bill.originalTransactionId))
+        ReceiptIdentity.keys(bill).filterKeys { it.endsWith("|order") || it.endsWith("|merchant-order") }
+            .values.distinct().forEach { payments.addAll(dao.ocrIdentityCandidates(bill.bookName,it)) }
+        val candidates = payments.distinctBy { it.id }.filter { it.type == BillType.Expend }.map {
+            RefundMatchPolicy.Candidate(it,it.money-dao.refundedAmount(it.id,bill.id))
+        }
+        val local=RefundMatchPolicy.local(bill,candidates)
+        if (local != null) return local
+        if (!SettingUtils.featureAiAvailable() || !SettingUtils.aiBillRecognition() ||
+            SettingUtils.apiKey("").isBlank() || SettingUtils.apiUri("").isBlank() || SettingUtils.apiModel("").isBlank()) return null
+        val limited=RefundMatchPolicy.forAi(bill,candidates)
+        val selected=runCatchingExceptCancel {
+            kotlinx.coroutines.withTimeoutOrNull(20_000) {
+                org.ezbook.server.ai.tools.RefundLinkRecognition.pick(bill,limited) { input ->
+                    org.ezbook.server.ai.AiManager.getInstance().request(
+                        org.ezbook.server.ai.tools.RefundLinkRecognition.PROMPT,input).getOrThrow()
+                }
+            }
+        }.getOrNull() ?: return null
+        // The network call may have raced another refund or a user editing the original.
+        return runCatchingExceptCancel {
+            val current=requireNotNull(dao.queryId(selected.id))
+            val remaining=current.money-dao.refundedAmount(current.id,bill.id)
+            require(RefundMatchPolicy.eligible(bill,RefundMatchPolicy.Candidate(current,remaining)))
+            validate(bill.copy(originalBillId=current.id));current
+        }.getOrNull()
+    }
+
     suspend fun resolve(bill: BillInfoModel) {
         if (bill.type != BillType.IncomeRefund) return
-        if (bill.originalBillId == 0L && bill.originalTransactionId.isNotBlank()) {
-            bill.originalBillId = Db.get().billInfoDao().byIdentity(bill.transactionNamespace, bill.originalTransactionId, "")
-                .filter { it.type == BillType.Expend && it.bookName == bill.bookName && it.currencyModel().code == bill.currencyModel().code }
-                .singleOrNull()?.id ?: 0
-        }
+        // This runs inside the save transaction: only revalidate, never call a model here.
         try {
             validate(bill)
         } catch (e: IllegalArgumentException) {

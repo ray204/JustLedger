@@ -32,7 +32,7 @@
 
     <!-- 描述文本 -->
     <ScrollView
-        android:id="@+id/container"
+        android:id="@+id/messageScroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
@@ -40,7 +40,12 @@
         android:layout_weight="1"
         android:fillViewport="true">
 
-
+        <!-- ScrollView accepts one child; messages and picker rows are stacked inside it. -->
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
     </ScrollView>
 
     <!-- 按钮区域 -->

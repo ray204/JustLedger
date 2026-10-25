@@ -81,6 +81,10 @@ fun Route.billRoutes() {
             }
             call.respond(if (accepted) ResultModel.ok("OK") else ResultModel(409, "账单已更新，请重新核对", null))
         }
+        post("/refund/match") {
+            val bill=call.receive(BillInfoModel::class)
+            call.respond(ResultModel.ok(RefundManager.suggest(bill)))
+        }
         get("/refund/originals") {
             call.respond(ResultModel.ok(Db.get().billInfoDao().refundOriginals()))
         }

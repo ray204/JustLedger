@@ -81,6 +81,12 @@ object BillAPI {
         check(response.code == 200) { response.msg }
     }
 
+    suspend fun matchRefund(bill: BillInfoModel): BillInfoModel? = withContext(Dispatchers.IO) {
+        val response=LocalNetwork.post<BillInfoModel>("bill/refund/match",Gson().toJson(bill)).getOrThrow()
+        check(response.code == 200) { response.msg }
+        response.data
+    }
+
     suspend fun refundOriginals(): List<BillInfoModel> = withContext(Dispatchers.IO) {
         val response = LocalNetwork.get<List<BillInfoModel>>("bill/refund/originals").getOrThrow()
         check(response.code == 200) { response.msg }

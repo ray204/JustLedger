@@ -292,6 +292,9 @@ class BillService(
             // 防止并发竞态：确保账单处理的完整生命周期严格按序执行，避免悬浮窗乱序
             val autoRecord = SettingUtils.getBoolean(org.ezbook.server.constant.Setting.AUTO_RECORD_BILL,
                 org.ezbook.server.constant.DefaultData.AUTO_RECORD_BILL)
+            if (billInfo.type == BillType.IncomeRefund && billInfo.originalBillId == 0L) {
+                RefundManager.suggest(billInfo)?.let { billInfo.originalBillId = it.id }
+            }
             val parent = db.withTransaction {
                 if (!analysisParams.fromAppData) {
                     billInfo.money = billInfo.money.roundAmount()

@@ -58,6 +58,34 @@ class PaymentInfoComponent(
 ) : BaseComponent<ComponentPaymentInfoBinding>(binding) {
 
     private lateinit var billInfoModel: BillInfoModel
+    private val triedRefunds = mutableSetOf<String>()
+    private var refundRequest = 0
+    private var selectedOriginal: BillInfoModel? = null
+    private fun refundKey(b: BillInfoModel) = com.google.gson.Gson().toJson(b.copy(originalBillId=0))
+    private fun suggestRefund() {
+        val bill=billInfoModel
+        if (bill.type != BillType.IncomeRefund) { refundRequest++; return }
+        if (bill.originalBillId > 0) {
+            if (selectedOriginal?.id != bill.originalBillId) launch {
+                val original=net.ankio.auto.http.api.BillAPI.get(bill.originalBillId)
+                if (original?.id == billInfoModel.originalBillId) { selectedOriginal=original; updateChooseBillDisplay() }
+            }
+            return
+        }
+        val key=refundKey(bill)
+        if (!triedRefunds.add(key)) return
+        val request=++refundRequest
+        val snapshot=bill.copy()
+        launch {
+            val original=org.ezbook.server.tools.runCatchingExceptCancel { net.ankio.auto.http.api.BillAPI.matchRefund(snapshot) }.getOrNull()
+            if (original != null && request == refundRequest && billInfoModel.originalBillId == 0L &&
+                billInfoModel.type == BillType.IncomeRefund && refundKey(billInfoModel) == key) {
+                billInfoModel.originalBillId=original.id
+                selectedOriginal=original
+                updateChooseBillDisplay()
+            }
+        }
+    }
 
     override fun onComponentCreate() {
         super.onComponentCreate()
@@ -83,6 +111,7 @@ class PaymentInfoComponent(
         updateAccountDisplay()
         updateChooseBillDisplay()
         updateDebtDropdownOptions()
+        suggestRefund()
     }
 
     /**
@@ -191,7 +220,9 @@ class PaymentInfoComponent(
      */
     private fun updateChooseBillDisplay() {
         if (billInfoModel.type == BillType.IncomeRefund && billInfoModel.originalBillId > 0) {
-            binding.chooseBillButton.text = "已关联本地账单 #${billInfoModel.originalBillId}"
+            binding.chooseBillButton.text = selectedOriginal?.takeIf { it.id == billInfoModel.originalBillId }?.let {
+                "原账单 · ${it.shopName.ifBlank { it.shopItem }.take(18)} · ${BillTool.formatAmount(it.money)}  ›"
+            } ?: "已关联原账单 · 点击更换"
             return
         }
         val selectedBills = billInfoModel.extendData
@@ -401,6 +432,7 @@ class PaymentInfoComponent(
         }
 
         if (billInfoModel.type == BillType.IncomeRefund) {
+            refundRequest++ // Opening the manual picker supersedes any pending automatic result.
             launch {
                 runCatching {
                     val bills = net.ankio.auto.http.api.BillAPI.refundOriginals().filter {
@@ -411,9 +443,11 @@ class PaymentInfoComponent(
                         .setMessage(if (bills.isEmpty()) "没有可关联的本地支出账单" else "选择这笔退款对应的支出，保存时将校验累计退款金额。")
                     bills.forEach { original ->
                         val row = com.google.android.material.button.MaterialButton(context).apply {
-                            text = "${java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date(original.time))}  ${original.shopName}  ${BillTool.formatAmount(original.money)}"
+                            text = (if (original.id == billInfoModel.originalBillId) "✓ " else "") +
+                                "${java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date(original.time))}  ${original.shopName}  ${BillTool.formatAmount(original.money)}"
                             setOnClickListener {
                                 billInfoModel.originalBillId = original.id
+                                selectedOriginal = original
                                 picker.dismiss()
                                 refresh()
                             }
