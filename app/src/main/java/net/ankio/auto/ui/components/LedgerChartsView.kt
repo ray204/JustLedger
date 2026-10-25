@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import net.ankio.auto.R
 import net.ankio.auto.utils.BillTool
-import org.ezbook.server.constant.BillState
 import org.ezbook.server.constant.BillType
 import org.ezbook.server.db.model.BillInfoModel
 import org.ezbook.server.tools.LedgerPolicy
@@ -30,7 +29,8 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
     private var bills = emptyList<BillInfoModel>()
     private var currency = "CNY"
     private var pie = true
-    private var categories = emptyList<Pair<String, Long>>()
+    private var categories = emptyList<LedgerChartData.Slice>()
+    private var selectedSlice = -1
     private var days = emptyList<Day>()
     private val totalLabel = label(14f, ink)
     private val detail = label(12f, muted)
@@ -55,6 +55,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         addView(tabs)
         addView(totalLabel)
         addView(plot, LayoutParams(-1, dp(184)))
+        plot.id = R.id.ledger_chart_plot
         addView(detail)
         pieButton.setOnClickListener { pie = true; render() }
         barButton.setOnClickListener { pie = false; render() }
@@ -71,7 +72,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
     private fun cents(bill: BillInfoModel) = runCatching { LedgerPolicy.minorUnits(bill.money) }.getOrDefault(0)
 
     fun setBills(items: List<BillInfoModel>) {
-        bills = items.filter { it.groupId == -1L && it.state != BillState.Wait2Edit && !it.hasFlag(BillInfoModel.FLAG_NOT_COUNT) }
+        bills = items.filter(LedgerChartData::counted)
         val available = bills.map { it.currencyModel().code.ifBlank { "CNY" } }.distinct()
         if (available.isNotEmpty() && currency !in available) currency = available.first()
         render()
@@ -83,8 +84,9 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         val income = selected.filter { it.type == BillType.Income }.sumOf { cents(it) }
         val refund = selected.filter { it.type == BillType.IncomeRefund }.sumOf { cents(it) }
         val gross = expense.sumOf { cents(it) }
-        val allCategories = expense.groupBy { it.cateName.ifBlank { "未分类" } }.map { (name, rows) -> name to rows.sumOf { cents(it) } }.sortedByDescending { it.second }
-        categories = if (allCategories.size > 5) allCategories.take(4) + ("其他分类" to allCategories.drop(4).sumOf { it.second }) else allCategories
+        val updated = LedgerChartData.categories(selected, currency)
+        if (updated != categories) { selectedSlice = -1; plot.resetSelection() }
+        categories = updated
         val span = selected.map { it.time }.let { if (it.isEmpty()) 0L else it.max() - it.min() }
         val formatter = SimpleDateFormat(if (span > 32L * 86400000) "yyyy-MM" else "MM-dd", Locale.getDefault())
         days = selected.filter { it.type == BillType.Income || it.type == BillType.Expend }
@@ -110,7 +112,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         barButton.setTextColor(if (pie) muted else colors[0])
         pieButton.typeface = if (pie) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
         barButton.typeface = if (pie) Typeface.DEFAULT else Typeface.DEFAULT_BOLD
-        plot.contentDescription = totalLabel.text.toString() + "; " + if (pie) categories.joinToString { "${it.first} ${money(it.second)}" } else days.joinToString { "${it.label} 支出 ${money(it.expense)} 收入 ${money(it.income)}" }
+        plot.updateDescription()
         plot.invalidate()
     }
 
@@ -126,35 +128,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
             }
             paint.textAlign = Paint.Align.LEFT
             if (pie) {
-                val diameter = minOf(dp(120).toFloat(), w * .52f)
-                val cx = w / 2; val cy = dp(70).toFloat()
-                val bounds = RectF(cx-diameter/2, cy-diameter/2, cx+diameter/2, cy+diameter/2)
-                val total = categories.sumOf { it.second }.coerceAtLeast(1)
-                var start = -90f
-                categories.forEachIndexed { i, entry ->
-                    val sweep = entry.second.toFloat() / total * 360
-                    paint.color = colors[i % colors.size]
-                    canvas.drawArc(bounds, start + .8f, (sweep - 1.6f).coerceAtLeast(.2f), true, paint)
-                    start += sweep
-                }
-                paint.color = ContextCompat.getColor(context, R.color.ledger_surface)
-                canvas.drawCircle(cx, cy, diameter * .36f, paint)
-                paint.textAlign = Paint.Align.CENTER
-                paint.color = muted; paint.textSize = dp(10).toFloat()
-                canvas.drawText("支出", cx, cy-dp(7), paint)
-                paint.color = ink; paint.textSize = dp(17).toFloat(); paint.typeface = Typeface.DEFAULT_BOLD
-                canvas.drawText(money(total), cx, cy+dp(16), paint)
-                paint.typeface = Typeface.DEFAULT
-                val columns = minOf(3, categories.size)
-                categories.forEachIndexed { i, entry ->
-                    val colWidth = w / columns; val x = (i % columns + .5f)*colWidth
-                    val y = dp(155 + (i / columns)*23).toFloat()
-                    val name = if (entry.first.length > 4) entry.first.take(4)+"…" else entry.first
-                    val text = "$name ${String.format(Locale.getDefault(), "%.0f%%", entry.second * 100.0 / total)}"
-                    paint.textSize = dp(10).toFloat()
-                    paint.color = colors[i]; canvas.drawCircle(x - paint.measureText(text)/2 - dp(7), y-dp(3), dp(3).toFloat(), paint)
-                    paint.color = ink; canvas.drawText(text, x, y, paint)
-                }
+                drawPie(canvas, w, h)
             } else {
                 paint.textAlign = Paint.Align.LEFT
                 val max = days.maxOf { maxOf(it.expense, it.income) }.coerceAtLeast(1)
@@ -176,16 +150,138 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
                 }
             }
         }
-        override fun onTouchEvent(event: MotionEvent): Boolean {
-            if (event.action == MotionEvent.ACTION_UP) {
-                performClick()
-                if (!pie && days.isNotEmpty()) {
-                    val d = days[(event.x / width * days.size).toInt().coerceIn(0, days.lastIndex)]
-                    android.widget.Toast.makeText(context, "${d.label} · 支出 ${money(d.expense)} · 收入 ${money(d.income)} $currency", android.widget.Toast.LENGTH_SHORT).show()
+        private var downX = 0f
+        private var downY = 0f
+        private var dragging = false
+        private var progress = 0f
+        private var animator: android.animation.ValueAnimator? = null
+        private val labelBounds = mutableMapOf<Int, RectF>()
+        private fun radius() = minOf(dp(55).toFloat(), width * .185f)
+        fun resetSelection() { animator?.cancel(); progress = 0f }
+        fun updateDescription() {
+            val selected = categories.getOrNull(selectedSlice)
+            contentDescription = if (pie) {
+                if (selected == null) "分类支出，共 ${money(categories.sumOf { it.cents })} $currency。" +
+                    categories.joinToString { "${it.name} ${money(it.cents)}" } + "。点击扇区或分类查看金额，再次点击恢复总额"
+                else "已选 ${selected.name}，${money(selected.cents)} $currency，占比 ${percent(selected.cents)}。再次点击恢复总额"
+            } else days.joinToString { "${it.label} 支出 ${money(it.expense)} 收入 ${money(it.income)}" }
+        }
+        private fun percent(cents: Long) = String.format(Locale.getDefault(), "%.1f%%", cents * 100.0 / categories.sumOf { it.cents }.coerceAtLeast(1))
+        private fun select(index: Int) {
+            selectedSlice = LedgerChartData.toggle(selectedSlice, index)
+            animator?.cancel()
+            animator = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
+                duration = 180
+                addUpdateListener { progress = it.animatedValue as Float; invalidate() }
+                start()
+            }
+            updateDescription()
+            announceForAccessibility(contentDescription)
+            invalidate()
+        }
+        private fun fit(text: String, maxWidth: Float): String {
+            var result = text
+            while (result.isNotEmpty() && paint.measureText(result) > maxWidth) result = result.dropLast(1)
+            return if (result == text) text else result.dropLast(1) + "…"
+        }
+        private fun drawPie(canvas: Canvas, w: Float, h: Float) {
+            val cx = w / 2; val cy = h / 2; val r = radius()
+            val total = categories.sumOf { it.cents }.coerceAtLeast(1)
+            val ring = dp(21).toFloat()
+            data class Anchor(val index: Int, val x: Float, val y: Float, val right: Boolean)
+            val anchors = mutableListOf<Anchor>()
+            var start = -90f
+            labelBounds.clear()
+            categories.forEachIndexed { i, entry ->
+                val sweep = entry.cents.toFloat() / total * 360
+                val angle = Math.toRadians((start + sweep / 2).toDouble())
+                val cos = kotlin.math.cos(angle).toFloat(); val sin = kotlin.math.sin(angle).toFloat()
+                val emphasis = if (i == selectedSlice) progress else 0f
+                val offset = dp(5) * emphasis
+                val arcRadius = r - ring / 2 + dp(2) * emphasis
+                val x = cx + cos * offset; val y = cy + sin * offset
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = ring + dp(3) * emphasis
+                paint.color = colors[i % colors.size]
+                // Tiny categories retain their true size; do not inflate them with a minimum angle.
+                val gap = if (categories.size == 1) 0f else minOf(2f, sweep * .15f)
+                canvas.drawArc(RectF(x-arcRadius, y-arcRadius, x+arcRadius, y+arcRadius), start+gap/2, sweep-gap, false, paint)
+                val edge = r + dp(5) + offset
+                anchors += Anchor(i, cx + cos * edge, cy + sin * edge, cos >= 0)
+                start += sweep
+            }
+            paint.style = Paint.Style.FILL
+            // Labels sit beside their own sectors. No color-key legend is required to identify a category.
+            for (right in listOf(false, true)) {
+                val side = anchors.filter { it.right == right }.sortedBy { it.y }
+                val ys = LedgerChartData.labelPositions(side.map { it.y }, dp(20).toFloat(), h-dp(20), dp(29).toFloat())
+                side.forEachIndexed { j, anchor ->
+                    val y = ys[j]; val elbow = cx + (r+dp(13)) * if (right) 1 else -1
+                    val end = if (right) w-dp(4) else dp(4).toFloat()
+                    paint.color = if (anchor.index == selectedSlice) ink else muted
+                    paint.strokeWidth = dp(1).toFloat().coerceAtLeast(1f)
+                    canvas.drawLine(anchor.x, anchor.y, elbow, y, paint)
+                    canvas.drawLine(elbow, y, end, y, paint)
+                    canvas.drawCircle(anchor.x, anchor.y, dp(2).toFloat(), paint)
+                    paint.typeface = if (anchor.index == selectedSlice) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+                    paint.textSize = 11 * resources.displayMetrics.scaledDensity
+                    paint.textAlign = if (right) Paint.Align.RIGHT else Paint.Align.LEFT
+                    canvas.drawText(fit(categories[anchor.index].name, kotlin.math.abs(end-elbow)), end, y-dp(5), paint)
+                    labelBounds[anchor.index] = RectF(minOf(elbow,end), y-dp(24), maxOf(elbow,end), y+dp(5))
                 }
+            }
+            val selected = categories.getOrNull(selectedSlice)
+            paint.textAlign = Paint.Align.CENTER
+            paint.typeface = Typeface.DEFAULT
+            paint.color = muted; paint.textSize = 10 * resources.displayMetrics.scaledDensity
+            canvas.drawText(fit(selected?.name ?: "总支出", (r-ring)*1.8f), cx, cy-dp(17), paint)
+            paint.color = ink; paint.textSize = 16 * resources.displayMetrics.scaledDensity
+            paint.typeface = Typeface.DEFAULT_BOLD
+            val amount = money(selected?.cents ?: total)
+            while (paint.measureText(amount) > (r-ring)*1.85f && paint.textSize > dp(9)) paint.textSize -= 1
+            canvas.drawText(amount, cx, cy+dp(5), paint)
+            paint.typeface = Typeface.DEFAULT; paint.color = muted; paint.textSize = 10 * resources.displayMetrics.scaledDensity
+            canvas.drawText(selected?.let { percent(it.cents) } ?: currency, cx, cy+dp(23), paint)
+        }
+        override fun onTouchEvent(event: MotionEvent): Boolean {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> { downX = event.x; downY = event.y; dragging = false; return true }
+                MotionEvent.ACTION_MOVE -> {
+                    val slop = android.view.ViewConfiguration.get(context).scaledTouchSlop
+                    if (kotlin.math.hypot(event.x-downX, event.y-downY) > slop) dragging = true
+                }
+                MotionEvent.ACTION_UP -> if (!dragging) {
+                    performClick()
+                    if (pie) {
+                        val label = labelBounds.entries.firstOrNull { it.value.contains(event.x, event.y) }?.key
+                        select(label ?: LedgerChartData.hit(categories, event.x-width/2, event.y-height/2,
+                            radius()-dp(23), radius()+dp(12)))
+                    } else if (days.isNotEmpty()) {
+                        val d = days[(event.x / width * days.size).toInt().coerceIn(0, days.lastIndex)]
+                        android.widget.Toast.makeText(context, "${d.label} · 支出 ${money(d.expense)} · 收入 ${money(d.income)} $currency", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
+                MotionEvent.ACTION_CANCEL -> dragging = true
             }
             return true
         }
+        override fun onInitializeAccessibilityNodeInfo(info: android.view.accessibility.AccessibilityNodeInfo) {
+            super.onInitializeAccessibilityNodeInfo(info)
+            if (pie && categories.isNotEmpty()) {
+                info.addAction(android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD)
+                info.addAction(android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD)
+            }
+        }
+        override fun performAccessibilityAction(action: Int, arguments: android.os.Bundle?): Boolean {
+            if (pie && categories.isNotEmpty()) {
+                when (action) {
+                    android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD -> { select((selectedSlice+1)%categories.size); return true }
+                    android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD -> { select(if (selectedSlice <= 0) categories.lastIndex else selectedSlice-1); return true }
+                }
+            }
+            return super.performAccessibilityAction(action, arguments)
+        }
+        override fun onDetachedFromWindow() { animator?.cancel(); super.onDetachedFromWindow() }
         override fun performClick(): Boolean { super.performClick(); return true }
     }
 }

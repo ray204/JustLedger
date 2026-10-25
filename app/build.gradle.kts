@@ -174,6 +174,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    testImplementation(libs.junit)
 
 
     implementation(libs.androidx.swiperefreshlayout)

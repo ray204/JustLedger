@@ -35,6 +35,8 @@ import net.ankio.auto.storage.Logger
 import net.ankio.auto.ui.adapter.BillAdapter
 import net.ankio.auto.ui.api.BasePageFragment
 import net.ankio.auto.ui.api.BaseSheetDialog
+import net.ankio.auto.ui.components.LedgerChartData
+import net.ankio.auto.utils.PaymentChannel
 import net.ankio.auto.ui.components.MaterialSearchView
 import net.ankio.auto.ui.components.WrapContentLinearLayoutManager
 import net.ankio.auto.ui.dialog.BillEditorDialog
@@ -73,6 +75,7 @@ open class BillFragment : BasePageFragment<OrderGroup, FragmentBillBinding>() {
 
     private var searchKeyword = ""
     private var selectedChannel: String? = null
+    private var selectedCategory: String? = null
 
     override val pageSize: Int = Int.MAX_VALUE
 
@@ -86,24 +89,43 @@ open class BillFragment : BasePageFragment<OrderGroup, FragmentBillBinding>() {
         } else {
             BillAPI.listGrouped(syncType, currentYear, currentMonth, searchKeyword)
         }
-        val channels = groups.flatMap { it.bills }.map { net.ankio.auto.utils.PaymentChannel.name(it) }.distinct().sorted()
-        val filtered = groups.map { group -> group.copy(bills = group.bills.filter { selectedChannel == null || net.ankio.auto.utils.PaymentChannel.name(it) == selectedChannel }) }.filter { it.bills.isNotEmpty() }
+        val rows = groups.flatMap { it.bills }
+        val channels = rows.map { PaymentChannel.name(it) }.distinct().sorted()
+        val categories = rows.map { LedgerChartData.category(it) }.distinct().sorted()
+        val filtered = groups.map { group -> group.copy(bills = group.bills.filter {
+            LedgerChartData.matches(it, selectedCategory) &&
+                (selectedChannel == null || PaymentChannel.name(it) == selectedChannel)
+        }) }.filter { it.bills.isNotEmpty() }
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
             if (view != null) {
                 binding.ledgerCharts.setBills(filtered.flatMap { it.bills })
-                binding.channelFilters.removeAllViews()
-                val options = listOf<String?>(null) + (channels + listOfNotNull(selectedChannel)).distinct()
-                options.forEach { channel ->
-                    val chip = com.google.android.material.chip.Chip(requireContext()).apply {
-                        id = View.generateViewId(); text = channel ?: "全部渠道"; isCheckable = true
-                        isChecked = channel == selectedChannel; textSize = 12f
-                        setOnClickListener { if (selectedChannel != channel) { selectedChannel = channel; reloadSilently() } }
-                    }
-                    binding.channelFilters.addView(chip)
+                bindDropdown(binding.channelFilter, "全部渠道", channels, selectedChannel) {
+                    selectedChannel = it; reloadSilently()
+                }
+                bindDropdown(binding.categoryFilter, "全部分类", categories, selectedCategory) {
+                    selectedCategory = it; reloadSilently()
                 }
             }
         }
         return filtered
+    }
+
+    private fun bindDropdown(
+        button: com.google.android.material.button.MaterialButton,
+        all: String, options: List<String>, selected: String?, onSelect: (String?) -> Unit
+    ) {
+        button.text = selected ?: all
+        button.contentDescription = "${if (all == "全部分类") "分类" else "渠道"}筛选：${selected ?: all}"
+        button.setOnClickListener {
+            // Avoid restoring the search keyboard over the filtered list when the popup closes.
+            (binding.topAppBar.menu.findItem(R.id.action_search)?.actionView as? SearchView)?.clearFocus()
+            // Keep an empty selected category available until the user explicitly resets it.
+            val entries = linkedMapOf(all to "")
+            (options + listOfNotNull(selected)).distinct().forEach { entries[it] = it }
+            ListPopupUtilsGeneric.create<String>(requireContext())
+                .setAnchor(button).setList(entries).setSelectedValue(selected ?: "")
+                .setOnItemClick { _, _, value -> onSelect(value.takeIf { it.isNotEmpty() }) }.show()
+        }
     }
 
     private val adapter = BillAdapter()
