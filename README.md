@@ -10,6 +10,8 @@
 
 ![概览、账单与设置](docs/images/overview.png)
 
+![日常与偶发筛选、分类点选和房租编辑](docs/images/occasional.png)
+
 ![订单核对、入账确认与 AI 配置](docs/images/recognition.png)
 
 以上图片由仓库内 [HTML 交互预览](design/preview.html) 渲染，使用虚构演示数据，**不是手机截图**。界面和交互以实际 APK 为准。

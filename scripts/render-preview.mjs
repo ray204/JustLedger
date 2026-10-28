@@ -21,7 +21,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1360, height: 1060 }, deviceScaleFactor: 1.5, reducedMotion: 'reduce' });
   const failures=[]; page.on('pageerror', e => failures.push(e.message));
   await mkdir(path.join(root, 'docs/images'), { recursive: true });
-  for (const [mode, file] of [['main', 'overview.png'], ['recognition', 'recognition.png']]) {
+  for (const [mode, file] of [['main', 'overview.png'], ['recognition', 'recognition.png'], ['occasional', 'occasional.png']]) {
     await page.goto(`http://127.0.0.1:${server.address().port}/preview.html?gallery=${mode}`);
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: path.join(root, 'docs/images', file), fullPage: true });

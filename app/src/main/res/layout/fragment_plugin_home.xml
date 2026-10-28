@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/ledger_background" android:fitsSystemWindows="true">
     <com.google.android.material.appbar.AppBarLayout android:id="@+id/toolbarLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/ledger_background" app:elevation="0dp">
-        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:title="@string/app_name" app:menu="@menu/home_menu" android:paddingHorizontal="8dp"/>
+        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:title="@string/ledger_greeting" app:menu="@menu/home_menu" android:paddingHorizontal="8dp"/>
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false" app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/ledger_greeting" android:textSize="26sp" android:textStyle="bold" android:textColor="@color/ledger_ink"/>
 
             <include android:id="@+id/monthly_card" layout="@layout/card_monthly"/>
             <net.ankio.auto.ui.components.SettingItemView android:id="@+id/captureStatus" android:layout_width="match_parent" android:layout_height="wrap_content" app:settingTitle="@string/ledger_capture" app:settingDesc="@string/ledger_capture_setup" app:settingIcon="@drawable/home_active_error"/>
