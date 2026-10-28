@@ -149,7 +149,7 @@ fun Route.billRoutes() {
 
             // 服务端按日期分组
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val groupedBills = bills
+            val groupedBills = org.ezbook.server.tools.OccasionalLedger.prepare(bills)
                 .groupBy { dateFormat.format(it.time) }
                 .map { (date, billList) -> OrderGroupDto(date, billList) }
 
@@ -386,12 +386,9 @@ fun Route.billRoutes() {
             val rows = Db.get().billInfoDao().getBillsByTimeRange(startTime, endTime)
                 .filter { it.time < endTime && it.groupId == -1L && it.state != BillState.Wait2Edit &&
                     !it.hasFlag(BillInfoModel.FLAG_NOT_COUNT) && it.currencyModel().code == currency }
-            fun sum(type: org.ezbook.server.constant.BillType) = rows.filter { it.type == type }
-                .sumOf { runCatching { LedgerPolicy.minorUnits(it.money) }.getOrDefault(0L) } / 100.0
-            val income = sum(org.ezbook.server.constant.BillType.Income)
-            val expense = sum(org.ezbook.server.constant.BillType.Expend) - sum(org.ezbook.server.constant.BillType.IncomeRefund)
-
-            call.respond(ResultModel.ok(mapOf("income" to income, "expense" to expense)))
+            val totals = org.ezbook.server.tools.OccasionalPolicy.totals(
+                org.ezbook.server.tools.OccasionalLedger.prepare(rows), currency)
+            call.respond(ResultModel.ok(totals.asMap()))
         }
 
         /**

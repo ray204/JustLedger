@@ -17,6 +17,7 @@ import net.ankio.auto.utils.BillTool
 import org.ezbook.server.constant.BillType
 import org.ezbook.server.db.model.BillInfoModel
 import org.ezbook.server.tools.LedgerPolicy
+import org.ezbook.server.tools.OccasionalPolicy
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,6 +28,8 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
     private val muted = ContextCompat.getColor(context, R.color.ledger_muted)
     private val colors = intArrayOf(0xff356855.toInt(), 0xff85a794.toInt(), 0xffd2ab76.toInt(), 0xff8d99b2.toInt(), 0xffb6bdb9.toInt())
     private var bills = emptyList<BillInfoModel>()
+    private var allBills = emptyList<BillInfoModel>()
+    private var scope = OccasionalPolicy.Scope.DAILY
     private var currency = "CNY"
     private var pie = true
     private var categories = emptyList<LedgerChartData.Slice>()
@@ -60,7 +63,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         pieButton.setOnClickListener { pie = true; render() }
         barButton.setOnClickListener { pie = false; render() }
         currencyButton.setOnClickListener {
-            val available = bills.map { it.currencyModel().code.ifBlank { "CNY" } }.distinct().sorted()
+            val available = allBills.map { it.currencyModel().code.ifBlank { "CNY" } }.distinct().sorted()
             if (available.size > 1) { currency = available[(available.indexOf(currency) + 1) % available.size]; render() }
         }
         render()
@@ -71,9 +74,11 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
     private fun money(cents: Long) = BillTool.formatAmount(cents / 100.0)
     private fun cents(bill: BillInfoModel) = runCatching { LedgerPolicy.minorUnits(bill.money) }.getOrDefault(0)
 
-    fun setBills(items: List<BillInfoModel>) {
-        bills = items.filter(LedgerChartData::counted)
-        val available = bills.map { it.currencyModel().code.ifBlank { "CNY" } }.distinct()
+    fun setBills(items: List<BillInfoModel>, scope: OccasionalPolicy.Scope = OccasionalPolicy.Scope.DAILY) {
+        this.scope = scope
+        allBills = items.filter(LedgerChartData::counted)
+        bills = allBills.filter { OccasionalPolicy.matches(it, scope) }
+        val available = allBills.map { it.currencyModel().code.ifBlank { "CNY" } }.distinct()
         if (available.isNotEmpty() && currency !in available) currency = available.first()
         render()
     }
@@ -93,7 +98,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
             .sortedBy { it.time }.groupBy { formatter.format(Date(it.time)) }.map { (day, rows) -> Day(day,
                 rows.filter { it.type == BillType.Income }.sumOf { cents(it) },
                 rows.filter { it.type == BillType.Expend }.sumOf { cents(it) }) }
-        currencyButton.text = if (bills.map { it.currencyModel().code }.distinct().size > 1) "$currency ▾" else currency
+        currencyButton.text = if (allBills.map { it.currencyModel().code }.distinct().size > 1) "$currency ▾" else currency
         currencyButton.contentDescription = "统计币种 $currency，点击切换，不同币种分别统计"
         totalLabel.visibility = if (pie) View.GONE else View.VISIBLE
         val totals = "● 支出 ${money(gross)}   ● 收入 ${money(income)}"
@@ -104,8 +109,12 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         }
         plot.layoutParams.height = dp(if (pie) 184 else 144)
         plot.requestLayout()
-        detail.text = if (refund > 0) "已退款 ${money(refund)} · 净支出 ${money(gross - refund)}" else ""
-        detail.visibility = if (refund > 0) View.VISIBLE else View.GONE
+        val summary = OccasionalPolicy.totals(allBills, currency)
+        val hasOccasional = allBills.any { it.currencyCode() == currency && OccasionalPolicy.isOccasional(it) }
+        detail.text = if (scope != OccasionalPolicy.Scope.ALL && hasOccasional)
+            "含偶发总支出 ${money(summary.totalExpense)} · 偶发 ${money(summary.occasionalExpense)}"
+        else if (refund > 0) "已退款 ${money(refund)} · 净支出 ${money(gross - refund)}" else ""
+        detail.visibility = if (detail.text.isNotEmpty()) View.VISIBLE else View.GONE
         detail.gravity = android.view.Gravity.CENTER
 
         pieButton.setTextColor(if (pie) colors[0] else muted)
@@ -234,7 +243,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
             paint.textAlign = Paint.Align.CENTER
             paint.typeface = Typeface.DEFAULT
             paint.color = muted; paint.textSize = 10 * resources.displayMetrics.scaledDensity
-            canvas.drawText(fit(selected?.name ?: "总支出", (r-ring)*1.8f), cx, cy-dp(17), paint)
+            canvas.drawText(fit(selected?.name ?: when (scope) { OccasionalPolicy.Scope.DAILY -> "日常支出"; OccasionalPolicy.Scope.OCCASIONAL -> "偶发支出"; else -> "总支出" }, (r-ring)*1.8f), cx, cy-dp(17), paint)
             paint.color = ink; paint.textSize = 16 * resources.displayMetrics.scaledDensity
             paint.typeface = Typeface.DEFAULT_BOLD
             val amount = money(selected?.cents ?: total)

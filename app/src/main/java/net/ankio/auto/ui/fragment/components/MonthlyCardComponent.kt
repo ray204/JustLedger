@@ -64,7 +64,11 @@ class MonthlyCardComponent(binding: CardMonthlyBinding) : BaseComponent<CardMont
         val expense = stats?.get("expense") ?: 0.0
         binding.tvIncomeAmount.text = amount(income)
         binding.tvExpenseAmount.text = amount(expense)
-        binding.tvBalanceAmount.text = amount(income - expense)
+        val totalExpense = stats?.get("totalExpense") ?: expense
+        val occasional = stats?.get("occasionalExpense") ?: 0.0
+        binding.totalExpenseHint.text = "含偶发总支出 ${amount(totalExpense)} · 偶发 ${amount(occasional)}"
+        binding.totalExpenseHint.visibility = if (stats != null) View.VISIBLE else View.GONE
+        binding.tvBalanceAmount.text = amount(income - totalExpense)
         binding.privacyToggle.isSelected = PrefManager.homePrivacyMode
     }
 

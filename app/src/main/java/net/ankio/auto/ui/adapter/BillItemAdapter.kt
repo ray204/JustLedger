@@ -42,10 +42,10 @@ class BillItemAdapter(private val showMore: Boolean = true) : BaseAdapter<Adapte
         val b = holder.binding
         b.merchant.text = data.shopName.ifBlank { data.shopItem }.ifBlank { data.cateName }.ifBlank { "未分类" }
         val channel = PaymentChannel.name(data)
-        b.channel.text = when { data.state == BillState.Wait2Edit -> "待核对"; data.hasFlag(BillInfoModel.FLAG_NOT_COUNT) -> "不计收支"; else -> channel }
+        b.channel.text = when { data.state == BillState.Wait2Edit -> "待核对"; data.hasFlag(BillInfoModel.FLAG_NOT_COUNT) -> "不计收支"; else -> if (org.ezbook.server.tools.OccasionalPolicy.isOccasional(data)) "偶发 · $channel" else channel }
         BillTool.setTextViewPrice(data.money, data.type, b.money, data.currencyCode().takeIf { it != PrefManager.baseCurrency })
         b.categoryIcon.setImageResource(CategoryIcons.drawable(data.cateName))
-        b.root.contentDescription = "${b.merchant.text}，${data.cateName}，$channel，${b.money.text}，点击编辑，长按删除"
+        b.root.contentDescription = "${b.merchant.text}，${data.cateName}，${b.channel.text}，${b.money.text}，点击编辑，长按删除"
     }
     override fun areItemsSame(oldItem: BillInfoModel, newItem: BillInfoModel) = oldItem.id == newItem.id
     override fun areContentsSame(oldItem: BillInfoModel, newItem: BillInfoModel) = oldItem == newItem

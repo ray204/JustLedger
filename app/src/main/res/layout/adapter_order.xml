@@ -16,6 +16,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/groupCard" style="?attr/materialCardViewElevatedStyle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginStart="@dimen/padding" android:layout_marginEnd="@dimen/padding" android:layout_marginBottom="@dimen/padding" app:cardBackgroundColor="@color/ledger_surface" app:strokeWidth="0dp" app:cardCornerRadius="@dimen/radius" app:cardElevation="0dp">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="8dp" android:orientation="vertical">
         <TextView android:id="@+id/title" style="@style/TextAppearance.Material3.LabelLarge" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginStart="@dimen/padding" android:textColor="@color/ledger_muted" android:textStyle="bold" tools:text="1月12日"/>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerView" android:layout_width="match_parent" android:layout_height="match_parent"/>
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerView" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

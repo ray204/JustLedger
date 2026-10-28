@@ -10,10 +10,18 @@ def adb(*args):
  return subprocess.check_output([ADB,*args],stderr=subprocess.DEVNULL)
 
 def tree():
- adb('shell','uiautomator','dump','/sdcard/justledger-test-ui.xml')
- raw=adb('exec-out','cat','/sdcard/justledger-test-ui.xml')
- adb('shell','rm','/sdcard/justledger-test-ui.xml')
- return ET.fromstring(raw)
+ # Android can briefly return an empty hierarchy during activity/window transitions.
+ # Retry capture errors only; a valid hierarchy with a missing control still fails the test.
+ for attempt in range(3):
+  path='/sdcard/justledger-test-ui-'+str(time.time_ns())+'.xml'
+  try:
+   adb('shell','uiautomator','dump',path)
+   return ET.fromstring(adb('exec-out','cat',path))
+  except (subprocess.CalledProcessError, ET.ParseError):
+   if attempt==2:raise
+   time.sleep(.25)
+  finally:
+   adb('shell','rm','-f',path)
 
 def node(text=None,rid=None):
  for n in tree().iter('node'):

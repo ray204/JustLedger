@@ -27,6 +27,7 @@ class BillTool {
     suspend fun execute(data: String, app: String, dataType: DataType, image: String = "", pageContext: String = ""): Result<BillInfoModel?> = runCatchingExceptCancel {
         require(data.length <= 12000) { "页面文字过多，请只识别单笔交易" }
         val prompt = SettingUtils.aiBillRecognitionPrompt().ifBlank { DefaultData.AI_BILL_RECOGNITION_PROMPT } +
+            "\n" + org.ezbook.server.tools.AssetTransferPolicy.AI_INSTRUCTION +
             if (dataType == DataType.OCR) "\n" + org.ezbook.server.tools.OcrPagePolicy.AI_INSTRUCTION else ""
         val book = org.ezbook.server.server.resolveBookByNameOrDefault(SettingUtils.bookName())
         org.ezbook.server.tools.LocalCategoryDefaults.ensure(book.remoteId)

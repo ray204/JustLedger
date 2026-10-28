@@ -28,7 +28,10 @@ class BillAdapter :
     ) {
 
     override fun onInitViewHolder(holder: BaseViewHolder<AdapterOrderBinding, OrderGroup>) {
-        val layoutManager = WrapContentLinearLayoutManager(holder.context)
+        val layoutManager = object : androidx.recyclerview.widget.LinearLayoutManager(holder.context) {
+            override fun canScrollVertically() = false
+        }
+        holder.binding.recyclerView.isNestedScrollingEnabled = false
         layoutManager.isSmoothScrollbarEnabled = true
         holder.binding.recyclerView.layoutManager = layoutManager
     }
@@ -74,7 +77,7 @@ class BillAdapter :
     }
 
     override fun areItemsSame(oldItem: OrderGroup, newItem: OrderGroup): Boolean {
-        return oldItem.date == newItem.date && oldItem.bills == newItem.bills
+        return oldItem.date == newItem.date
     }
 
     override fun areContentsSame(oldItem: OrderGroup, newItem: OrderGroup): Boolean {

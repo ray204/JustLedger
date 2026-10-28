@@ -83,6 +83,12 @@ class BasicInfoComponent(
      */
     fun refresh() {
         val billType = BillTool.getType(billInfoModel.type)
+        binding.occasionalRow.visibility = if (billInfoModel.type == BillType.Expend) View.VISIBLE else View.GONE
+        binding.occasionalSwitch.setOnCheckedChangeListener(null)
+        binding.occasionalSwitch.isChecked = org.ezbook.server.tools.OccasionalPolicy.isOccasional(billInfoModel)
+        binding.occasionalSwitch.setOnCheckedChangeListener { _, checked ->
+            org.ezbook.server.tools.OccasionalPolicy.setOccasional(billInfoModel, checked)
+        }
 
         // 更新分类显示
         updateCategoryDisplay(billType)

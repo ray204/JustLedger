@@ -46,6 +46,7 @@ import net.ankio.auto.ui.models.OrderGroup
 import net.ankio.auto.ui.utils.ListPopupUtilsGeneric
 import net.ankio.auto.utils.BillTool
 import net.ankio.auto.utils.DateUtils
+import org.ezbook.server.tools.OccasionalPolicy
 import org.ezbook.server.constant.BillState
 
 
@@ -76,6 +77,7 @@ open class BillFragment : BasePageFragment<OrderGroup, FragmentBillBinding>() {
     private var searchKeyword = ""
     private var selectedChannel: String? = null
     private var selectedCategory: String? = null
+    private var selectedScope = OccasionalPolicy.Scope.DAILY
 
     override val pageSize: Int = Int.MAX_VALUE
 
@@ -92,13 +94,26 @@ open class BillFragment : BasePageFragment<OrderGroup, FragmentBillBinding>() {
         val rows = groups.flatMap { it.bills }
         val channels = rows.map { PaymentChannel.name(it) }.distinct().sorted()
         val categories = rows.map { LedgerChartData.category(it) }.distinct().sorted()
-        val filtered = groups.map { group -> group.copy(bills = group.bills.filter {
+        val scoped = groups.map { group -> group.copy(bills = group.bills.filter {
             LedgerChartData.matches(it, selectedCategory) &&
                 (selectedChannel == null || PaymentChannel.name(it) == selectedChannel)
         }) }.filter { it.bills.isNotEmpty() }
+        val filtered = scoped.map { group -> group.copy(bills = group.bills.filter { OccasionalPolicy.matches(it, selectedScope) }) }
+            .filter { it.bills.isNotEmpty() }
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
             if (view != null) {
-                binding.ledgerCharts.setBills(filtered.flatMap { it.bills })
+                binding.ledgerCharts.setBills(scoped.flatMap { it.bills }, selectedScope)
+                binding.frequencyFilter.text = selectedScope.label
+                binding.frequencyFilter.contentDescription = "账单范围：${selectedScope.label}"
+                binding.frequencyFilter.setOnClickListener { button ->
+                    (binding.topAppBar.menu.findItem(R.id.action_search)?.actionView as? SearchView)?.clearFocus()
+                    ListPopupUtilsGeneric.create<OccasionalPolicy.Scope>(requireContext()).setAnchor(button)
+                        .setList(linkedMapOf("日常账单" to OccasionalPolicy.Scope.DAILY,
+                            "偶发账单" to OccasionalPolicy.Scope.OCCASIONAL, "全部账单" to OccasionalPolicy.Scope.ALL))
+                        .setSelectedValue(selectedScope).setOnItemClick { _, _, scope ->
+                            selectedScope = scope; reloadSilently()
+                        }.show()
+                }
                 bindDropdown(binding.channelFilter, "全部渠道", channels, selectedChannel) {
                     selectedChannel = it; reloadSilently()
                 }
@@ -320,6 +335,10 @@ open class BillFragment : BasePageFragment<OrderGroup, FragmentBillBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.swipeRefreshLayout.isEnabled = true
+        // The direct child is StatusPage, not the actual scrolling list.
+        binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
+            binding.statusPage.contentView?.canScrollVertically(-1) == true
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 LedgerChanges.changes.drop(1).collect { reloadSilently() }

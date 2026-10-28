@@ -184,6 +184,11 @@ class BillService(
                 }
             } else null
 
+            // Principal returning to the user's own account is not income. Apply to all capture paths,
+            // before AI/rules and before creating a bill, notice or editor event.
+            if (AssetTransferPolicy.isInternalMovement(analysisParams.data))
+                return@withContext ResultModel<BillResultModel>(404, AssetTransferPolicy.MESSAGE, null)
+
             // AI rejection is different from missing configuration or a failed request.
             val start = System.currentTimeMillis()
             val (aiBill, aiError, nonTransaction) = analyzeWithAI(analysisParams.app, analysisParams.data, dataType,
@@ -631,6 +636,10 @@ class BillService(
         val categoryTool = CategoryTool()
         val categories = categoryTool.loadCategories(resolvedBook.remoteId, bill.type)
 
+        if (bill.type == BillType.Expend && bill.cateName in setOf("", "其他", "其它", "居家", "住房") &&
+            Regex("房租|房屋租金|租房租金").containsMatchIn(bill.shopName + " " + bill.shopItem)) {
+            CategoryTool.resolveCategoryPath("房租", categories)?.let { bill.cateName = it }
+        }
         // 先应用用户分类映射，再判断分类规则结果是否真实存在于当前账本。
         var resolvedCategory = resolveMappedCategory(bill, categories)
         val needsAiCategory = !bill.hasValidCategory()

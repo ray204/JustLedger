@@ -179,6 +179,10 @@ data class BillInfoModel(
 
         /** 标志位：不计入预算 */
         const val FLAG_NOT_BUDGET = 2
+        /** 日常视图排除的偶发支出；仍计入总支出。 */
+        const val FLAG_OCCASIONAL = 4
+        /** 用户明确选择日常，覆盖房租的默认偶发属性。 */
+        const val FLAG_DAILY = 8
     }
 
     /**
