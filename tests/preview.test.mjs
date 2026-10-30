@@ -23,17 +23,41 @@ const bills=p=>p.locator('.nav [data-page=bills]').click();
 const filter=(p,key,value)=>p.locator(`[data-filter=${key}]`).selectOption(value);
 const center=p=>p.locator('.pie-center').textContent();
 
-test('overviewHasOneTitleAndMasksDailyInclusiveAndBalanceAmounts',async t=>{
+test('overviewDefaultsSecondaryAmountsHiddenAndKeepsExpenseVisibilityIndependent',async t=>{
  const p=await pageFor(t);
  assert.equal(await p.locator('.device .home-title').innerText(),'每一笔，都清楚。\n演示数据');
  assert.equal(await p.locator('.device .greeting').count(),0);
  assert.equal(await p.locator('.total').innerText(),'332.00');
  assert.match(await p.locator('.hero-inclusive').innerText(),/3,332.00.*3,000.00/);
- assert.match(await p.locator('.hero-grid').innerText(),/4,668.00/);
- await p.getByRole('button',{name:'隐藏金额',exact:true}).click();
+ assert.equal(await p.locator('.income-amount').innerText(),'••••');
+ assert.equal(await p.locator('.balance-amount').innerText(),'••••');
+ await p.getByRole('button',{name:'隐藏支出金额',exact:true}).click();
  assert.doesNotMatch(await p.locator('.hero').innerText(),/332|000|668/);
- await p.getByRole('button',{name:'显示金额',exact:true}).click();
+ await p.getByRole('button',{name:'显示支出金额',exact:true}).click();
  assert.equal(await p.locator('.total').innerText(),'332.00');
+});
+test('incomeAndBalanceEyesToggleIndependentlyAndResetWhenLeavingOverview',async t=>{
+ const p=await pageFor(t);
+ await p.getByRole('button',{name:'显示月收入金额',exact:true}).click();
+ assert.equal(await p.locator('.income-amount').innerText(),'8,000.00');
+ assert.equal(await p.locator('.balance-amount').innerText(),'••••');
+ assert.equal(await p.locator('.total').innerText(),'332.00');
+ await p.getByRole('button',{name:'显示本月结余金额',exact:true}).click();
+ assert.equal(await p.locator('.balance-amount').innerText(),'4,668.00');
+ await p.getByRole('button',{name:'隐藏月收入金额',exact:true}).click();
+ assert.equal(await p.locator('.income-amount').innerText(),'••••');
+ assert.equal(await p.locator('.balance-amount').innerText(),'4,668.00');
+ await p.getByRole('button',{name:'隐藏支出金额',exact:true}).click();
+ assert.equal(await p.locator('.total').innerText(),'••••');
+ assert.equal(await p.locator('.balance-amount').innerText(),'4,668.00');
+ await bills(p);await p.locator('.nav [data-page=overview]').click();
+ assert.equal(await p.locator('.income-amount').innerText(),'••••');
+ assert.equal(await p.locator('.balance-amount').innerText(),'••••');
+ await p.getByRole('button',{name:'显示本月结余金额',exact:true}).click();
+ await p.getByRole('button',{name:'隐藏本月结余金额',exact:true}).click();
+ assert.equal(await p.locator('.balance-amount').innerText(),'••••');
+ await p.getByRole('button',{name:'显示月收入金额',exact:true}).click();
+ await p.reload();assert.equal(await p.locator('.income-amount').innerText(),'••••');
 });
 test('scopeChannelAndCategoryFiltersIntersectAndKeepInclusiveTotal',async t=>{
  const p=await pageFor(t);await bills(p);

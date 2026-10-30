@@ -29,4 +29,10 @@
     <string name="ledger_privacy_visible">金额已显示</string>
     <string name="ledger_quiet_note"></string>
     <string name="ledger_storage_target">当前账单保存位置</string>
+    <string name="ledger_show_income">显示月收入金额</string>
+    <string name="ledger_hide_income">隐藏月收入金额</string>
+    <string name="ledger_show_balance">显示本月结余金额</string>
+    <string name="ledger_hide_balance">隐藏本月结余金额</string>
+    <string name="ledger_show_expense">显示支出金额</string>
+    <string name="ledger_hide_expense">隐藏支出金额</string>
 </resources>

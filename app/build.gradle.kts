@@ -50,8 +50,8 @@ materialThemeBuilder {
 }
 
 // Monotonic install sequence; retain the old range so existing installations can upgrade.
-val appVersionCode = 20261027
-val appVersionName = "0.1.1"
+val appVersionCode = 20261028
+val appVersionName = "0.1.2"
 
 base {
     archivesName.set("JustLedger-$appVersionName")
