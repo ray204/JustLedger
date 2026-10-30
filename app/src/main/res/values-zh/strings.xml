@@ -1020,8 +1020,8 @@
     <string name="setting_title_system">外观</string>
     <string name="setting_desc_system">外观设置 · 更新设置 · 高级功能</string>
 
-    <string name="setting_title_about">关于应用</string>
-    <string name="setting_desc_about">版本与开源致谢</string>
+    <string name="setting_title_about">关于 JustLedger</string>
+    <string name="setting_desc_about">版本、更新与 GitHub</string>
 
     <!-- Pro激活相关 -->
     <string name="pro_rule_update_plan">规则更新计划</string>

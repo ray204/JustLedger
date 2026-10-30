@@ -112,7 +112,7 @@ class LedgerChartsView @JvmOverloads constructor(context: Context, attrs: Attrib
         val summary = OccasionalPolicy.totals(allBills, currency)
         val hasOccasional = allBills.any { it.currencyCode() == currency && OccasionalPolicy.isOccasional(it) }
         detail.text = if (scope != OccasionalPolicy.Scope.ALL && hasOccasional)
-            "含偶发总支出 ${money(summary.totalExpense)} · 偶发 ${money(summary.occasionalExpense)}"
+            "总支出 ${money(summary.totalExpense)} · 偶发 ${money(summary.occasionalExpense)}"
         else if (refund > 0) "已退款 ${money(refund)} · 净支出 ${money(gross - refund)}" else ""
         detail.visibility = if (detail.text.isNotEmpty()) View.VISIBLE else View.GONE
         detail.gravity = android.view.Gravity.CENTER

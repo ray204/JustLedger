@@ -98,6 +98,9 @@ test('rentDefaultsOccasionalAndExplicitDailyOverridePersistsAfterEditing',async 
 test('aboutOffersUpdateAndAutoCheckWithoutDownloadingInDemo',async t=>{
  const p=await pageFor(t);await p.locator('.nav [data-page=settings]').click();
  await p.locator('[data-action=about]').click();
+ const github=p.locator('.sheet a').filter({hasText:'GitHub'});
+ assert.equal(await github.getAttribute('href'),'https://github.com/ray204/JustLedger');
+ assert.equal(await github.getAttribute('target'),'_blank');assert.doesNotMatch(await p.locator('.sheet').innerText(),/AutoAccounting|开源致谢/);
  const auto=p.getByRole('switch',{name:'自动检查更新',exact:true});assert.equal(await auto.getAttribute('aria-checked'),'true');
  await auto.click();assert.equal(await auto.getAttribute('aria-checked'),'false');
  await p.locator('[data-action=update]').click();assert.match(await p.locator('.sheet').innerText(),/安装需系统确认/);

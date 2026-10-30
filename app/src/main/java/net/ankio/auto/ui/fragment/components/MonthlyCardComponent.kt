@@ -73,7 +73,7 @@ class MonthlyCardComponent(binding: CardMonthlyBinding) : BaseComponent<CardMont
         binding.tvExpenseAmount.text = amount(expense)
         val totalExpense = stats?.get("totalExpense") ?: expense
         val occasional = stats?.get("occasionalExpense") ?: 0.0
-        binding.totalExpenseHint.text = "含偶发总支出 ${amount(totalExpense)} · 偶发 ${amount(occasional)}"
+        binding.totalExpenseHint.text = "总支出 ${amount(totalExpense)} · 偶发 ${amount(occasional)}"
         binding.totalExpenseHint.visibility = if (stats != null) View.VISIBLE else View.GONE
         binding.tvBalanceAmount.text = amount(income - totalExpense, !balanceVisible)
         fun eye(button: com.google.android.material.button.MaterialButton, visible: Boolean, show: Int, hide: Int) {

@@ -20,6 +20,7 @@ import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import net.ankio.auto.ui.activity.AppUpdateActivity
 import net.ankio.auto.update.UpdateStore
+import net.ankio.auto.update.UpdatePolicy
 import androidx.preference.PreferenceDataStore
 import net.ankio.auto.BuildConfig
 import net.ankio.auto.R
@@ -39,8 +40,8 @@ class AboutPreferenceFragment : BasePreferenceFragment() {
             setOnPreferenceChangeListener { _, value -> UpdateStore(requireContext()).autoCheck = value as Boolean; true }
         }
         findPreference<Preference>("ledgerAbout")?.summary = "版本 ${BuildConfig.VERSION_NAME} · 数据保存在本机"
-        findPreference<Preference>("openSourceCode")?.setOnPreferenceClickListener {
-            CustomTabsHelper.launchUrlOrCopy(getString(R.string.setting_open_source_code_url)); true
+        findPreference<Preference>("projectGitHub")?.setOnPreferenceClickListener {
+            CustomTabsHelper.launchUrlOrCopy(UpdatePolicy.REPOSITORY); true
         }
     }
 }

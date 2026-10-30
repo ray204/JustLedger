@@ -1038,8 +1038,8 @@
     <string name="setting_title_system">外观</string>
     <string name="setting_desc_system">Appearance · Update Settings · Advanced Features</string>
 
-    <string name="setting_title_about">About App</string>
-    <string name="setting_desc_about">版本与开源致谢</string>
+    <string name="setting_title_about">关于 JustLedger</string>
+    <string name="setting_desc_about">版本、更新与 GitHub</string>
 
     <!-- Pro Activation Related -->
     <string name="pro_rule_update_plan">Rule Update Plan</string>
