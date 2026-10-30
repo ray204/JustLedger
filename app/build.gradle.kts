@@ -50,8 +50,8 @@ materialThemeBuilder {
 }
 
 // Monotonic install sequence; retain the old range so existing installations can upgrade.
-val appVersionCode = 20261028
-val appVersionName = "0.1.2"
+val appVersionCode = 20261029
+val appVersionName = "0.1.3"
 
 base {
     archivesName.set("JustLedger-$appVersionName")
@@ -167,6 +167,7 @@ configurations.configureEach {
 
 dependencies {
     testImplementation(libs.junit)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
 
     implementation(libs.androidx.swiperefreshlayout)

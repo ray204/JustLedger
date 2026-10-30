@@ -24,7 +24,6 @@ import net.ankio.auto.ui.utils.ToastUtils
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -36,11 +35,8 @@ import net.ankio.auto.databinding.ActivityMainBinding
 import net.ankio.auto.storage.backup.BackupManager
 import net.ankio.auto.ui.api.BaseActivity
 import net.ankio.auto.ui.api.BaseSheetDialog
-import net.ankio.auto.ui.dialog.UpdateDialog
 import net.ankio.auto.ui.vm.HomeActivityVm
 import net.ankio.auto.update.AppUpdateHelper
-import net.ankio.auto.update.RuleUpdateHelper
-import net.ankio.auto.utils.CustomTabsHelper
 
 class HomeActivity : BaseActivity() {
     private val vm: HomeActivityVm by viewModels()
@@ -49,40 +45,9 @@ class HomeActivity : BaseActivity() {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
-    /** 注册 VM 的 LiveData 观察，用于展示规则/应用更新弹窗 */
-    private fun setupUpdateListeners() {
-        vm.appUpdateModel.observe(this) { model ->
-            if (model == null) return@observe
-            vm.consumeAppUpdate()
-            BaseSheetDialog.create<UpdateDialog>(this)
-                .setUpdateModel(model)
-                .setRuleTitle(getString(R.string.app))
-                .setOnClickUpdate {
-                    CustomTabsHelper.launchUrl(AppUpdateHelper.buildApkUrl(model.version).toUri())
-                }
-                .show()
-        }
-
-        vm.ruleUpdateModel.observe(this) { model ->
-            if (model == null) return@observe
-            vm.consumeRuleUpdate()
-            BaseSheetDialog.create<UpdateDialog>(this)
-                .setUpdateModel(model)
-                .setRuleTitle(getString(R.string.rule))
-                .setOnClickUpdate {
-                    lifecycleScope.launch {
-                        RuleUpdateHelper.updateRule(this@HomeActivity, model)
-                        vm.refreshStatus(this@HomeActivity)
-                    }
-                }
-                .show()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        setupUpdateListeners()
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment?
             ?: throw IllegalStateException("NavHostFragment not found")
@@ -118,6 +83,7 @@ class HomeActivity : BaseActivity() {
         net.ankio.auto.service.CaptureInbox.recover(this)
         net.ankio.auto.service.receipt.BillReceiptManager.attach(this)
         vm.startSyncUpdateTask()
+        AppUpdateHelper.checkOnOpen(this)
     }
 
     override fun onNewIntent(intent: Intent) {

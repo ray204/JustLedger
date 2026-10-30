@@ -20,6 +20,8 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
+        <exclude domain="sharedpref" path="justledger_updates.xml" />
+        <exclude domain="external" path="updates/" />
         <!-- TODO: Use <include> and <exclude> to control what is backed up.
         <include .../>
         <exclude .../>
@@ -31,4 +33,8 @@
         <exclude .../>
     </device-transfer>
     -->
+    <device-transfer>
+        <exclude domain="sharedpref" path="justledger_updates.xml" />
+        <exclude domain="external" path="updates/" />
+    </device-transfer>
 </data-extraction-rules>

@@ -27,7 +27,6 @@ import net.ankio.auto.service.CoreService
 import net.ankio.auto.service.OcrService
 import net.ankio.auto.App
 import net.ankio.auto.storage.backup.BackupManager
-import net.ankio.auto.update.AppUpdateHelper
 import net.ankio.auto.update.RuleUpdateHelper
 import net.ankio.auto.update.UpdateModel
 import net.ankio.auto.ui.utils.ToastUtils
@@ -43,9 +42,6 @@ class HomeActivityVm : ViewModel() {
 
     /** 规则更新信息，非 null 时表示有新版本可展示 */
     val ruleUpdateModel = MutableLiveData<UpdateModel?>()
-
-    /** 应用更新信息，非 null 时表示有新版本可展示 */
-    val appUpdateModel = MutableLiveData<UpdateModel?>()
 
     /** 状态卡 UI 数据（规则版本、工作模式、激活状态等） */
     val statusData = MutableLiveData<StatusData>()
@@ -90,19 +86,6 @@ class HomeActivityVm : ViewModel() {
         }
     }
 
-    /** 检查应用更新，结果通过 [appUpdateModel] 通知 UI；fromUser 时无更新会 Toast */
-    fun checkAppUpdate(fromUser: Boolean = false) {
-        if (fromUser) ToastUtils.info(R.string.check_update)
-        viewModelScope.launch {
-            val result = AppUpdateHelper.check()
-            if (result != null) {
-                appUpdateModel.value = result
-            } else if (fromUser) {
-                ToastUtils.error(R.string.no_need_to_update)
-            }
-        }
-    }
-
     /** 刷新状态卡数据，供 StatusCardComponent 观察 */
     fun refreshStatus(context: Context) {
         val isActive = when (PrefManager.workMode) {
@@ -131,10 +114,7 @@ class HomeActivityVm : ViewModel() {
         ruleUpdateModel.value = null
     }
 
-    /** 消费应用更新事件，避免配置变更后重复弹窗 */
-    fun consumeAppUpdate() {
-        appUpdateModel.value = null
-    }
+
 }
 
 /** 状态卡展示所需的数据 */

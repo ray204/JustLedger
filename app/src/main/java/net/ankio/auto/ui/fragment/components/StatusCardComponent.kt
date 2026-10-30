@@ -53,7 +53,7 @@ class StatusCardComponent(binding: CardStatusBinding) :
             vm?.checkRuleUpdate(fromUser = true)
         }
         binding.cardContentApp.setOnClickListener {
-            vm?.checkAppUpdate(fromUser = true)
+            context.startActivity(android.content.Intent(context, net.ankio.auto.ui.activity.AppUpdateActivity::class.java))
         }
 
         // 长按：强制规则更新后检查
@@ -63,7 +63,7 @@ class StatusCardComponent(binding: CardStatusBinding) :
             true
         }
         binding.cardContentApp.setOnLongClickListener {
-            vm?.checkAppUpdate(fromUser = true)
+            context.startActivity(android.content.Intent(context, net.ankio.auto.ui.activity.AppUpdateActivity::class.java))
             true
         }
     }

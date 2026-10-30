@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/ledger_background" android:fitsSystemWindows="true">
+    <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" app:title="应用更新" app:navigationIcon="@drawable/ic_arrow_back" />
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+            <ImageView android:layout_width="64dp" android:layout_height="64dp" android:layout_gravity="center_horizontal" android:layout_marginTop="20dp" android:src="@mipmap/ic_launcher" android:importantForAccessibility="no" />
+            <TextView android:id="@+id/updateTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:gravity="center" android:text="正在检查更新…" android:textSize="22sp" android:textColor="@color/ledger_ink" />
+            <TextView android:id="@+id/currentVersion" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:gravity="center" android:textSize="13sp" android:textColor="@color/ledger_muted" />
+            <TextView android:id="@+id/updateStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:textSize="13sp" android:gravity="center" android:textColor="@color/ledger_muted" android:accessibilityLiveRegion="polite" />
+            <com.google.android.material.progressindicator.LinearProgressIndicator android:id="@+id/updateProgress" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:indeterminate="true" app:trackCornerRadius="4dp" />
+            <TextView android:id="@+id/updateNotes" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp" android:textSize="14sp" android:lineSpacingExtra="7dp" android:textColor="@color/ledger_ink" android:textIsSelectable="true" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/updateAction" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="28dp" android:text="检查更新" app:cornerRadius="20dp" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/updateCancel" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="48dp" android:text="取消下载" android:visibility="gone" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:gravity="center" android:text="更新保留账单和设置，安装需系统确认" android:textSize="12sp" android:textColor="@color/ledger_muted" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

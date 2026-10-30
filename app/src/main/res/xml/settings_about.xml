@@ -2,6 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="关于 JustLedger">
         <Preference android:key="ledgerAbout" android:title="JustLedger" android:summary="自动记录，清楚生活。账单保存在本机，可自行备份。" android:selectable="false" />
+        <Preference android:key="checkLedgerUpdate" android:title="检查更新" android:summary="查看新版本并下载安装" />
+        <SwitchPreferenceCompat android:key="autoLedgerUpdate" android:title="自动检查更新" android:summary="打开 App 时检查，每天一次；不自动下载" android:persistent="false" />
         <Preference android:key="openSourceCode" android:title="开源致谢" android:summary="基于 AutoAccounting 二次开发 · 查看上游项目与许可证" />
     </PreferenceCategory>
 </PreferenceScreen>

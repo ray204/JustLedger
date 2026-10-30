@@ -94,3 +94,12 @@ test('rentDefaultsOccasionalAndExplicitDailyOverridePersistsAfterEditing',async 
  await p.getByRole('combobox',{name:'收支类型'}).selectOption('支出');assert.equal(await toggle.getAttribute('aria-checked'),'true');
  await p.getByRole('button',{name:'保存',exact:true}).click();await filter(p,'scope','偶发');assert.equal(await p.locator('[data-bill]').count(),1);assert.equal(await p.locator('[data-bill="1"]').count(),1);
 });
+
+test('aboutOffersUpdateAndAutoCheckWithoutDownloadingInDemo',async t=>{
+ const p=await pageFor(t);await p.locator('.nav [data-page=settings]').click();
+ await p.locator('[data-action=about]').click();
+ const auto=p.getByRole('switch',{name:'自动检查更新',exact:true});assert.equal(await auto.getAttribute('aria-checked'),'true');
+ await auto.click();assert.equal(await auto.getAttribute('aria-checked'),'false');
+ await p.locator('[data-action=update]').click();assert.match(await p.locator('.sheet').innerText(),/安装需系统确认/);
+ await p.locator('[data-action=demo-update]').click();assert.match(await p.getByRole('status').innerText(),/演示：下载校验完成/);
+});
