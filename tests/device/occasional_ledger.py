@@ -58,6 +58,9 @@ class OccasionalLedgerTests(unittest.TestCase):
   ids=[existing]
   try:
    api('/setting/set?key='+markers[0],'true')
+   # This fixture tests the independent rent migration, not later category additions.
+   markers.append('justledger.category-ai.v3.'+md5)
+   api('/setting/set?key='+markers[-1],'true')
    path='/category/list?book='+book+'&type=Expend&parent=-1'
    rows=api(path)['data'];self.assertEqual({'自定义分类','房租'},{r['name'] for r in rows})
    rent=next(r['id'] for r in rows if r['name']=='房租');ids.append(rent)

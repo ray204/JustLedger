@@ -7,6 +7,7 @@ import java.util.Locale
 /** Local, offline category artwork shared by ledger rows and category selectors. */
 object CategoryIcons {
     private val categories = listOf(
+        R.drawable.ledger_category_ai to listOf("ai", "人工智能", "模型服务"),
         R.drawable.ledger_category_food to listOf("餐饮", "餐食", "吃饭", "早餐", "午餐", "晚餐", "外卖", "零食", "美食", "伙食", "food", "dining"),
         R.drawable.ledger_category_coffee to listOf("咖啡", "饮品", "奶茶", "茶饮", "coffee", "drinks"),
         R.drawable.ledger_category_transport to listOf("交通", "公交", "地铁", "通勤", "打车", "出租车", "出行", "transport", "taxi"),
